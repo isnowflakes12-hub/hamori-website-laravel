@@ -1,58 +1,141 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏥 RS Hamori - Website Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website resmi Rumah Sakit Hamori dibangun dengan Laravel 12.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Cara Setup (Fresh Install dari GitHub)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Clone Repository
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/isnowflakes12-hub/hamori-website-laravel.git
+cd hamori-website-laravel
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependencies PHP
+```bash
+composer install
+```
 
-## Contributing
+### 3. Install Dependencies Node.js
+```bash
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Konfigurasi Environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+### 5. Buat Database SQLite
+```bash
+# Buat file database kosong
+type nul > database/database.sqlite   # Windows
+# atau
+touch database/database.sqlite       # Mac/Linux
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Jalankan Migrasi
+```bash
+php artisan migrate
+```
 
-## Security Vulnerabilities
+### 7. Jalankan Seeder (Import Semua Data)
+```bash
+php artisan db:seed
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 8. Link Storage (untuk file upload/gambar)
+```bash
+php artisan storage:link
+```
 
-## License
+### 9. Build Asset Frontend
+```bash
+npm run build
+# atau untuk development dengan hot-reload:
+npm run dev
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 10. Jalankan Server
+```bash
+php artisan serve
+```
+
+Akses di: **http://localhost:8000**
+
+---
+
+## 🔐 Akun Default Admin
+
+Setelah seeder berjalan, gunakan akun berikut untuk login ke dashboard admin:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Super Admin | *(cek seeder UsersTableSeeder)* | *(cek seeder)* |
+
+Akses admin panel di: **http://localhost:8000/admin**
+
+---
+
+## 📁 Struktur Menu Admin
+
+| Menu | Role yang Bisa Akses |
+|------|---------------------|
+| Dashboard | Super Admin, Marketing |
+| Banner | Super Admin, Marketing |
+| Promo | Super Admin, Marketing |
+| Artikel & Kategori | Super Admin, Marketing |
+| Layanan Unggulan | Super Admin, Marketing |
+| Kritik & Saran | Super Admin, Marketing |
+| Fasilitas | Super Admin |
+| Dokter & Jadwal | Super Admin |
+| Karir | Super Admin |
+| Pengaturan Umum | Super Admin |
+| Profil RS | Super Admin |
+| FAQ | Super Admin |
+
+---
+
+## 🗄️ Database
+
+Proyek ini menggunakan **SQLite** secara default untuk kemudahan development.
+
+Untuk production dengan MySQL, ubah di `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hamori_db
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+---
+
+## 🛠 Tech Stack
+
+- **Backend:** Laravel 12 (PHP 8.2+)
+- **Database:** SQLite (dev) / MySQL (prod)
+- **Frontend:** Bootstrap 5, Blade Templates, Vanilla CSS
+- **Charts:** Chart.js
+- **Rich Text Editor:** Quill.js
+- **Image Upload:** Laravel Storage (local disk)
+
+---
+
+## ⚠️ Catatan Penting
+
+- File gambar/upload **tidak** ikut ke GitHub (ada di `storage/app/public/`). Pastikan untuk transfer manual atau gunakan cloud storage.
+- Setelah `git pull` di mesin yang sudah ada, cukup jalankan:
+  ```bash
+  php artisan migrate
+  php artisan db:seed --class=SiteSettingsTableSeeder
+  ```
+
+---
+
+## 📞 Kontak
+
+RS Hamori - Jalan Raya Pagaden-Subang, Ds. Jabong Kec. Pagaden Kab. Subang Jawa Barat 41251
