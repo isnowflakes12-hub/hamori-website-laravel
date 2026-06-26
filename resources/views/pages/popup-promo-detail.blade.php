@@ -9,14 +9,7 @@
         <div class="promo-popup-inner" style="display:block; padding:0; overflow:hidden;">
     @php
         try {
-            $popupPromo = \App\Models\Promo::where(function($q){
-                    $q->whereNull('berlaku_mulai')
-                      ->orWhere('berlaku_mulai', '<=', now());
-                })
-                ->where(function($q){
-                    $q->whereNull('berlaku_sampai')
-                      ->orWhere('berlaku_sampai', '>=', now());
-                })
+            $popupPromo = \App\Models\Promo::where('is_home_featured', true)
                 ->latest()
                 ->first(); 
         } catch(\Exception $e) { 

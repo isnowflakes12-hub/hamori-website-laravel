@@ -9,6 +9,8 @@ use App\Models\Artikel;
 use App\Models\Faq;
 use App\Models\TempatTidur;
 use App\Models\Promo;
+use App\Models\Ulasan;
+use App\Models\PrivacyPolicy;
 
 class HomeController extends Controller
 {
@@ -17,32 +19,40 @@ class HomeController extends Controller
         $banners         = Banner::where('is_active', true)->orderBy('urutan')->get();
         $layananUnggulan = LayananUnggulan::where('is_active', true)->orderBy('urutan')->get();
         $artikelTerbaru  = Artikel::where('is_published', true)
-                                   ->orderBy('published_at', 'desc')
-                                   ->take(3)->get();
+                                ->orderBy('published_at', 'desc')
+                                ->take(3)->get();
 
-        // Ambil promo featured untuk popup & panel beranda
-        $promoFeatured   = Promo::where('is_active', true)
-                                 ->where('is_featured', true)
-                                 ->where(function($q) {
-                                     $q->whereNull('berlaku_sampai')
-                                       ->orWhere('berlaku_sampai', '>=', now());
-                                 })
-                                 ->orderBy('urutan')
-                                 ->first();
+        // Promo featured untuk popup & panel beranda
+        $promoFeatured = Promo::where('is_featured', true)
+                            ->where(function ($q) {
+                                $q->whereNull('berlaku_sampai')
+                                    ->orWhere('berlaku_sampai', '>=', now());
+                            })
+                            ->orderBy('urutan')
+                            ->first();
 
-        // Ambil semua promo aktif untuk halaman promo
-        $promoAktif      = Promo::where('is_active', true)
-                                 ->where(function($q) {
-                                     $q->whereNull('berlaku_sampai')
-                                       ->orWhere('berlaku_sampai', '>=', now());
-                                 })
-                                 ->orderBy('is_featured', 'desc')
-                                 ->orderBy('urutan')
-                                 ->take(6)->get();
+        // Semua promo aktif untuk section promo
+        $promoAktif = Promo::where('is_featured', true)
+                        ->where(function ($q) {
+                            $q->whereNull('berlaku_sampai')
+                                ->orWhere('berlaku_sampai', '>=', now());
+                        })
+                        ->orderByDesc('is_featured')
+                        ->orderBy('urutan')
+                        ->take(6)->get();
+
+        // ── Kritik & Saran (Menggantikan Ulasan) ──────────────────────
+        $kritikSaranFeatured = \App\Models\KritikSaran::approved()
+                                ->featured()
+                                ->notExpired()
+                                ->latest('approved_at')
+                                ->take(10)
+                                ->get();
 
         return view('pages.home', compact(
             'banners', 'layananUnggulan', 'artikelTerbaru',
-            'promoFeatured', 'promoAktif'
+            'promoFeatured', 'promoAktif',
+            'kritikSaranFeatured'
         ));
     }
 
@@ -60,8 +70,11 @@ class HomeController extends Controller
 
     public function privacyPolicy()
     {
-        return view('pages.privacy-policy');
+        $policies = PrivacyPolicy::where('is_active', true)->orderBy('urutan')->get();
+        return view('pages.privacy-policy', compact('policies'));
     }
+
+
 
     public function paketKesehatan()
     {

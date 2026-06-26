@@ -88,8 +88,8 @@
                             @endforeach
                         </div>
                         @endif
-                        <a href="https://wa.link/1uk9rl" target="_blank" class="btn btn-primary btn-sm w-100 mt-3">
-                            <i class="bi bi-calendar-check me-1"></i> Buat Appointment
+                        <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}" target="_blank" class="btn btn-primary btn-sm w-100 mt-3">
+                            <i class="bi bi-calendar-check me-1"></i> Chat via WhatsApp
                         </a>
                     </div>
                 </div>

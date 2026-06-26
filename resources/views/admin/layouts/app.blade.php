@@ -94,14 +94,33 @@ textarea.form-control{min-height:140px;resize:vertical}
         <a href="{{ route('admin.promo.index') }}" class="nav-item {{ request()->routeIs('admin.promo.*') ? 'active' : '' }}">
             <i class="bi bi-gift-fill"></i> Promo & Penawaran
         </a>
+        <a href="{{ route('admin.kritik-saran.index') }}" class="nav-item {{ request()->routeIs('admin.kritik-saran.*') ? 'active' : '' }}">
+            <i class="bi bi-envelope-paper-fill"></i> Kritik & Saran
+            @php $ksp = \App\Models\KritikSaran::pending()->count(); @endphp
+            @if($ksp > 0)<span class="nav-badge">{{ $ksp }}</span>@endif
+        </a>
         <a href="{{ route('admin.artikel.index') }}" class="nav-item {{ request()->routeIs('admin.artikel.*') ? 'active' : '' }}">
             <i class="bi bi-newspaper"></i> Artikel
         </a>
         <a href="{{ route('admin.kategori-artikel.index') }}" class="nav-item {{ request()->routeIs('admin.kategori-artikel.*') ? 'active' : '' }}">
             <i class="bi bi-folder-fill"></i> Kategori Artikel
-        </a> 
+        </a>
         <a href="{{ route('admin.layanan.index') }}" class="nav-item {{ request()->routeIs('admin.layanan.*') ? 'active' : '' }}">
             <i class="bi bi-award-fill"></i> Layanan Unggulan
+        </a>
+        @endif
+        {{-- Menu berikut hanya untuk Super Admin --}}
+        @if(auth()->user()->isSuperAdmin())
+        <a href="{{ route('admin.kontak.index') }}" class="nav-item {{ request()->routeIs('admin.kontak.*') ? 'active' : '' }}">
+            <i class="bi bi-chat-text-fill"></i> Pesan Masuk
+            @php $unreadKontak = \App\Models\Kontak::where('is_read', false)->count(); @endphp
+            @if($unreadKontak > 0)<span class="nav-badge">{{ $unreadKontak }}</span>@endif
+        </a>
+        <a href="{{ route('admin.fasilitas.index') }}" class="nav-item {{ request()->routeIs('admin.fasilitas.*') ? 'active' : '' }}">
+            <i class="bi bi-building"></i> Fasilitas
+        </a>
+        <a href="{{ route('admin.kategori-fasilitas.index') }}" class="nav-item {{ request()->routeIs('admin.kategori-fasilitas.*') ? 'active' : '' }}">
+            <i class="bi bi-folder-fill"></i> Kategori Fasilitas
         </a>
         <a href="{{ route('admin.dokter.index') }}" class="nav-item {{ request()->routeIs('admin.dokter.*') ? 'active' : '' }}">
             <i class="bi bi-person-badge-fill"></i> Dokter & Jadwal
@@ -118,10 +137,28 @@ textarea.form-control{min-height:140px;resize:vertical}
             @if($pc > 0)<span class="nav-badge">{{ $pc }}</span>@endif
         </a>
         @endif
+        @if(auth()->user()->canAccess('banner'))
+        <div class="nav-section-label">Konten</div>
+        <a href="{{ route('admin.faq.index') }}" class="nav-item {{ request()->routeIs('admin.faq.*') ? 'active' : '' }}">
+            <i class="bi bi-question-circle-fill"></i> FAQ
+        </a>
+        <a href="{{ route('admin.privacy-policy.index') }}" class="nav-item {{ request()->routeIs('admin.privacy-policy.*') ? 'active' : '' }}">
+            <i class="bi bi-shield-lock-fill"></i> Kebijakan Privasi
+        </a>
+        @endif
         @if(auth()->user()->isSuperAdmin())
         <div class="nav-section-label">Super Admin</div>
         <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
             <i class="bi bi-people-fill"></i> Manajemen User
+        </a>
+        <a href="{{ route('admin.settings.edit') }}" class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+            <i class="bi bi-gear-fill"></i> Pengaturan Umum
+        </a>
+        <a href="{{ route('admin.profil-rs.edit') }}" class="nav-item {{ request()->routeIs('admin.profil-rs.*') ? 'active' : '' }}">
+            <i class="bi bi-hospital-fill"></i> Profil RS
+        </a>
+        <a href="{{ route('admin.milestone.index') }}" class="nav-item {{ request()->routeIs('admin.milestone.*') ? 'active' : '' }}">
+            <i class="bi bi-flag-fill"></i> Milestone
         </a>
         @endif
         <div class="nav-section-label">Akun</div>

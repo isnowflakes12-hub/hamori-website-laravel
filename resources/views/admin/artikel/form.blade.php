@@ -35,10 +35,16 @@
                     <div class="form-text">Maks 200 karakter. Jika kosong, diambil dari awal konten.</div>
                 </div>
                 <div class="mb-0">
-                    <label class="form-label">Konten Artikel <span class="text-danger">*</span></label>
-                    <textarea name="konten" class="form-control" id="kontenEditor" rows="16"
-                              required>{{ old('konten', $artikel->konten ?? '') }}</textarea>
-                </div>
+                <label class="form-label">
+                    Konten Artikel <span class="text-danger">*</span>
+                </label>
+
+                <textarea
+                    name="konten"
+                    id="kontenEditor"
+                    class="form-control"
+                    rows="16">{{ old('konten', $artikel->konten ?? '') }}</textarea>
+            </div>
             </div>
         </div>
 
@@ -105,18 +111,57 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 function previewThumb(input) {
     const el = document.getElementById('thumbPreview');
     const wrap = document.getElementById('thumbPreviewWrap');
+
     if (input.files && input.files[0]) {
         const r = new FileReader();
-        r.onload = e => {
+
+        r.onload = function(e) {
             el.src = e.target.result;
-            if(wrap) wrap.style.display = 'block';
+
+            if (wrap) {
+                wrap.style.display = 'block';
+            }
         };
+
         r.readAsDataURL(input.files[0]);
     }
 }
+
+let editor;
+
+ClassicEditor
+    .create(document.querySelector('#kontenEditor'))
+    .then(newEditor => {
+
+        editor = newEditor;
+
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', function(e) {
+
+            const isi = editor.getData().trim();
+
+            if (isi === '') {
+                e.preventDefault();
+
+                alert('Konten artikel wajib diisi');
+
+                editor.editing.view.focus();
+
+                return false;
+            }
+
+            document.querySelector('#kontenEditor').value = isi;
+        });
+
+    })
+    .catch(error => {
+        console.error(error);
+    });
 </script>
 @endpush

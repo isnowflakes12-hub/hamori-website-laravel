@@ -138,7 +138,7 @@
                     <a href="tel:1500816" class="btn-emergency d-none d-xl-inline-flex">
                         <i class="bi bi-telephone-fill"></i> Emergency
                     </a>
-                    <a href="https://wa.link/1uk9rl" target="_blank" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+                    <a href="https://wa.me/6281111121705" target="_blank" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
                         <i class="bi bi-calendar-check"></i> Buat Appointment
                     </a>
                 </div>
@@ -185,7 +185,7 @@
                         <h6 class="footer-heading">Layanan</h6>
                         <ul class="footer-links">
                             <li><a href="{{ route('dokter.index') }}">Jadwal Dokter</a></li>
-                            <li><a href="https://wa.link/1uk9rl" target="_blank">Buat Appointment</a></li>
+                            <li><a href="https://wa.me/6281111121705" target="_blank">Buat Appointment</a></li>
                             <li><a href="{{ route('tempat-tidur') }}">Info Tempat Tidur</a></li>
                             <li><a href="{{ route('layanan.index') }}">Layanan Unggulan</a></li>
                             <li><a href="{{ route('partner') }}">Partner</a></li>
@@ -282,7 +282,7 @@
                     <span class="promo-countdown" id="promoCountdown">23:59:59</span>
                 </div>
                 <div class="promo-actions">
-                    <a href="https://wa.link/1uk9rl" target="_blank" class="btn-promo-primary">
+                    <a href="https://wa.me/6281111121705" target="_blank" class="btn-promo-primary">
                         <i class="bi bi-whatsapp me-2"></i> Daftar Sekarang
                     </a>
                     <a href="tel:1500816" class="btn-promo-secondary">

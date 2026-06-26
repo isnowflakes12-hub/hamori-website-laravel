@@ -4,6 +4,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fasilitas extends Model
 {
-    protected $fillable = ['nama', 'slug', 'kategori', 'deskripsi', 'konten', 'gambar', 'is_active'];
-    protected $casts = ['is_active' => 'boolean'];
+    protected $table = 'fasilitass';
+    protected $fillable = ['nama', 'slug', 'kategori_id', 'deskripsi', 'konten', 'gambar', 'galeri', 'is_active'];
+    protected $casts = [
+        'is_active' => 'boolean',
+        'galeri'    => 'array',
+    ];
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriFasilitas::class, 'kategori_id');
+    }
 }

@@ -161,7 +161,7 @@
                         <p class="ld-sidebar-cta-desc">Tim kami siap melayani Anda kapan saja, termasuk hari libur.</p>
 
                         
-                        <a href="https://wa.me/6281111121705" class="ld-sidebar-btn-wa" target="_blank">
+                        <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}" class="ld-sidebar-btn-wa" target="_blank">
                             <i class="fab fa-whatsapp"></i>
                             Chat via WhatsApp
                         </a>
@@ -169,9 +169,9 @@
                             <i class="fas fa-calendar-check"></i>
                             Buat Appointment
                         </a>
-                        <a href="tel:+62604250888" class="ld-sidebar-btn-tel">
+                        <a href="tel:{{ \App\Models\SiteSetting::get('phone_general', '02604250888') }}" class="ld-sidebar-btn-tel">
                             <i class="fas fa-phone"></i>
-                            0260-4250 888
+                            {{ \App\Models\SiteSetting::get('phone_general', '0260-4250 888') }}
                         </a>
                     </div>
 
@@ -254,9 +254,7 @@
 @endif
 
 
-<style>
 
-
-</style>
 
 @endsection
+

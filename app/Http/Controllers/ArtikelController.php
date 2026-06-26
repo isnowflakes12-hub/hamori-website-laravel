@@ -17,7 +17,12 @@ class ArtikelController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('judul', 'like', '%' . $request->search . '%');
+            $keyword = '%' . $request->search . '%';
+            $query->where(function ($q) use ($keyword) {
+                $q->where('judul',    'like', $keyword)
+                  ->orWhere('konten', 'like', $keyword)
+                  ->orWhereHas('kategori', fn($k) => $k->where('nama', 'like', $keyword));
+            });
         }
 
         $artikels = $query->orderBy('published_at', 'desc')->paginate(9);

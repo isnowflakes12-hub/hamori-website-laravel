@@ -16,11 +16,19 @@ class KontakController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-            'nama'    => 'required|string|max:255',
+            'nama'    => 'required|string|min:2|max:255',
             'email'   => 'required|email',
-            'telepon' => 'nullable|string|max:20',
+            'telepon' => 'required|string|max:20',
             'subjek'  => 'required|string|max:255',
             'pesan'   => 'required|string',
+        ], [
+            'nama.required' => 'Nama harus diisi.',
+            'nama.min' => 'Nama minimal 2 huruf.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'telepon.required' => 'Nomor telepon harus diisi.',
+            'subjek.required' => 'Subjek harus diisi.',
+            'pesan.required' => 'Pesan harus diisi.',
         ]);
 
         Kontak::create($request->only(['nama', 'email', 'telepon', 'subjek', 'pesan']));
@@ -36,12 +44,22 @@ class KontakController extends Controller
     public function sendKritik(Request $request)
     {
         $request->validate([
-            'nama'     => 'required|string|max:255',
-            'email'    => 'nullable|email',
-            'telepon'  => 'nullable|string|max:20',
+            'nama'     => 'required|string|min:2|max:255',
+            'email'    => 'required|email',
+            'telepon'  => 'required|string|max:20',
             'kategori' => 'required|in:kritik,saran,pertanyaan',
             'pesan'    => 'required|string',
-            'rating'   => 'nullable|integer|min:1|max:5',
+            'rating'   => 'required|integer|min:1|max:5',
+        ], [
+            'nama.required' => 'Nama harus diisi.',
+            'nama.min' => 'Nama minimal 2 huruf.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'telepon.required' => 'Nomor telepon harus diisi.',
+            'kategori.required' => 'Kategori harus diisi.',
+            'kategori.in' => 'Kategori tidak valid.',
+            'pesan.required' => 'Pesan harus diisi.',
+            'rating.required' => 'Penilaian harus diisi.',
         ]);
 
         KritikSaran::create($request->only(['nama', 'email', 'telepon', 'kategori', 'pesan', 'rating']));

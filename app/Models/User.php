@@ -17,7 +17,7 @@ class User extends Authenticatable
     public function isAdminSdm(): bool       { return $this->role === 'admin_sdm'; }
     public function canAccess(string $section): bool {
         return match($section) {
-            'users'              => $this->isSuperAdmin(),
+            'users','settings'   => $this->isSuperAdmin(),
             'banner','artikel','layanan','dokter','poli','partner','faq','fasilitas','promo','kategori-artikel' => $this->isSuperAdmin() || $this->isAdminMarketing(),
             'karir','lamaran'    => $this->isSuperAdmin() || $this->isAdminSdm(),
             default              => $this->isSuperAdmin(),

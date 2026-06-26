@@ -3,7 +3,6 @@
 
 @section('content')
 
-
 {{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
@@ -17,214 +16,221 @@
     </div>
 </div>
 
-{{-- ═══ PILIHAN APPOINTMENT ═══ --}}
+{{-- ═══ PILIHAN APPOINTMENT (VERTIKAL) ═══ --}}
 <section class="appt-section">
     <div class="appt-container">
 
-        {{-- Grid 2 opsi utama --}}
-        <div class="appt-grid">
-
-            {{-- OPSI 1: Aplikasi Mobile --}}
-            <div class="appt-card appt-card--app">
-                <div class="appt-card-badge">Rekomendasi</div>
-                <div class="appt-card-icon">
-                    <i class="bi bi-phone-fill"></i>
+        {{-- OPSI 1: Aplikasi Mobile --}}
+        <div class="appt-app-section">
+            {{-- Header: Judul + Deskripsi + Tombol Unduh (atas, full width) --}}
+            <div class="appt-app-top">
+                <div class="appt-app-top-text">
+                    <div class="appt-card-badge">Paling Praktis</div>
+                    <h2 class="appt-app-title">Lewat Aplikasi <span>RS Hamori</span></h2>
+                    <p class="appt-app-desc">Daftar antrian, cek jadwal dokter, pantau hasil lab, dan kelola riwayat kesehatan — semua dalam genggaman Anda.</p>
                 </div>
-                <div class="appt-card-body">
-                    <h2 class="appt-card-title">Lewat Aplikasi<br><span>RS Hamori</span></h2>
-                    <p class="appt-card-desc">Daftar antrian, cek jadwal dokter, pantau hasil lab, dan kelola riwayat kesehatan langsung dari smartphone Anda — kapan saja, di mana saja.</p>
-
-                    <ul class="appt-features">
-                        <li><i class="bi bi-check-circle-fill"></i> Pilih dokter & jadwal sendiri</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Notifikasi pengingat otomatis</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Hasil lab & rekam medis digital</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Antre tanpa harus datang lebih awal</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Gratis, tanpa biaya tambahan</li>
-                    </ul>
-
-                    <div class="appt-store-wrap">
-                        <p class="appt-store-label">Unduh sekarang:</p>
-                        <div class="appt-store-btns">
-                            <a href="https://play.google.com/store" target="_blank" class="appt-store-btn appt-store-btn--android">
-                                <i class="bi bi-google-play"></i>
-                                <div>
-                                    <small>Tersedia di</small>
-                                    <strong>Google Play</strong>
-                                </div>
-                            </a>
-                            <a href="https://apps.apple.com" target="_blank" class="appt-store-btn appt-store-btn--ios">
-                                <i class="bi bi-apple"></i>
-                                <div>
-                                    <small>Download di</small>
-                                    <strong>App Store</strong>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Mockup phone --}}
-                <div class="appt-phone-mockup">
-                    <div class="appt-phone-frame">
-                        <div class="appt-phone-screen">
-                            <div class="appt-phone-header">
-                                <span>RS Hamori</span>
-                                <i class="bi bi-bell-fill"></i>
-                            </div>
-                            <div class="appt-phone-content">
-                                <div class="appt-phone-greeting">Halo, Selamat Datang 👋</div>
-                                <div class="appt-phone-menu-grid">
-                                    <div class="appt-phone-menu-item">
-                                        <i class="bi bi-calendar2-check-fill"></i>
-                                        <span>Buat Janji</span>
-                                    </div>
-                                    <div class="appt-phone-menu-item">
-                                        <i class="bi bi-person-badge-fill"></i>
-                                        <span>Dokter</span>
-                                    </div>
-                                    <div class="appt-phone-menu-item">
-                                        <i class="bi bi-file-earmark-medical-fill"></i>
-                                        <span>Hasil Lab</span>
-                                    </div>
-                                    <div class="appt-phone-menu-item">
-                                        <i class="bi bi-heart-pulse-fill"></i>
-                                        <span>Rekam Medis</span>
-                                    </div>
-                                </div>
-                                <div class="appt-phone-card">
-                                    <div class="appt-phone-card-label">Antrian Anda</div>
-                                    <div class="appt-phone-card-num">A-014</div>
-                                    <div class="appt-phone-card-doc">dr. Budi Santoso, Sp.JP</div>
-                                    <div class="appt-phone-card-status">
-                                        <span class="dot"></span> Sedang berjalan
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- OPSI 2: WhatsApp --}}
-            <div class="appt-card appt-card--wa">
-                <div class="appt-card-icon appt-card-icon--wa">
-                    <i class="bi bi-whatsapp"></i>
-                </div>
-                <div class="appt-card-body">
-                    <h2 class="appt-card-title">Chat via<br><span>WhatsApp</span></h2>
-                    <p class="appt-card-desc">Hubungi tim kami langsung melalui WhatsApp. Staf kami siap membantu mendaftarkan jadwal Anda dengan cepat dan ramah.</p>
-
-                    <ul class="appt-features appt-features--wa">
-                        <li><i class="bi bi-check-circle-fill"></i> Respons cepat oleh staf kami</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Tidak perlu instal aplikasi</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Bisa tanya-jawab langsung</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Layanan 07.00 – 21.00 WIB</li>
-                    </ul>
-
-                    <div class="appt-wa-info">
-                        <div class="appt-wa-info-row">
-                            <i class="bi bi-telephone-fill"></i>
-                            <div>
-                                <small>Nomor WhatsApp</small>
-                                <strong>0811-1121-705</strong>
-                            </div>
-                        </div>
-                        <div class="appt-wa-info-row">
-                            <i class="bi bi-clock-fill"></i>
-                            <div>
-                                <small>Jam Layanan</small>
-                                <strong>Senin–Sabtu, 07.00–21.00</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="https://wa.me/6281111121705?text=Halo%20RS%20Hamori%2C%20saya%20ingin%20membuat%20appointment%20dengan%20dokter." 
-                       target="_blank" class="appt-wa-btn">
-                        <i class="bi bi-whatsapp"></i>
-                        Chat Sekarang di WhatsApp
+                <div class="appt-store-btns">
+                    <a href="https://play.google.com/store" target="_blank" class="appt-store-btn appt-store-btn--android">
+                        <i class="bi bi-google-play"></i>
+                        <div><small>Tersedia di</small><strong>Google Play</strong></div>
                     </a>
-
-                    <p class="appt-wa-note">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Pesan akan langsung terhubung ke tim pendaftaran RS Hamori.
-                    </p>
-                </div>
-
-                {{-- Ilustrasi WA chat bubble --}}
-                <div class="appt-wa-illustration">
-                    <div class="appt-chat-wrap">
-                        <div class="appt-chat-bubble appt-chat-bubble--in">
-                            <div class="appt-chat-avatar"><i class="bi bi-hospital-fill"></i></div>
-                            <div class="appt-chat-text">Halo! Selamat datang di RS Hamori 👋 Ada yang bisa kami bantu?</div>
-                        </div>
-                        <div class="appt-chat-bubble appt-chat-bubble--out">
-                            <div class="appt-chat-text">Saya ingin buat janji dengan dokter spesialis jantung.</div>
-                        </div>
-                        <div class="appt-chat-bubble appt-chat-bubble--in">
-                            <div class="appt-chat-avatar"><i class="bi bi-hospital-fill"></i></div>
-                            <div class="appt-chat-text">Baik! Dr. Budi Sp.JP tersedia Senin & Rabu jam 09.00–12.00. Mau kami bantu daftarkan? 😊</div>
-                        </div>
-                        <div class="appt-chat-bubble appt-chat-bubble--out">
-                            <div class="appt-chat-text">Iya, Senin jam 10 pagi ya.</div>
-                        </div>
-                        <div class="appt-chat-bubble appt-chat-bubble--in">
-                            <div class="appt-chat-avatar"><i class="bi bi-hospital-fill"></i></div>
-                            <div class="appt-chat-text">✅ Sudah kami daftarkan! Nomor antrian Anda <strong>B-07</strong>. Sampai Senin!</div>
-                        </div>
-                    </div>
+                    <a href="https://apps.apple.com" target="_blank" class="appt-store-btn appt-store-btn--ios">
+                        <i class="bi bi-apple"></i>
+                        <div><small>Download di</small><strong>App Store</strong></div>
+                    </a>
                 </div>
             </div>
 
+            {{-- Slider Gambar Tutorial (bawah, full width) --}}
+            <div class="swiper apptFeatSwiper">
+                <div class="swiper-wrapper">
+                    @for($i = 1; $i <= 8; $i++)
+                    <div class="swiper-slide">
+                        <div class="appt-img-card">
+                            <img src="{{ asset('assets/images/tutorial-app/'.$i.'.png') }}"
+                                 alt="Tutorial Langkah {{ $i }}"
+                                 onerror="this.src='https://placehold.co/280x350/e8f4f8/1ba99d?text=Step+{{ $i }}'">
+                        </div>
+                    </div>
+                    @endfor
+                </div>
+                <div class="swiper-pagination apptFeatPagination"></div>
+            </div>
         </div>
 
-        {{-- PANDUAN LANGKAH --}}
-        <div class="appt-guide">
-            <h3 class="appt-guide-title">Cara Buat Appointment via Aplikasi</h3>
-            <div class="appt-steps">
-                <div class="appt-step">
-                    <div class="appt-step-num">1</div>
-                    <div class="appt-step-body">
-                        <strong>Unduh & Daftar</strong>
-                        <p>Download aplikasi RS Hamori di Play Store atau App Store, lalu buat akun dengan nomor HP Anda.</p>
+
+        {{-- OPSI 2: WhatsApp (Full Width) --}}
+        <div class="appt-card-fw appt-card-fw--wa mt-4">
+            <div class="appt-fw-media appt-fw-media--wa">
+                <div class="appt-chat-wrap">
+                    <div class="appt-chat-bubble appt-chat-bubble--in">
+                        <div class="appt-chat-avatar"><i class="bi bi-hospital-fill"></i></div>
+                        <div class="appt-chat-text">Halo! Selamat datang di layanan pendaftaran RS Hamori 👋 Ada yang bisa dibantu?</div>
+                    </div>
+                    <div class="appt-chat-bubble appt-chat-bubble--out">
+                        <div class="appt-chat-text">Saya mau daftar ke poli anak.</div>
+                    </div>
+                    <div class="appt-chat-bubble appt-chat-bubble--in">
+                        <div class="appt-chat-avatar"><i class="bi bi-hospital-fill"></i></div>
+                        <div class="appt-chat-text">Baik, kami bantu daftarkan. Silakan kirimkan foto KTP ya. 😊</div>
                     </div>
                 </div>
-                <div class="appt-step-arrow"><i class="bi bi-arrow-right"></i></div>
-                <div class="appt-step">
-                    <div class="appt-step-num">2</div>
-                    <div class="appt-step-body">
-                        <strong>Pilih Dokter & Jadwal</strong>
-                        <p>Cari spesialis yang Anda butuhkan, pilih hari dan jam yang tersedia.</p>
+            </div>
+            <div class="appt-fw-content">
+                <div class="appt-card-icon appt-card-icon--wa"><i class="bi bi-whatsapp"></i></div>
+                <h2 class="appt-card-title">Chat via <span>WhatsApp</span></h2>
+                <p class="appt-card-desc">Bantuan pendaftaran langsung dengan staf kami. Sangat cocok jika Anda butuh bantuan informasi poli yang tepat untuk keluhan Anda.</p>
+
+                <div class="appt-wa-info">
+                    <div class="appt-wa-info-row">
+                        <i class="bi bi-clock-fill"></i>
+                        <div><small>Jam Operasional Admin</small><strong>Senin–Sabtu, 07.00 – 21.00 WIB</strong></div>
                     </div>
                 </div>
-                <div class="appt-step-arrow"><i class="bi bi-arrow-right"></i></div>
-                <div class="appt-step">
-                    <div class="appt-step-num">3</div>
-                    <div class="appt-step-body">
-                        <strong>Konfirmasi</strong>
-                        <p>Isi data pasien dan konfirmasi. Nomor antrian langsung Anda terima.</p>
+
+                <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}?text=Halo%20RS%20Hamori%2C%20saya%20ingin%20membuat%20appointment." target="_blank" class="appt-wa-btn">
+                    <i class="bi bi-whatsapp"></i> Chat WhatsApp Sekarang
+                </a>
+            </div>
+        </div>
+
+        {{-- OPSI 3: Call Center (Full Width) --}}
+        <div class="appt-card-fw appt-card-fw--call mt-4">
+            <div class="appt-fw-content d-flex align-items-center justify-content-between flex-wrap gap-4">
+                <div>
+                    <h2 class="appt-card-title text-white mb-2"><i class="bi bi-telephone-inbound-fill me-2"></i> Panggilan Darurat / Cepat</h2>
+                    <p class="text-white-50 mb-0" style="font-size:15px; max-width: 500px;">Butuh penanganan segera atau konsultasi pendaftaran langsung via suara? Hubungi hotline kami kapan saja.</p>
+                </div>
+                <a href="tel:{{ \App\Models\SiteSetting::get('phone_call_center', '1500816') }}" class="btn btn-light btn-lg rounded-pill px-4 fw-bold shadow-sm" style="color:var(--primary);">
+                    <i class="bi bi-telephone-fill me-2"></i> {{ \App\Models\SiteSetting::get('phone_call_center', '1500816') }}
+                </a>
+            </div>
+        </div>
+
+        {{-- INFORMASI PENTING (Jadwal & BPJS) --}}
+        <div class="row g-4 mt-5">
+            {{-- Akses Cepat Jadwal Dokter --}}
+            <div class="col-md-6">
+                <div class="appt-info-box">
+                    <div class="appt-info-icon bg-primary-light text-primary"><i class="bi bi-calendar2-week"></i></div>
+                    <div class="appt-info-body">
+                        <h5>Cek Jadwal Dokter</h5>
+                        <p>Pastikan jadwal praktik dokter spesialis tujuan Anda sebelum melakukan pendaftaran.</p>
+                        <a href="{{ route('dokter.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Lihat Jadwal <i class="bi bi-arrow-right"></i></a>
                     </div>
                 </div>
-                <div class="appt-step-arrow"><i class="bi bi-arrow-right"></i></div>
-                <div class="appt-step">
-                    <div class="appt-step-num">4</div>
-                    <div class="appt-step-body">
-                        <strong>Datang Sesuai Jadwal</strong>
-                        <p>Tunjukkan nomor antrian di loket. Tidak perlu mengantre panjang!</p>
+            </div>
+            {{-- Panduan BPJS --}}
+            <div class="col-md-6">
+                <div class="appt-info-box">
+                    <div class="appt-info-icon bg-success-light text-success"><i class="bi bi-shield-check"></i></div>
+                    <div class="appt-info-body">
+                        <h5>Pasien BPJS Kesehatan</h5>
+                        <p>Pastikan rujukan dari Faskes Tingkat 1 Anda sudah aktif dan ditujukan ke Poli RS Hamori.</p>
+                        <button class="btn btn-outline-success btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#bpjsModal">Syarat & Ketentuan <i class="bi bi-info-circle"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- TELEPON & WALK-IN --}}
-        <div class="appt-alt">
-            <div class="appt-alt-icon"><i class="bi bi-telephone-fill"></i></div>
-            <div class="appt-alt-body">
-                <strong>Atau hubungi kami via telepon / datang langsung</strong>
-                <p>Loket pendaftaran buka Senin–Sabtu pukul 07.00–20.00 WIB · <a href="tel:02604250388">(0260) 4250 388</a> · IGD 24 Jam: <a href="tel:1500816">1500 816</a></p>
+        {{-- FAQ PENDAFTARAN --}}
+        <div class="appt-faq-sec mt-5 pt-4">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold" style="color:var(--ink);">Pertanyaan Umum (FAQ) Pendaftaran</h3>
+                <p class="text-muted">Informasi seputar proses pembuatan janji temu di RS Hamori</p>
+            </div>
+            <div class="accordion" id="faqAppointment">
+                <div class="accordion-item border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button bg-white fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Apakah bisa mendaftar di hari H (hari yang sama)?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAppointment">
+                        <div class="accordion-body text-muted">
+                            Untuk pendaftaran online (Aplikasi & WhatsApp), pendaftaran minimal dilakukan H-1 (satu hari sebelumnya). Pendaftaran di hari H hanya dapat dilakukan secara langsung di loket pendaftaran rumah sakit, menyesuaikan kuota yang masih tersedia.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button bg-white fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Bagaimana jika saya ingin membatalkan atau mengubah jadwal janji?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAppointment">
+                        <div class="accordion-body text-muted">
+                            Pembatalan atau perubahan jadwal bisa dilakukan melalui Aplikasi RS Hamori pada menu 'Riwayat Appointment', atau dengan menghubungi admin WhatsApp kami selambat-lambatnya 3 jam sebelum jadwal praktik dokter dimulai.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button bg-white fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Apakah pendaftaran via aplikasi dan WhatsApp dikenakan biaya administrasi tambahan?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAppointment">
+                        <div class="accordion-body text-muted">
+                            Tidak. Pendaftaran janji temu melalui semua kanal resmi RS Hamori 100% gratis. Anda hanya akan dikenakan biaya konsultasi dokter dan obat (bagi pasien umum) yang pembayarannya dilakukan di kasir rumah sakit.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 </section>
+
+{{-- MODAL INFO BPJS --}}
+<div class="modal fade" id="bpjsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0">
+            <div class="modal-header bg-success text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-bold"><i class="bi bi-shield-check me-2"></i>Persyaratan Pasien BPJS</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p>Bagi pasien yang akan menggunakan fasilitas BPJS Kesehatan, mohon siapkan dokumen berikut saat kedatangan:</p>
+                <ul class="list-group list-group-flush mb-0">
+                    <li class="list-group-item px-0 border-bottom-0"><i class="bi bi-check2-circle text-success me-2"></i> Kartu BPJS Asli & Fotokopi</li>
+                    <li class="list-group-item px-0 border-bottom-0"><i class="bi bi-check2-circle text-success me-2"></i> KTP Asli & Fotokopi</li>
+                    <li class="list-group-item px-0 border-bottom-0"><i class="bi bi-check2-circle text-success me-2"></i> Surat Rujukan dari Faskes Tingkat 1 (Klinik/Puskesmas) yang masih berlaku.</li>
+                    <li class="list-group-item px-0 border-bottom-0"><i class="bi bi-info-circle text-primary me-2"></i> Khusus IGD (Gawat Darurat) dapat langsung ditangani tanpa rujukan Faskes 1.</li>
+                </ul>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Mengerti</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        new Swiper('.apptFeatSwiper', {
+            loop: true,
+            speed: 600,
+            slidesPerView: 'auto',
+            spaceBetween: 12,
+            centeredSlides: true,
+            autoplay: {
+                delay: 10000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.apptFeatPagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640:  { centeredSlides: false, spaceBetween: 16 },
+                768:  { centeredSlides: false, spaceBetween: 16 },
+                1200: { centeredSlides: false, spaceBetween: 20 },
+            }
+        });
+    });
+</script>
+@endpush
 
 @endsection

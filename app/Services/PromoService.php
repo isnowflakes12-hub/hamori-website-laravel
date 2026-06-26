@@ -21,7 +21,14 @@ class PromoService
             $this->assertCanFeature();
         }
         $data['benefit'] = $this->parseBenefit($data['benefit_text'] ?? '');
-        unset($data['benefit_text']);
+        $data['cara_mendapatkan'] = $this->parseSteps($data['cara_mendapatkan_text'] ?? '');
+        unset($data['benefit_text'], $data['cara_mendapatkan_text']);
+
+        // Pastikan hanya 1 promo yang is_home_featured
+        if (!empty($data['is_home_featured'])) {
+            Promo::where('is_home_featured', true)->update(['is_home_featured' => false]);
+        }
+
         return Promo::create($data);
     }
 
@@ -31,7 +38,14 @@ class PromoService
             $this->assertCanFeature();
         }
         $data['benefit'] = $this->parseBenefit($data['benefit_text'] ?? '');
-        unset($data['benefit_text']);
+        $data['cara_mendapatkan'] = $this->parseSteps($data['cara_mendapatkan_text'] ?? '');
+        unset($data['benefit_text'], $data['cara_mendapatkan_text']);
+
+        // Pastikan hanya 1 promo yang is_home_featured
+        if (!empty($data['is_home_featured'])) {
+            Promo::where('is_home_featured', true)->where('id', '!=', $promo->id)->update(['is_home_featured' => false]);
+        }
+
         $promo->update($data);
     }
 
@@ -46,6 +60,15 @@ class PromoService
             $this->assertCanFeature();
         }
         $promo->update(['is_featured' => !$promo->is_featured]);
+    }
+
+    public function toggleHomeFeatured(Promo $promo): void
+    {
+        // Jika kita mau menyalakannya, matikan yang lain dulu karena home featured biasanya eksklusif
+        if (!$promo->is_home_featured) {
+            Promo::where('is_home_featured', true)->where('id', '!=', $promo->id)->update(['is_home_featured' => false]);
+        }
+        $promo->update(['is_home_featured' => !$promo->is_home_featured]);
     }
 
     private function assertCanFeature(): void
@@ -67,4 +90,12 @@ class PromoService
             array_map('trim', explode("\n", $text))
         ));
     }
+
+    private function parseSteps(string $text): array
+    {
+        return array_values(array_filter(
+            array_map('trim', explode("\n", $text))
+        ));
+    }
 }
+

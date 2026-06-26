@@ -9,6 +9,13 @@ use App\Models\Poli;
 
 class AppointmentController extends Controller
 {
+    public function index()
+    {
+        return view('pages.appointment', [
+        ]);
+    }
+
+
     public function store(Request $request)
     {
         $request->validate([

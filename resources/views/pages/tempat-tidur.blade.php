@@ -54,13 +54,6 @@
         @endforelse
     </div>
 </section>
-<style>
-.bed-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: var(--shadow); }
-.bed-info { display: flex; justify-content: space-between; align-items: flex-start; }
-.bed-kelas { font-weight: 700; }
-.bed-tersedia { text-align: center; font-size: 1.8rem; font-weight: 800; line-height: 1; }
-.bed-tersedia small { display: block; font-size: 10px; font-weight: 500; }
-.bed-tersedia.available { color: #00a859; }
-.bed-tersedia.full { color: #e8333c; }
-</style>
+
 @endsection
+

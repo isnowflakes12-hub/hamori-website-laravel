@@ -2,193 +2,7 @@
 @section('title', 'Karir - Rekrutmen RS Hamori')
 
 @push('styles')
-<style>
-.karir-hero {
-    background: linear-gradient(135deg, #0d1b3e 0%, #0055a5 60%, #0077cc 100%);
-    padding: 64px 0 48px;
-    position: relative;
-    overflow: hidden;
-}
-.karir-hero::before {
-    content:''; position:absolute; width:500px; height:500px;
-    background:rgba(255,255,255,0.04); border-radius:50%;
-    top:-200px; right:-100px;
-}
-.karir-hero h1 {
-    font-family:'Libre Baskerville',serif;
-    font-size:clamp(1.8rem,4vw,2.8rem);
-    font-weight:700; color:#fff; margin-bottom:12px;
-}
-.karir-hero p { color:rgba(255,255,255,0.75); font-size:16px; max-width:540px; }
-.karir-hero-stats { display:flex; gap:32px; margin-top:32px; flex-wrap:wrap; }
-.karir-stat-num { font-size:2rem; font-weight:800; color:#fff; line-height:1; }
-.karir-stat-label { font-size:12px; color:rgba(255,255,255,0.65); margin-top:4px; }
 
-/* Tabs */
-.karir-tabs-wrap {
-    background:#fff;
-    border-bottom:1px solid #e5e7eb;
-    position:sticky; top:70px; z-index:99;
-    box-shadow:0 4px 12px rgba(0,0,0,0.06);
-}
-.karir-tabs { display:flex; overflow-x:auto; scrollbar-width:none; }
-.karir-tabs::-webkit-scrollbar { display:none; }
-.karir-tab {
-    display:flex; align-items:center; gap:10px;
-    padding:18px 24px; border:none; background:transparent;
-    color:#6b7280; font-size:14px; font-weight:600;
-    white-space:nowrap; cursor:pointer;
-    border-bottom:3px solid transparent;
-    transition:color .2s,border-color .2s,background .2s;
-    text-decoration:none;
-}
-.karir-tab:hover { color:#0055a5; background:#f0f6ff; }
-.karir-tab.active { color:#0055a5; border-bottom-color:#0055a5; background:#f0f6ff; }
-.karir-tab-icon {
-    width:32px; height:32px; border-radius:8px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:15px; background:#f3f4f6; color:#6b7280;
-    transition:background .2s,color .2s; flex-shrink:0;
-}
-.karir-tab.active .karir-tab-icon { background:#0055a5; color:#fff; }
-.karir-tab-badge {
-    background:#e5e7eb; color:#6b7280;
-    font-size:11px; font-weight:700;
-    padding:2px 8px; border-radius:100px;
-    transition:background .2s,color .2s;
-}
-.karir-tab.active .karir-tab-badge { background:#0055a5; color:#fff; }
-
-/* Per-category active colors */
-.karir-tab[data-kat="Perawat"].active        { color:#0055a5; border-bottom-color:#0055a5; }
-.karir-tab[data-kat="Perawat"].active .karir-tab-icon,
-.karir-tab[data-kat="Perawat"].active .karir-tab-badge { background:#0055a5; color:#fff; }
-
-.karir-tab[data-kat="Penunjang Medis"].active { color:#00a859; border-bottom-color:#00a859; }
-.karir-tab[data-kat="Penunjang Medis"].active .karir-tab-icon,
-.karir-tab[data-kat="Penunjang Medis"].active .karir-tab-badge { background:#00a859; color:#fff; }
-
-.karir-tab[data-kat="Pelayanan Medis"].active { color:#6c3fc5; border-bottom-color:#6c3fc5; }
-.karir-tab[data-kat="Pelayanan Medis"].active .karir-tab-icon,
-.karir-tab[data-kat="Pelayanan Medis"].active .karir-tab-badge { background:#6c3fc5; color:#fff; }
-
-.karir-tab[data-kat="Non Perawat"].active    { color:#e8333c; border-bottom-color:#e8333c; }
-.karir-tab[data-kat="Non Perawat"].active .karir-tab-icon,
-.karir-tab[data-kat="Non Perawat"].active .karir-tab-badge { background:#e8333c; color:#fff; }
-
-/* Filter bar */
-.karir-filter-bar { background:#f8fafc; border-bottom:1px solid #e5e7eb; padding:14px 0; }
-.karir-filter-form { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-.karir-filter-form .form-control,
-.karir-filter-form .form-select { font-size:13px; border-radius:10px; border-color:#e5e7eb; padding:8px 14px; }
-.karir-filter-form .form-control { min-width:220px; flex:1; }
-
-/* Kategori banner */
-.karir-kat-banner {
-    border-radius:16px; padding:22px 26px;
-    display:flex; align-items:center; gap:18px;
-    margin-bottom:28px; border:1px solid rgba(0,0,0,0.06);
-}
-.karir-kat-icon-lg {
-    width:52px; height:52px; border-radius:14px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:22px; color:#fff; flex-shrink:0;
-}
-
-/* Job cards */
-.karir-card {
-    background:#fff; border-radius:16px;
-    box-shadow:0 2px 12px rgba(0,0,0,0.07);
-    border:1px solid #f0f0f0;
-    display:flex; flex-direction:column; height:100%;
-    transition:transform .2s,box-shadow .2s,border-color .2s;
-    overflow:hidden;
-}
-.karir-card:hover {
-    transform:translateY(-4px);
-    box-shadow:0 12px 32px rgba(0,0,0,0.12);
-    border-color:#d0e4f7;
-}
-.karir-card-colorbar { height:4px; }
-.karir-card-top { padding:18px 18px 0; display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
-.karir-badges { display:flex; gap:6px; flex-wrap:wrap; }
-.badge-tipe {
-    font-size:10px; font-weight:700;
-    padding:4px 10px; border-radius:100px;
-    text-transform:uppercase; letter-spacing:0.5px;
-}
-.badge-tipe.full-time { background:#dbeafe; color:#1d4ed8; }
-.badge-tipe.part-time { background:#dcfce7; color:#15803d; }
-.badge-tipe.kontrak   { background:#fef9c3; color:#854d0e; }
-.badge-tipe.magang    { background:#f3e8ff; color:#7e22ce; }
-.badge-soon {
-    font-size:10px; font-weight:700;
-    padding:4px 10px; border-radius:100px;
-    background:#fee2e2; color:#dc2626;
-    animation:pulseBadge 1.5s ease infinite;
-}
-@keyframes pulseBadge { 0%,100%{opacity:1} 50%{opacity:.6} }
-.karir-card-body { padding:12px 18px 0; flex:1; }
-.karir-posisi { font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:5px; line-height:1.3; }
-.karir-dept { color:#6b7280; font-size:12px; display:flex; align-items:center; gap:4px; margin-bottom:8px; }
-.karir-desc { font-size:12px; color:#6b7280; line-height:1.6; margin-bottom:10px; }
-.karir-meta { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-.karir-meta-item { font-size:11px; color:#6b7280; display:flex; align-items:center; gap:4px; }
-.karir-dl {
-    font-size:11px; font-weight:600; padding:5px 10px;
-    border-radius:8px; display:inline-flex; align-items:center; gap:5px; margin-bottom:10px;
-}
-.karir-dl.soon   { background:#fee2e2; color:#dc2626; }
-.karir-dl.normal { background:#f0f6ff; color:#0055a5; }
-.karir-card-footer { padding:12px 18px 18px; display:flex; gap:8px; }
-.btn-detail {
-    flex:1; background:#0055a5; color:#fff; border:none;
-    border-radius:10px; padding:10px 14px; font-size:13px; font-weight:700;
-    text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;
-    transition:background .2s,transform .15s;
-}
-.btn-detail:hover { background:#003d7a; color:#fff; transform:translateY(-1px); }
-.btn-lamar {
-    background:#e8f0fa; color:#0055a5; border:none;
-    border-radius:10px; padding:10px 13px; font-size:13px; font-weight:600;
-    text-decoration:none; display:flex; align-items:center; gap:5px;
-    transition:background .2s; white-space:nowrap;
-}
-.btn-lamar:hover { background:#0055a5; color:#fff; }
-
-/* Empty */
-.karir-empty {
-    text-align:center; padding:60px 20px;
-    background:#f8fafc; border-radius:16px; border:2px dashed #e5e7eb;
-}
-.karir-empty i { font-size:3.5rem; color:#d1d5db; margin-bottom:16px; display:block; }
-
-/* Why join */
-.why-join { background:#f8fafc; }
-.why-card {
-    background:#fff; border-radius:16px; padding:26px 22px; text-align:center;
-    box-shadow:0 2px 12px rgba(0,0,0,0.06); height:100%;
-    transition:transform .2s,box-shadow .2s;
-}
-.why-card:hover { transform:translateY(-4px); box-shadow:0 8px 28px rgba(0,0,0,0.1); }
-.why-icon {
-    width:56px; height:56px; border-radius:16px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:24px; margin:0 auto 14px;
-}
-
-/* CTA card */
-.open-app-card {
-    background:linear-gradient(135deg,#0d1b3e,#0055a5);
-    border-radius:20px; padding:40px 44px; color:#fff;
-    position:relative; overflow:hidden;
-}
-.open-app-card::before {
-    content:''; position:absolute;
-    width:280px; height:280px; background:rgba(255,255,255,0.05);
-    border-radius:50%; top:-80px; right:-60px;
-}
-</style>
 @endpush
 
 @section('content')
@@ -415,9 +229,9 @@
                     <p class="opacity-75 mb-0">Kirim lamaran terbuka. Kami akan menghubungi saat ada posisi yang cocok dengan profil Anda.</p>
                 </div>
                 <div class="col-lg-4 mt-4 mt-lg-0 d-flex gap-3 flex-wrap justify-content-lg-end">
-                    <a href="https://wa.me/628888905555?text=Halo%2C+saya+ingin+mengirim+lamaran+terbuka+ke+RS+Hamori"
+                    <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}?text=Halo%2C+saya+ingin+mengirim+lamaran+terbuka+ke+RS+Hamori"
                        target="_blank" class="btn btn-light btn-lg fw-bold d-inline-flex align-items-center gap-2">
-                        <i class="bi bi-whatsapp text-success"></i> Via WhatsApp
+                        <i class="bi bi-whatsapp text-success"></i> Chat via WhatsApp
                     </a>
                     <a href="mailto:hrd@rshamori.co.id"
                        class="btn btn-outline-light btn-lg fw-semibold d-inline-flex align-items-center gap-2">
@@ -430,3 +244,4 @@
 </section>
 
 @endsection
+

@@ -44,10 +44,6 @@
         @endforelse
     </div>
 </section>
-<style>
-.partner-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; min-height: 100px; transition: box-shadow .2s; }
-.partner-card:hover { box-shadow: var(--shadow-lg); }
-.partner-logo { max-width: 100%; max-height: 60px; object-fit: contain; }
-.partner-nama { font-size: 13px; font-weight: 600; text-align: center; }
-</style>
+
 @endsection
+

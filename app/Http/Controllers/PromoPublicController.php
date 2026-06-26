@@ -5,23 +5,44 @@ use App\Models\Promo;
 
 class PromoPublicController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $promos = Promo::where('is_active', true)
-                       ->where(function($q) {
-                           $q->whereNull('berlaku_sampai')
-                             ->orWhere('berlaku_sampai', '>=', now());
-                       })
-                       ->orderBy('is_featured','desc')
-                       ->orderBy('urutan')
-                       ->get();
+        $search = $request->get('search', '');
+        $query = Promo::query();
 
-        return view('pages.promo', compact('promos'));
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        $promos = $query->orderBy('is_featured', 'desc')
+                        ->orderBy('urutan', 'asc')
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(6)
+                        ->withQueryString();
+
+        return view('pages.promo', compact('promos', 'search'));
     }
+    
 
-    public function show($id)
+    public function detail(string $id)
     {
-        $promo = Promo::where('is_active', true)->findOrFail($id);
-        return view('pages.promo-detail', compact('promo'));
-    }
+        // 1. Ambil data promo utama berdasarkan ID
+        $promo = Promo::findOrFail($id);
+
+        // 2. Ambil data promo terkait secara otomatis (kecuali promo yang sedang dibuka)
+        // Ambil maksimal 3 data untuk disuplai ke variabel $related di Blade
+        $related = Promo::where('id', '!=', $id)
+                        ->where(function ($q) {
+                            $q->whereNull('berlaku_sampai')
+                              ->orWhere('berlaku_sampai', '>=', now());
+                        })
+                        ->inRandomOrder()
+                        ->take(3)
+                        ->get();
+
+        return view('pages.promo-detail', compact('promo', 'related'));
+    } 
 }
