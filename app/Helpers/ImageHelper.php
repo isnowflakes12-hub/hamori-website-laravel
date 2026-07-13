@@ -33,7 +33,7 @@ class ImageHelper
         $manager = new ImageManager(new Driver());
         
         try {
-            $image = $manager->read($file->getRealPath());
+            $image = $manager->decodePath($file->getRealPath());
 
             // Resize if width is larger than max width
             if ($maxWidth !== null && $image->width() > $maxWidth) {
@@ -41,8 +41,8 @@ class ImageHelper
             }
 
             // Encode image as WebP for best compression/quality ratio
-            // Webp encoding in Intervention Image v3
-            $encoded = $image->toWebp($quality);
+            // Webp encoding in Intervention Image v4
+            $encoded = $image->encodeUsingFileExtension('webp', $quality);
 
             // Generate filename with .webp extension
             $filename = Str::random(40) . '.webp';
