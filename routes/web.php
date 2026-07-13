@@ -129,6 +129,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Marketing — Dokter
         Route::post('dokter/sync', [DokterAdminController::class, 'sync'])->name('dokter.sync');
+        Route::patch('dokter/{dokter}/toggle', [DokterAdminController::class, 'toggle'])->name('dokter.toggle');
         Route::resource('dokter', DokterAdminController::class)->except(['show']);
 
         // SDM — Karir (lowongan)
