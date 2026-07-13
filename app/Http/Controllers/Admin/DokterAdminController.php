@@ -29,4 +29,21 @@ class DokterAdminController extends Controller
         return redirect()->route('admin.dokter.index')->with('success', 'Dokter berhasil diperbarui.');
     }
     public function destroy(Dokter $dokter) { $dokter->delete(); return back()->with('success', 'Dokter dihapus.'); }
+
+    public function sync()
+    {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('teramedik:sync');
+            $output = \Illuminate\Support\Facades\Artisan::output();
+            
+            // Check if there was an error in output
+            if (str_contains($output, 'Terjadi Kesalahan')) {
+                return back()->with('error', $output);
+            }
+
+            return back()->with('success', 'Sinkronisasi berhasil: ' . $output);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memicu sinkronisasi: ' . $e->getMessage());
+        }
+    }
 }

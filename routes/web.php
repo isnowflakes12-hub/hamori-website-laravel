@@ -128,6 +128,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('layanan', LayananAdminController::class)->except(['show']);
 
         // Marketing — Dokter
+        Route::post('dokter/sync', [DokterAdminController::class, 'sync'])->name('dokter.sync');
         Route::resource('dokter', DokterAdminController::class)->except(['show']);
 
         // SDM — Karir (lowongan)

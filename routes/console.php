@@ -12,3 +12,7 @@ Artisan::command('migrate:categories', function () {
     }
     $this->info('Categories migrated successfully.');
 });
+
+// Jadwalkan sync Teramedik setiap malam jam 12
+use Illuminate\Support\Facades\Schedule;
+Schedule::command('teramedik:sync')->dailyAt('00:00');
