@@ -132,6 +132,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('dokter/{dokter}/toggle', [DokterAdminController::class, 'toggle'])->name('dokter.toggle');
         Route::resource('dokter', DokterAdminController::class)->except(['show']);
 
+        // Marketing — Partner
+        Route::patch('partner/{partner}/toggle', [PartnerAdminController::class, 'toggle'])->name('partner.toggle');
+        Route::resource('partner', PartnerAdminController::class)->except(['show']);
+
         // SDM — Karir (lowongan)
         Route::resource('karir', AdminKarirController::class)->except(['show']);
         Route::patch('karir/{karir}/toggle', [AdminKarirController::class, 'toggleActive'])->name('karir.toggle');

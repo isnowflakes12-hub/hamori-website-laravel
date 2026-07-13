@@ -124,6 +124,9 @@ textarea.form-control{min-height:140px;resize:vertical}
         <a href="{{ route('admin.dokter.index') }}" class="nav-item {{ request()->routeIs('admin.dokter.*') ? 'active' : '' }}">
             <i class="bi bi-person-badge-fill"></i> Dokter & Jadwal
         </a>
+        <a href="{{ route('admin.partner.index') }}" class="nav-item {{ request()->routeIs('admin.partner.*') ? 'active' : '' }}">
+            <i class="bi bi-building-fill-add"></i> Partner & Mitra
+        </a>
         @endif
         @if(auth()->user()->canAccess('karir'))
         <div class="nav-section-label">SDM & Rekrutmen</div>
