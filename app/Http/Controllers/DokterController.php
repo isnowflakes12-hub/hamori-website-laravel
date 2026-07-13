@@ -11,25 +11,38 @@ class DokterController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Dokter::with(['jadwal', 'poli'])->where('is_active', true);
+        // Ambil poli yang ada di teramedik saja
+        $polisQuery = Poli::whereNotNull('teramedik_id')
+                          ->where('is_active', true)
+                          ->orderBy('nama');
 
         if ($request->filled('poli')) {
-            $query->whereHas('poli', fn($q) => $q->where('id', $request->poli));
+            $polisQuery->where('id', $request->poli);
         }
 
-        if ($request->filled('nama')) {
-            $query->where('nama', 'like', '%' . $request->nama . '%');
+        $polis = $polisQuery->with(['dokters' => function ($q) use ($request) {
+            $q->whereNotNull('teramedik_id')->where('is_active', true);
+            
+            if ($request->filled('nama')) {
+                $q->where('nama', 'like', '%' . $request->nama . '%');
+            }
+            if ($request->filled('hari')) {
+                $q->whereHas('jadwal', fn($jq) => $jq->where('hari', $request->hari));
+            }
+            $q->with('jadwal');
+        }])->get();
+
+        // Filter out polis that have no doctors matching the search criteria
+        if ($request->filled('nama') || $request->filled('hari')) {
+            $polis = $polis->filter(function ($poli) {
+                return $poli->dokters->count() > 0;
+            });
         }
 
-        if ($request->filled('hari')) {
-            $query->whereHas('jadwal', fn($q) => $q->where('hari', $request->hari));
-        }
-
-        $dokters = $query->paginate(12);
-        $polis = Poli::where('is_active', true)->orderBy('nama')->get();
         $haris = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        $allPolis = Poli::whereNotNull('teramedik_id')->where('is_active', true)->orderBy('nama')->get();
 
-        return view('pages.jadwal-dokter', compact('dokters', 'polis', 'haris'));
+        return view('pages.jadwal-dokter', compact('polis', 'allPolis', 'haris'));
     }
 
     public function show($id)

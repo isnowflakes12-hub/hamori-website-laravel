@@ -29,7 +29,7 @@
                         <label class="form-label fw-semibold">Poli / Spesialis</label>
                         <select name="poli" class="form-select">
                             <option value="">Semua Poli</option>
-                            @foreach($polis as $poli)
+                            @foreach($allPolis as $poli)
                             <option value="{{ $poli->id }}" {{ request('poli') == $poli->id ? 'selected' : '' }}>{{ $poli->nama }}</option>
                             @endforeach
                         </select>
@@ -52,7 +52,7 @@
             </form>
         </div>
 
-        @if($dokters->isEmpty())
+        @if($polis->isEmpty())
         <div class="empty-state text-center py-5">
             <i class="bi bi-person-x display-1 text-muted"></i>
             <h4 class="mt-3">Tidak ada dokter ditemukan</h4>
@@ -60,44 +60,52 @@
             <a href="{{ route('dokter.index') }}" class="btn btn-outline-primary">Reset Pencarian</a>
         </div>
         @else
-        <div class="row g-4">
-            @foreach($dokters as $dokter)
-            <div class="col-md-6 col-xl-4">
-                <div class="dokter-card">
-                    <div class="dokter-photo">
-                        @if($dokter->foto)
-                        <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}">
-                        @else
-                        <div class="dokter-photo-placeholder">
-                            <i class="bi bi-person-circle"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="dokter-info">
-                        <p class="dokter-spesialis">{{ $dokter->poli?->nama ?? $dokter->spesialisasi }}</p>
-                        <h5 class="dokter-nama">{{ $dokter->nama_lengkap }}</h5>
-                        @if($dokter->jadwal->count())
-                        <div class="dokter-jadwal">
-                            @foreach($dokter->jadwal as $jadwal)
-                            <div class="jadwal-item">
-                                <span class="jadwal-hari">{{ $jadwal->hari }}</span>
-                                <span class="jadwal-jam">{{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }}</span>
+        
+        @foreach($polis as $poli)
+            @if($poli->dokters->count() > 0)
+                <div class="mb-5">
+                    <h3 class="mb-4 pb-2 border-bottom text-primary"><i class="bi bi-hospital me-2"></i>{{ $poli->nama }}</h3>
+                    <div class="row g-4">
+                        @foreach($poli->dokters as $dokter)
+                        <div class="col-md-6 col-xl-4">
+                            <div class="dokter-card">
+                                <div class="dokter-photo">
+                                    @if($dokter->foto)
+                                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}">
+                                    @else
+                                    <div class="dokter-photo-placeholder">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    @endif
+                                </div>
+                                <div class="dokter-info">
+                                    <h5 class="dokter-nama">{{ $dokter->nama_lengkap }}</h5>
+                                    @if($dokter->jadwal->count())
+                                    <div class="dokter-jadwal mt-3">
+                                        @foreach($dokter->jadwal as $jadwal)
+                                        <div class="jadwal-item">
+                                            <span class="jadwal-hari">{{ $jadwal->hari }}</span>
+                                            <span class="jadwal-jam">{{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }}</span>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @else
+                                    <div class="alert alert-light mt-3 mb-0 text-center text-muted" style="font-size: 14px;">
+                                        Jadwal belum tersedia.
+                                    </div>
+                                    @endif
+                                    <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}" target="_blank" class="btn btn-primary btn-sm w-100 mt-3">
+                                        <i class="bi bi-calendar-check me-1"></i> Buat Janji / Booking
+                                    </a>
+                                </div>
                             </div>
-                            @endforeach
                         </div>
-                        @endif
-                        <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}" target="_blank" class="btn btn-primary btn-sm w-100 mt-3">
-                            <i class="bi bi-calendar-check me-1"></i> Chat via WhatsApp
-                        </a>
+                        @endforeach
                     </div>
                 </div>
-            </div>
-            @endforeach
-        </div>
+            @endif
+        @endforeach
 
-        <div class="mt-4">
-            {{ $dokters->withQueryString()->links() }}
-        </div>
         @endif
     </div>
 </section>
