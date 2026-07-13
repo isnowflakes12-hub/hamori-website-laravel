@@ -20,5 +20,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
+
+        \Illuminate\Http\UploadedFile::macro('storeCompressed', function ($path, $disk = 'public') {
+            return \App\Helpers\ImageHelper::compressAndStore($this, $path, $disk);
+        });
     }
 }

@@ -43,7 +43,7 @@ class FasilitasController extends Controller
         if ($request->hasFile('gambar')) {
             $galeri = [];
             foreach ($request->file('gambar') as $file) {
-                $path = $file->store('fasilitas', 'public');
+                $path = $file->storeCompressed('fasilitas', 'public');
                 $galeri[] = $path;
             }
             $data['gambar'] = $galeri[0] ?? null;
@@ -86,7 +86,7 @@ class FasilitasController extends Controller
         if ($request->hasFile('gambar')) {
             $galeri = [];
             foreach ($request->file('gambar') as $file) {
-                $path = $file->store('fasilitas', 'public');
+                $path = $file->storeCompressed('fasilitas', 'public');
                 $galeri[] = $path;
             }
             $data['gambar'] = $galeri[0] ?? null;

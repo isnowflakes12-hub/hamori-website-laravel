@@ -51,13 +51,13 @@ class ArtikelController extends Controller
         $data['kategori_id']  = $request->kategori_ids[0];
 
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail'] = $request->file('thumbnail')->store('artikels','public');
+            $data['thumbnail'] = $request->file('thumbnail')->storeCompressed('artikels','public');
         }
 
         $galeri = [];
         if ($request->hasFile('galeri')) {
             foreach ($request->file('galeri') as $file) {
-                $galeri[] = $file->store('artikels/galeri','public');
+                $galeri[] = $file->storeCompressed('artikels/galeri','public');
             }
         }
         $data['galeri'] = count($galeri) > 0 ? $galeri : null;
@@ -98,7 +98,7 @@ class ArtikelController extends Controller
         $data['kategori_id'] = $request->kategori_ids[0];
 
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail'] = $request->file('thumbnail')->store('artikels','public');
+            $data['thumbnail'] = $request->file('thumbnail')->storeCompressed('artikels','public');
         }
 
         $galeri_lama = is_array($artikel->galeri) ? $artikel->galeri : [];
@@ -108,7 +108,7 @@ class ArtikelController extends Controller
 
         if ($request->hasFile('galeri')) {
             foreach ($request->file('galeri') as $file) {
-                $galeri_lama[] = $file->store('artikels/galeri','public');
+                $galeri_lama[] = $file->storeCompressed('artikels/galeri','public');
             }
         }
         $data['galeri'] = count($galeri_lama) > 0 ? array_values($galeri_lama) : null;

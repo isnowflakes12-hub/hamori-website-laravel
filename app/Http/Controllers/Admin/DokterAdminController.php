@@ -14,7 +14,7 @@ class DokterAdminController extends Controller
         $request->validate(['nama'=>'required|string|max:255','spesialis'=>'required|string|max:255']);
         $data = $request->only('nama','spesialis','poli_id','tentang','pendidikan','no_str','no_sip');
         $data['is_active'] = $request->boolean('is_active', true);
-        if ($request->hasFile('foto')) $data['foto'] = $request->file('foto')->store('dokters','public');
+        if ($request->hasFile('foto')) $data['foto'] = $request->file('foto')->storeCompressed('dokters','public');
         Dokter::create($data);
         return redirect()->route('admin.dokter.index')->with('success', 'Dokter berhasil ditambahkan.');
     }
@@ -24,7 +24,7 @@ class DokterAdminController extends Controller
         $request->validate(['nama'=>'required|string|max:255','spesialis'=>'required|string|max:255']);
         $data = $request->only('nama','spesialis','poli_id','tentang','pendidikan','no_str','no_sip');
         $data['is_active'] = $request->boolean('is_active');
-        if ($request->hasFile('foto')) $data['foto'] = $request->file('foto')->store('dokters','public');
+        if ($request->hasFile('foto')) $data['foto'] = $request->file('foto')->storeCompressed('dokters','public');
         $dokter->update($data);
         return redirect()->route('admin.dokter.index')->with('success', 'Dokter berhasil diperbarui.');
     }

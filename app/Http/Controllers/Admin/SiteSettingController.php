@@ -60,7 +60,7 @@ class SiteSettingController extends Controller
         $imageKeys = ['logo', 'logo_white', 'favicon'];
         foreach ($imageKeys as $key) {
             if ($request->hasFile($key)) {
-                $path = $request->file($key)->store('settings', 'public');
+                $path = $request->file($key)->storeCompressed('settings', 'public');
                 SiteSetting::set($key, $path);
             }
         }

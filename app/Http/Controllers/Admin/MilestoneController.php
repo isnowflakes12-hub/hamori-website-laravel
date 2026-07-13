@@ -33,13 +33,13 @@ class MilestoneController extends Controller
         $data = $request->except(['gambar', 'galeri']);
 
         if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('milestone', 'public');
+            $data['gambar'] = $request->file('gambar')->storeCompressed('milestone', 'public');
         }
 
         $galeri = [];
         if ($request->hasFile('galeri')) {
             foreach ($request->file('galeri') as $file) {
-                $galeri[] = $file->store('milestone/galeri', 'public');
+                $galeri[] = $file->storeCompressed('milestone/galeri', 'public');
             }
         }
         $data['galeri'] = count($galeri) > 0 ? $galeri : null;
@@ -70,7 +70,7 @@ class MilestoneController extends Controller
             if ($milestone->gambar) {
                 Storage::disk('public')->delete($milestone->gambar);
             }
-            $data['gambar'] = $request->file('gambar')->store('milestone', 'public');
+            $data['gambar'] = $request->file('gambar')->storeCompressed('milestone', 'public');
         }
 
         // Handle galeri: remove flagged images, add new ones
@@ -85,7 +85,7 @@ class MilestoneController extends Controller
 
         if ($request->hasFile('galeri')) {
             foreach ($request->file('galeri') as $file) {
-                $galeri[] = $file->store('milestone/galeri', 'public');
+                $galeri[] = $file->storeCompressed('milestone/galeri', 'public');
             }
         }
 

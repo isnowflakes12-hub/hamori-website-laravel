@@ -81,7 +81,7 @@ class PromoController extends Controller
                 $data['gambar'] = 'promo/' . $filename;
             }
 
-            $this->svc->store(array_merge(
+            $this->svc->storeCompressed(array_merge(
                 $data,
                 [
                     'is_featured'          => $request->boolean('is_featured'),

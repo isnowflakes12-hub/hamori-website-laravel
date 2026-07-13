@@ -28,7 +28,7 @@ class ProfileController extends Controller
             $data['password'] = Hash::make($request->password);
         }
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar'] = $request->file('avatar')->storeCompressed('avatars', 'public');
         }
 
         $user->update($data);

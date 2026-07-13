@@ -30,9 +30,9 @@ class BannerController extends Controller
 
         $data = $request->only('judul', 'link', 'urutan');
         $data['is_active'] = $request->boolean('is_active', true);
-        $data['gambar']    = $request->file('gambar')->store('banners', 'public');
+        $data['gambar']    = $request->file('gambar')->storeCompressed('banners', 'public');
         if ($request->hasFile('gambar_mobile')) {
-            $data['gambar_mobile'] = $request->file('gambar_mobile')->store('banners', 'public');
+            $data['gambar_mobile'] = $request->file('gambar_mobile')->storeCompressed('banners', 'public');
         }
 
         Banner::create($data);
@@ -58,10 +58,10 @@ class BannerController extends Controller
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('banners', 'public');
+            $data['gambar'] = $request->file('gambar')->storeCompressed('banners', 'public');
         }
         if ($request->hasFile('gambar_mobile')) {
-            $data['gambar_mobile'] = $request->file('gambar_mobile')->store('banners', 'public');
+            $data['gambar_mobile'] = $request->file('gambar_mobile')->storeCompressed('banners', 'public');
         }
 
         $banner->update($data);

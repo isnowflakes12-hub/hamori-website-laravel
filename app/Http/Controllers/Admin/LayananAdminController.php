@@ -34,7 +34,7 @@ class LayananAdminController extends Controller
         $data['is_active'] = $request->boolean('is_active', true);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('layanan','public');
+            $data['logo'] = $request->file('logo')->storeCompressed('layanan','public');
         }
 
         LayananUnggulan::create($data);
@@ -59,7 +59,7 @@ class LayananAdminController extends Controller
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('layanan','public');
+            $data['logo'] = $request->file('logo')->storeCompressed('layanan','public');
         }
 
         $layanan->update($data);

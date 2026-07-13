@@ -46,14 +46,14 @@ class ProfilRsController extends Controller
             if ($profil->kars_logo) {
                 Storage::disk('public')->delete($profil->kars_logo);
             }
-            $data['kars_logo'] = $request->file('kars_logo')->store('profil', 'public');
+            $data['kars_logo'] = $request->file('kars_logo')->storeCompressed('profil', 'public');
         }
 
         if ($request->hasFile('gambar_utama')) {
             if ($profil->gambar_utama) {
                 Storage::disk('public')->delete($profil->gambar_utama);
             }
-            $data['gambar_utama'] = $request->file('gambar_utama')->store('profil', 'public');
+            $data['gambar_utama'] = $request->file('gambar_utama')->storeCompressed('profil', 'public');
         }
 
         $profil->update($data);
