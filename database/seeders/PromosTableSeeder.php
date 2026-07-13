@@ -25,15 +25,15 @@ class PromosTableSeeder extends Seeder
                 'judul' => 'Paket Fisioterapi',
                 'gambar' => 'promo/promo_1782435891.jpg',
                 'deskripsi' => 'Paket layanan fisioterapi RS Hamori membantu pemulihan fisik pasien dengan 3 pilihan: Silver, Gold, dan Platinum. Tiap paket tersedia untuk 4 atau 8 kali kunjungan dengan tarif promo khusus, sehingga pasien dapat memilih layanan sesuai kebutuhan terapi dan kondisi pemulihannya.',
-                'harga_normal' => NULL,
-                'harga_promo' => NULL,
-                'diskon' => NULL,
+
+
+
                 'benefit' => '[]',
-                'link_wa' => NULL,
-                'link_daftar' => NULL,
+
+
                 'berlaku_mulai' => '2026-07-01 00:00:00',
                 'berlaku_sampai' => '2026-07-31 00:00:00',
-                'is_active' => 1,
+
                 'is_featured' => 0,
                 'urutan' => 1,
                 'created_at' => '2026-06-26 00:50:27',
@@ -53,15 +53,15 @@ Berlaku untuk penjamin Pribadi.',
             'judul' => 'Skrining Benjolan (Cegah Tumor, Sebelum Terlambat!)',
                 'gambar' => 'promo/promo_1782435904.jpg',
             'deskripsi' => 'Program pemeriksaan dini (skrining) untuk mendeteksi keberadaan benjolan pada tubuh guna mencegah perkembangan tumor sebelum terlambat. Program ini ditangani langsung oleh Dokter Spesialis Bedah Umum dengan tarif khusus sebesar Rp 75.000.',
-                'harga_normal' => NULL,
-                'harga_promo' => NULL,
-                'diskon' => NULL,
+
+
+
                 'benefit' => '[]',
-                'link_wa' => NULL,
-                'link_daftar' => NULL,
+
+
                 'berlaku_mulai' => '2026-07-01 00:00:00',
                 'berlaku_sampai' => '2026-07-31 00:00:00',
-                'is_active' => 1,
+
                 'is_featured' => 0,
                 'urutan' => 2,
                 'created_at' => '2026-06-26 00:50:27',
@@ -79,15 +79,15 @@ Berlaku untuk penjamin Pribadi.',
                 'judul' => 'Promo Scaling Gigi',
                 'gambar' => 'promo/promo_1782436801.jpg',
             'deskripsi' => 'Gigi Bersih, Senyum Percaya Diri. Program layanan pembersihan karang gigi (scaling) dengan penawaran tarif khusus sebesar Rp 199.000 untuk menjaga kesehatan mulut dan kebersihan gigi pasien agar tampil lebih percaya diri.',
-                'harga_normal' => NULL,
-                'harga_promo' => NULL,
-                'diskon' => NULL,
+
+
+
                 'benefit' => '[]',
-                'link_wa' => NULL,
-                'link_daftar' => NULL,
+
+
                 'berlaku_mulai' => NULL,
                 'berlaku_sampai' => NULL,
-                'is_active' => 1,
+
                 'is_featured' => 0,
                 'urutan' => 0,
                 'created_at' => '2026-06-26 01:20:01',
@@ -106,15 +106,15 @@ Promo tidak dapat digabung dengan promo lain.',
                 'judul' => 'Paket Vaksinasi HPV',
                 'gambar' => 'promo/promo_1782436931.jpg',
             'deskripsi' => 'Program layanan pemberian vaksin HPV (Human Papillomavirus) di Rumah Sakit Hamori yang bertujuan untuk mencegah kanker serviks sejak dini. Program ini menyediakan dua pilihan paket proteksi yang disesuaikan dengan status pernikahan pasien.',
-                'harga_normal' => NULL,
-                'harga_promo' => NULL,
-                'diskon' => NULL,
+
+
+
                 'benefit' => '[]',
-                'link_wa' => NULL,
-                'link_daftar' => NULL,
+
+
                 'berlaku_mulai' => '2026-06-26 00:00:00',
                 'berlaku_sampai' => '2026-07-11 00:00:00',
-                'is_active' => 1,
+
                 'is_featured' => 1,
                 'urutan' => 0,
                 'created_at' => '2026-06-26 01:22:11',
@@ -133,15 +133,15 @@ Tindakan injeksi dilakukan sesuai jadwal berkala yang telah ditentukan (bulan ke
                     'judul' => 'Promo Khitan Anak Spesial Liburan',
                     'gambar' => 'promo/promo_1782437164.jpg',
                     'deskripsi' => 'Program paket khitan khusus anak-anak yang dihadirkan dalam rangka menyambut masa liburan sekolah. Program paket khitan anak khusus masa liburan sekolah di RS Hamori. Layanan dijamin aman dan nyaman karena ditangani langsung oleh Dokter Spesialis, serta dilengkapi hadiah menarik untuk anak.',
-                    'harga_normal' => NULL,
-                    'harga_promo' => NULL,
-                    'diskon' => NULL,
+
+
+
                     'benefit' => '[]',
-                    'link_wa' => NULL,
-                    'link_daftar' => NULL,
+
+
                     'berlaku_mulai' => '2026-06-25 00:00:00',
                     'berlaku_sampai' => '2026-07-10 00:00:00',
-                    'is_active' => 1,
+
                     'is_featured' => 1,
                     'urutan' => 0,
                     'created_at' => '2026-06-26 01:26:04',
@@ -165,15 +165,15 @@ Dilakukan oleh Dokter Spesialis Bedah / Spesialis Bedah Anak.',
                     'judul' => 'Paket Vaksin Internasional',
                     'gambar' => 'promo/promo_1782437427.jpg',
                 'deskripsi' => 'Program layanan paket vaksin internasional di RS Hamori untuk persiapan perjalanan ke luar negeri (seperti umroh atau traveling). Membantu menjaga kekebalan tubuh pasien sebelum berangkat dan sudah termasuk dokumen resmi E-ICV (Kartu Kuning).',
-                    'harga_normal' => NULL,
-                    'harga_promo' => NULL,
-                    'diskon' => NULL,
+
+
+
                     'benefit' => '[]',
-                    'link_wa' => NULL,
-                    'link_daftar' => NULL,
+
+
                     'berlaku_mulai' => '2026-06-26 00:00:00',
                     'berlaku_sampai' => '2026-07-11 00:00:00',
-                    'is_active' => 1,
+
                     'is_featured' => 1,
                     'urutan' => 0,
                     'created_at' => '2026-06-26 01:30:27',
@@ -192,15 +192,15 @@ Berlaku di Rumah Sakit Hamori.',
                     'judul' => 'Paket Persalinan Rumah Sakit Hamori',
                     'gambar' => 'promo/promo_1782437656.jpg',
                 'deskripsi' => 'Program paket persalinan di RS Hamori yang menawarkan pilihan metode Normal, SC, dan SC ERACS untuk berbagai kelas rawat inap. Paket sudah termasuk beragam keuntungan gratis (Free Benefit) menarik serta layanan perawatan pasca melahirkan di rumah (Homecare).',
-                    'harga_normal' => NULL,
-                    'harga_promo' => NULL,
-                    'diskon' => NULL,
+
+
+
                     'benefit' => '[]',
-                    'link_wa' => NULL,
-                    'link_daftar' => NULL,
+
+
                     'berlaku_mulai' => '2026-06-01 00:00:00',
                     'berlaku_sampai' => '2030-10-26 00:00:00',
-                    'is_active' => 1,
+
                     'is_featured' => 0,
                     'urutan' => 0,
                     'created_at' => '2026-06-26 01:34:16',
@@ -222,15 +222,15 @@ Berlaku di Rumah Sakit Hamori.',
                     'judul' => 'Paket Medical Check Up Pra Nikah',
                     'gambar' => 'promo/promo_1782438218.jpg',
                     'deskripsi' => 'Program pemeriksaan kesehatan menyeluruh di RS Hamori bagi calon pasangan pengantin. Layanan ini bertujuan untuk mendeteksi kondisi kesehatan secara dini demi mewujudkan pernikahan yang sehat, bahagia, dan harmonis.',
-                    'harga_normal' => NULL,
-                    'harga_promo' => NULL,
-                    'diskon' => NULL,
+
+
+
                     'benefit' => '[]',
-                    'link_wa' => NULL,
-                    'link_daftar' => NULL,
+
+
                     'berlaku_mulai' => '2026-06-01 00:00:00',
                     'berlaku_sampai' => '2026-06-30 00:00:00',
-                    'is_active' => 1,
+
                     'is_featured' => 0,
                     'urutan' => 0,
                     'created_at' => '2026-06-26 01:43:38',
