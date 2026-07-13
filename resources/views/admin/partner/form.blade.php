@@ -3,12 +3,12 @@
 @section('title', $partner->exists ? 'Edit Partner' : 'Tambah Partner')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="page-hd">
     <div>
-        <h4 class="mb-1">{{ $partner->exists ? 'Edit Partner/Mitra' : 'Tambah Partner/Mitra' }}</h4>
-        <p class="text-muted mb-0">Lengkapi formulir di bawah ini untuk mengelola data partner/mitra.</p>
+        <h1 class="page-hd-title">{{ $partner->exists ? 'Edit Partner/Mitra' : 'Tambah Partner/Mitra' }}</h1>
+        <p class="page-hd-sub">Lengkapi formulir di bawah ini untuk mengelola data partner/mitra.</p>
     </div>
-    <a href="{{ route('admin.partner.index') }}" class="btn btn-light border">
+    <a href="{{ route('admin.partner.index') }}" class="btn btn-sm btn-outline-secondary" style="background:#fff">
         <i class="bi bi-arrow-left me-1"></i> Kembali
     </a>
 </div>
