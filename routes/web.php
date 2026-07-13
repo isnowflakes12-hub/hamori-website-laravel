@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\LayananAdminController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\KategoriArtikelController;
 use App\Http\Controllers\Admin\DokterAdminController;
+use App\Http\Controllers\Admin\PartnerAdminController;
 use App\Http\Controllers\Admin\KarirController as AdminKarirController;
 use App\Http\Controllers\Admin\LamaranController;
 use App\Http\Controllers\Admin\SiteSettingController;
