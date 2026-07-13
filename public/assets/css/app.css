@@ -69,11 +69,11 @@
 html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
-    overflow-x: clip;
+    overflow-x: hidden; /* was: clip — clip breaks position:fixed (modal backdrop) */
 }
 
 body {
-    overflow-x: clip;
+    overflow-x: hidden; /* was: clip — clip breaks position:fixed (modal backdrop) */
     font-family: 'Metropolis', sans-serif;
     color: var(--ink);
     background: #fff;
