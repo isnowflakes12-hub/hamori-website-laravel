@@ -58,7 +58,10 @@
                         $ks->rating_kesesuaian_biaya,
                         $ks->rating_pelayanan_dokter,
                         $ks->rating_pelayanan_perawat,
-                        $ks->rating_pelayanan_penunjang,
+                        $ks->rating_laboratorium,
+                        $ks->rating_radiologi,
+                        $ks->rating_fisioterapi,
+                        $ks->rating_farmasi,
                     ]);
                     $avgRating = count($ratingVals) ? round(array_sum($ratingVals) / count($ratingVals), 1) : null;
                 @endphp

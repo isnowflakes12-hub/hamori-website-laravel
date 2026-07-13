@@ -95,7 +95,13 @@ class KritikSaranAdminController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['ID', 'Tanggal', 'Nama', 'Email', 'Telepon', 'Responden', 'Poliklinik', 'Kategori', 'Pesan', 'Kepuasan RS', 'Alur Pelayanan', 'Fasilitas', 'Kesesuaian Biaya', 'Pelayanan Dokter', 'Pelayanan Perawat', 'Pelayanan Penunjang', 'Status'];
+        $columns = [
+            'ID', 'Tanggal', 'Nama', 'Email', 'Telepon', 'Responden', 'Poliklinik', 'Kategori', 'Pesan',
+            'Kepuasan RS', 'Alur Pelayanan', 'Fasilitas', 'Kesesuaian Biaya',
+            'Pelayanan Dokter', 'Pelayanan Perawat',
+            'Laboratorium', 'Radiologi', 'Fisioterapi', 'Farmasi',
+            'Status'
+        ];
 
         $callback = function() use($data, $columns) {
             $file = fopen('php://output', 'w');
@@ -110,8 +116,17 @@ class KritikSaranAdminController extends Controller
                     ucfirst($row->responden ?? ''),
                     $row->nama_poliklinik,
                     ucfirst($row->kategori ?? ''),
-                    $row->rating,
                     $row->pesan,
+                    $row->rating_kepuasan_rs,
+                    $row->rating_alur_pelayanan,
+                    $row->rating_fasilitas,
+                    $row->rating_kesesuaian_biaya,
+                    $row->rating_pelayanan_dokter,
+                    $row->rating_pelayanan_perawat,
+                    $row->rating_laboratorium,
+                    $row->rating_radiologi,
+                    $row->rating_fisioterapi,
+                    $row->rating_farmasi,
                     strtoupper($row->status)
                 ]);
             }

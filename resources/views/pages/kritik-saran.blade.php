@@ -185,13 +185,16 @@
                             {{-- Multiple Star Ratings --}}
                             @php
                                 $ratingFields = [
-                                    'rating_kepuasan_rs'         => ['label' => 'Kepuasan Rumah Sakit',     'sub' => null],
-                                    'rating_alur_pelayanan'      => ['label' => 'Alur Pelayanan',            'sub' => null],
-                                    'rating_fasilitas'           => ['label' => 'Fasilitas',                 'sub' => null],
-                                    'rating_kesesuaian_biaya'    => ['label' => 'Kesesuaian Biaya',          'sub' => null],
-                                    'rating_pelayanan_dokter'    => ['label' => 'Pelayanan Dokter',          'sub' => null],
-                                    'rating_pelayanan_perawat'   => ['label' => 'Pelayanan Perawat',         'sub' => null],
-                                    'rating_pelayanan_penunjang' => ['label' => 'Pelayanan Penunjang',       'sub' => 'Laboratorium, Radiologi, Fisioterapi, Farmasi'],
+                                    'rating_kepuasan_rs'         => ['label' => 'Kepuasan Rumah Sakit',  'sub' => null],
+                                    'rating_alur_pelayanan'      => ['label' => 'Alur Pelayanan',         'sub' => null],
+                                    'rating_fasilitas'           => ['label' => 'Fasilitas',              'sub' => null],
+                                    'rating_kesesuaian_biaya'    => ['label' => 'Kesesuaian Biaya',       'sub' => null],
+                                    'rating_pelayanan_dokter'    => ['label' => 'Pelayanan Dokter',       'sub' => null],
+                                    'rating_pelayanan_perawat'   => ['label' => 'Pelayanan Perawat',      'sub' => null],
+                                    'rating_laboratorium'        => ['label' => 'Laboratorium',           'sub' => 'Pelayanan Penunjang'],
+                                    'rating_radiologi'           => ['label' => 'Radiologi',              'sub' => 'Pelayanan Penunjang'],
+                                    'rating_fisioterapi'         => ['label' => 'Fisioterapi',            'sub' => 'Pelayanan Penunjang'],
+                                    'rating_farmasi'             => ['label' => 'Farmasi',                'sub' => 'Pelayanan Penunjang'],
                                 ];
                             @endphp
 

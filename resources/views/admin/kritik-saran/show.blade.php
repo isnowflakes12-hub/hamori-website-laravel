@@ -33,13 +33,18 @@
 
             @php
                 $allRatings = [
-                    'Kepuasan Rumah Sakit'  => $kritik_saran->rating_kepuasan_rs,
-                    'Alur Pelayanan'        => $kritik_saran->rating_alur_pelayanan,
-                    'Fasilitas'             => $kritik_saran->rating_fasilitas,
-                    'Kesesuaian Biaya'      => $kritik_saran->rating_kesesuaian_biaya,
-                    'Pelayanan Dokter'      => $kritik_saran->rating_pelayanan_dokter,
-                    'Pelayanan Perawat'     => $kritik_saran->rating_pelayanan_perawat,
-                    'Pelayanan Penunjang'   => $kritik_saran->rating_pelayanan_penunjang,
+                    'Kepuasan Rumah Sakit' => $kritik_saran->rating_kepuasan_rs,
+                    'Alur Pelayanan'       => $kritik_saran->rating_alur_pelayanan,
+                    'Fasilitas'            => $kritik_saran->rating_fasilitas,
+                    'Kesesuaian Biaya'     => $kritik_saran->rating_kesesuaian_biaya,
+                    'Pelayanan Dokter'     => $kritik_saran->rating_pelayanan_dokter,
+                    'Pelayanan Perawat'    => $kritik_saran->rating_pelayanan_perawat,
+                ];
+                $penunjangRatings = [
+                    'Laboratorium' => $kritik_saran->rating_laboratorium,
+                    'Radiologi'    => $kritik_saran->rating_radiologi,
+                    'Fisioterapi'  => $kritik_saran->rating_fisioterapi,
+                    'Farmasi'      => $kritik_saran->rating_farmasi,
                 ];
             @endphp
             <div class="mb-4">
@@ -62,6 +67,32 @@
                         </div>
                     </div>
                     @endforeach
+                </div>
+
+                {{-- Pelayanan Penunjang --}}
+                <div class="mt-3 p-3 border rounded" style="background:#f8f9fa;">
+                    <p class="fw-bold mb-2" style="font-size:13px;color:#475569">
+                        <i class="bi bi-hospital me-1"></i> Pelayanan Penunjang
+                    </p>
+                    <div class="row g-2">
+                        @foreach($penunjangRatings as $label => $val)
+                        <div class="col-md-6">
+                            <div class="p-2 border rounded bg-white d-flex justify-content-between align-items-center">
+                                <span style="font-size:13px;font-weight:600">{{ $label }}</span>
+                                <span>
+                                    @if($val)
+                                        @for($s=1;$s<=5;$s++)
+                                            <i class="fas fa-star" style="color:{{ $s <= $val ? '#f59e0b' : '#e2e8f0' }};font-size:14px"></i>
+                                        @endfor
+                                        <small class="ms-1 text-muted">({{ $val }}/5)</small>
+                                    @else
+                                        <span class="text-muted" style="font-size:12px">-</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 

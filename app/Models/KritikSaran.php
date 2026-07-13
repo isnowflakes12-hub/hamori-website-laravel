@@ -3,8 +3,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class KritikSaran extends Model {
     protected $fillable = [
-        'nama', 'email', 'telepon', 'kategori', 'responden', 'nama_poliklinik', 'pesan', 'rating_kepuasan_rs', 'rating_alur_pelayanan', 'rating_fasilitas', 'rating_kesesuaian_biaya', 'rating_pelayanan_dokter', 'rating_pelayanan_perawat', 'rating_pelayanan_penunjang', 'is_read', 
-        'status', 'is_featured', 'approved_at'
+        'nama', 'email', 'telepon', 'kategori', 'responden', 'nama_poliklinik', 'pesan',
+        'rating_kepuasan_rs', 'rating_alur_pelayanan', 'rating_fasilitas',
+        'rating_kesesuaian_biaya', 'rating_pelayanan_dokter', 'rating_pelayanan_perawat',
+        'rating_laboratorium', 'rating_radiologi', 'rating_fisioterapi', 'rating_farmasi',
+        'is_read', 'status', 'is_featured', 'approved_at'
     ];
     protected $casts = [
         'is_read' => 'boolean',
