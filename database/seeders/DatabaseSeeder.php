@@ -9,11 +9,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Disable foreign key checks for clean seeding
-        DB::statement('PRAGMA foreign_keys = OFF');
+        $driver = DB::getDriverName();
+
+        // Disable foreign key checks sesuai driver
+        match ($driver) {
+            'sqlite' => DB::statement('PRAGMA foreign_keys = OFF'),
+            'mysql'  => DB::statement('SET FOREIGN_KEY_CHECKS=0'),
+            'pgsql'  => DB::statement('SET session_replication_role = replica'),
+            default  => null,
+        };
 
         $this->call([
-            // Core / Master Data (urutan penting: parent dulu)
+            // Core / Master Data
             UsersTableSeeder::class,
             SiteSettingsTableSeeder::class,
 
@@ -26,17 +33,16 @@ class DatabaseSeeder extends Seeder
             PartnersTableSeeder::class,
             TempatTidursTableSeeder::class,
 
-            // Dokter & Jadwal
+            // Dokter & Jadwal (PolisTableSeeder harus sebelum DoktersTableSeeder)
+            PolisTableSeeder::class,
             DoktersTableSeeder::class,
             JadwalDoktersTableSeeder::class,
-            PolisTableSeeder::class,
 
             // Artikel
             KategoriArtikelsTableSeeder::class,
             ArtikelsTableSeeder::class,
 
-            // Layanan & Promo
-            LayananUnggulansTableSeeder::class,
+            // Promo (tanpa LayananUnggulan)
             PromosTableSeeder::class,
 
             // Karir
@@ -52,6 +58,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Re-enable foreign key checks
-        DB::statement('PRAGMA foreign_keys = ON');
+        match ($driver) {
+            'sqlite' => DB::statement('PRAGMA foreign_keys = ON'),
+            'mysql'  => DB::statement('SET FOREIGN_KEY_CHECKS=1'),
+            'pgsql'  => DB::statement('SET session_replication_role = DEFAULT'),
+            default  => null,
+        };
     }
 }
