@@ -74,11 +74,17 @@
                     </div>
                 </td>
                 <td>
-                    @if($a->kategori)
-                    <span class="badge" style="background:{{ $a->kategori->warna ?? '#005bab' }}20;color:{{ $a->kategori->warna ?? '#005bab' }};font-size:11px;padding:4px 10px">
-                        {{ $a->kategori->nama }}
-                    </span>
-                    @else <span class="text-muted">—</span> @endif
+                    @if($a->kategoris && $a->kategoris->count() > 0)
+                        <div class="d-flex flex-wrap gap-1">
+                        @foreach($a->kategoris as $kat)
+                            <span class="badge" style="background:{{ $kat->warna ?? '#005bab' }}20;color:{{ $kat->warna ?? '#005bab' }};font-size:11px;padding:4px 10px">
+                                {{ $kat->nama }}
+                            </span>
+                        @endforeach
+                        </div>
+                    @else 
+                        <span class="text-muted">—</span> 
+                    @endif
                 </td>
                 <td style="font-size:13px;color:#64748b">{{ number_format($a->views) }}</td>
                 <td>

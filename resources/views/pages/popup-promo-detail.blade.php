@@ -1,8 +1,6 @@
-{{-- ====================== POPUP ====================== --}}
 <div class="promo-overlay" id="promoOverlay">
     <div class="promo-popup" id="promoPopup">
 
-        {{-- tombol close --}}
         <button class="promo-close" id="promoClose" aria-label="Tutup">
             <i class="bi bi-x-lg"></i>
         </button>

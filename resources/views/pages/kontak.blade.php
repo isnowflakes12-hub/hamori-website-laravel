@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Kontak Kami</h1>
@@ -16,7 +15,6 @@
     </div>
 </div>
 
-{{-- ── QUICK ACCESS STRIP ── --}}
 {{--<div class="kt-quick">
     <div class="kt-quick-glow kt-quick-glow--left"></div>
     <div class="kt-quick-glow kt-quick-glow--right"></div>
@@ -73,11 +71,9 @@
     </div>
 </div>--}}
 
-{{-- ── MAIN CONTENT ── --}}
 <section class="kt-section sec">
     <div class="container">
 
-        {{-- Success alert --}}
         @if(session('success'))
         <div class="kt-alert">
             <i class="fas fa-circle-check kt-alert-icon"></i>
@@ -93,10 +89,8 @@
 
         <div class="row g-5">
 
-            {{-- ── KOLOM KIRI: INFO + MAP ── --}}
             <div class="col-lg-5">
 
-                {{-- Info header --}}
                 <div class="kt-info-head">
                     <span class="eyebrow">Hubungi Kami</span>
                     <h2 class="sec-h2 mt-1">Informasi Kontak</h2>
@@ -105,7 +99,6 @@
                     </p>
                 </div>
 
-                {{-- Info cards --}}
                 <div class="kt-info-list">
 
                     <div class="kt-info-item">
@@ -177,7 +170,6 @@
 
                 </div>
 
-                {{-- Peta --}}
                 <div class="kt-map-wrap">
                     <div class="kt-map-header">
                         <i class="fas fa-map-location-dot"></i>
@@ -206,7 +198,6 @@
 
             </div>
 
-            {{-- ── KOLOM KANAN: FORM ── --}}
             <div class="col-lg-7">
                 <div class="kt-form-card">
 
@@ -328,7 +319,6 @@
                     </form>
                 </div>
 
-                {{-- Info tambahan --}}
                 <div class="kt-info-cards">
                     <div class="kt-info-card">
                         <div class="kt-info-card-ic"><i class="fas fa-clock"></i></div>

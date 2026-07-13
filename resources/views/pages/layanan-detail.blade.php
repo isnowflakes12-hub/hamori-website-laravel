@@ -4,7 +4,6 @@
 @section('content')
 
 
-{{-- ── HERO ── --}}
 <section class="ld-hero">
     <div class="ld-hero-bg-pattern"></div>
     <div class="ld-hero-glow"></div>
@@ -13,7 +12,6 @@
     
         <div class="ld-hero-inner">
 
-            {{-- Teks --}}
             <div class="ld-hero-text">
                 <span class="ld-hero-badge">
                     <i class="fas fa-star-of-life"></i>
@@ -30,7 +28,6 @@
                 <h1 class="ld-hero-title">{{ $layanan->nama }}</h1>
             </div>
 
-            {{-- Media --}}
             <div class="ld-hero-media">
                 <div class="ld-hero-media-ring ld-hero-media-ring--outer"></div>
                 <div class="ld-hero-media-ring ld-hero-media-ring--inner"></div>
@@ -51,15 +48,12 @@
     </div>
 </section>
 
-{{-- ── MAIN CONTENT ── --}}
 <section class="ld-body sec">
     <div class="container">
         <div class="row g-5">
 
-            {{-- ── KOLOM UTAMA ── --}}
             <div class="col-lg-8">
 
-                {{-- Tentang Layanan --}}
                 <div class="ld-card">
                     <div class="ld-card-header">
                         <span class="ld-card-icon"><i class="fas fa-info-circle"></i></span>
@@ -70,7 +64,6 @@
                     </div>
                 </div>
 
-                {{-- Keunggulan --}}
                 {{-- <div class="ld-card mt-4">
                     <div class="ld-card-header">
                         <span class="ld-card-icon ld-card-icon--accent"><i class="fas fa-medal"></i></span>
@@ -108,7 +101,6 @@
                     </div>
                 </div>--}}
 
-                {{-- Prosedur / Alur Layanan --}}
                 <div class="ld-card mt-4">
                     <div class="ld-card-header">
                         <span class="ld-card-icon ld-card-icon--green"><i class="fas fa-route"></i></span>
@@ -148,11 +140,9 @@
 
             </div>
 
-            {{-- ── SIDEBAR ── --}}
             <div class="col-lg-4">
                 <div class="ld-sidebar">
 
-                    {{-- Buat Janji --}}
                     <div class="ld-card ld-sidebar-cta">
                         <div class="ld-sidebar-cta-badge">
                             <i class="fas fa-headset"></i> Siap Membantu 24 Jam
@@ -175,7 +165,6 @@
                         </a>
                     </div>
 
-                    {{-- Jam Operasional --}}
                     {{--<div class="ld-card mt-4">
                         <div class="ld-card-header">
                             <span class="ld-card-icon ld-card-icon--amber"><i class="fas fa-clock"></i></span>
@@ -197,7 +186,6 @@
                         </ul>
                     </div>--}}
 
-                    {{-- BPJS / Asuransi --}}
                     <div class="ld-card ld-card-insurance mt-4">
                         <i class="fas fa-check-circle ld-insurance-icon"></i>
                         <div>
@@ -213,7 +201,6 @@
     </div>
 </section>
 
-{{-- ── LAYANAN TERKAIT ── --}}
 @if(isset($related) && $related->count())
 <section class="ld-related sec bg-light">
     <div class="container">

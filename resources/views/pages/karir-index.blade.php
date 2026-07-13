@@ -23,7 +23,6 @@
     ];
 @endphp
 
-{{-- HERO --}}
 <div class="karir-hero">
     <div class="container" style="position:relative;z-index:2">
         <nav aria-label="breadcrumb" class="mb-3">
@@ -55,7 +54,6 @@
     </div>
 </div>
 
-{{-- TABS --}}
 <div class="karir-tabs-wrap">
     <div class="container px-0">
         <div class="karir-tabs">
@@ -74,7 +72,6 @@
     </div>
 </div>
 
-{{-- FILTER --}}
 <div class="karir-filter-bar">
     <div class="container">
         <form method="GET" action="{{ route('karir.index') }}" class="karir-filter-form">
@@ -103,11 +100,9 @@
     </div>
 </div>
 
-{{-- CONTENT --}}
 <section class="py-5">
     <div class="container">
 
-        {{-- Kategori banner --}}
         @if($aktifKategori !== 'Semua')
         @php $km = $tabMeta[$aktifKategori] ?? $tabMeta['Semua']; @endphp
         <div class="karir-kat-banner" style="background:{{ $km['bg'] }}">
@@ -191,7 +186,6 @@
     </div>
 </section>
 
-{{-- WHY JOIN --}}
 <section class="why-join py-5">
     <div class="container">
         <div class="text-center mb-5">
@@ -219,7 +213,6 @@
     </div>
 </section>
 
-{{-- OPEN APPLICATION --}}
 <section class="py-5">
     <div class="container">
         <div class="open-app-card">

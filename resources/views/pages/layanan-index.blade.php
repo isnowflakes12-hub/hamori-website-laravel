@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Layanan Unggulan</h1>
@@ -16,7 +15,6 @@
     </div>
 </div>
 
-{{-- ── INTRO HERO STRIP ── --}}
 <div class="li-intro">
     <div class="li-intro-glow li-intro-glow--left"></div>
     <div class="li-intro-glow li-intro-glow--right"></div>
@@ -50,7 +48,6 @@
     </div>
 </div>
 
-{{-- ── LAYANAN GRID ── --}}
 <section class="li-section sec">
     <div class="container">
 
@@ -67,7 +64,6 @@
             <div class="col-md-6 col-lg-4">
                 <a href="{{ route('layanan.show', $layanan->slug) }}" class="li-card">
 
-                    {{-- Logo / Icon area ── ukuran konsisten --}}
                     <div class="li-card-media">
                         @if($layanan->logo)
                             <img src="{{ asset('storage/' . $layanan->logo) }}"
@@ -80,13 +76,11 @@
                         @endif
                     </div>
 
-                    {{-- Body --}}
                     <div class="li-card-body">
                         <h5 class="li-card-title">{{ $layanan->nama }}</h5>
                         <p class="li-card-desc">{{ Str::words($layanan->deskripsi, 18, '...') }}</p>
                     </div>
 
-                    {{-- Footer --}}
                     <div class="li-card-footer">
                         <span class="li-read-more">
                             Selengkapnya
@@ -96,7 +90,6 @@
                         </span>
                     </div>
 
-                    {{-- Hover accent bar --}}
                     <div class="li-card-bar"></div>
 
                 </a>
@@ -108,7 +101,6 @@
     </div>
 </section>
 
-{{-- ── CTA BANNER ── --}}
 <section class="li-cta-wrap">
     <div class="container">
         <div class="li-cta-inner">

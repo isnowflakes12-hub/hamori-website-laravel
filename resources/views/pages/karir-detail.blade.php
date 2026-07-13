@@ -19,7 +19,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 
 @section('content')
 
-{{-- HERO --}}
 <div class="karir-detail-hero">
     <div class="container" style="position:relative;z-index:2">
         <nav aria-label="breadcrumb" class="mb-4">
@@ -78,15 +77,12 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
     </div>
 </div>
 
-{{-- BODY --}}
 <div class="karir-detail-body">
     <div class="container">
         <div class="row g-4">
 
-            {{-- LEFT: Detail content --}}
             <div class="col-lg-8">
 
-                {{-- Success message --}}
                 @if(session('success'))
                 <div class="alert-success-custom">
                     <i class="bi bi-check-circle-fill"></i>
@@ -99,13 +95,11 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                 </div>
                 @endif
 
-                {{-- Deskripsi --}}
                 <div class="detail-card">
                     <h5><i class="bi bi-file-text"></i> Deskripsi Pekerjaan</h5>
                     <p>{!! nl2br(e($karir->deskripsi)) !!}</p>
                 </div>
 
-                {{-- Persyaratan --}}
                 <div class="detail-card">
                     <h5><i class="bi bi-list-check"></i> Persyaratan</h5>
                     @php
@@ -118,7 +112,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     </ul>
                 </div>
 
-                {{-- Benefit --}}
                 <div class="detail-card">
                     <h5><i class="bi bi-gift"></i> Keuntungan Bergabung</h5>
                     <div class="row g-3 mt-1">
@@ -142,7 +135,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     </div>
                 </div>
 
-                {{-- APPLICATION FORM --}}
                 @if(!$isExpired)
                 <div class="form-lamar" id="form-lamar">
                     <div class="form-lamar-header">
@@ -155,7 +147,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                             @csrf
 
                             <div class="row g-4">
-                                {{-- Nama --}}
                                 <div class="col-md-6">
                                     <label class="form-label-custom">
                                         <i class="bi bi-person" style="color:#0055a5"></i>
@@ -168,7 +159,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     @error('nama')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
 
-                                {{-- Email --}}
                                 <div class="col-md-6">
                                     <label class="form-label-custom">
                                         <i class="bi bi-envelope" style="color:#0055a5"></i>
@@ -181,7 +171,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     @error('email')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
 
-                                {{-- No HP --}}
                                 <div class="col-md-6">
                                     <label class="form-label-custom">
                                         <i class="bi bi-telephone" style="color:#0055a5"></i>
@@ -194,7 +183,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     @error('telepon')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
 
-                                {{-- Posisi (readonly) --}}
                                 <div class="col-md-6">
                                     <label class="form-label-custom">
                                         <i class="bi bi-briefcase" style="color:#0055a5"></i>
@@ -205,7 +193,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                            style="background:#f3f4f6;color:#6b7280">
                                 </div>
 
-                                {{-- Upload CV --}}
                                 <div class="col-12">
                                     <label class="form-label-custom">
                                         <i class="bi bi-file-earmark-pdf" style="color:#0055a5"></i>
@@ -228,7 +215,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     @error('cv')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
 
-                                {{-- Cover Letter --}}
                                 <div class="col-12">
                                     <label class="form-label-custom">
                                         <i class="bi bi-chat-text" style="color:#0055a5"></i>
@@ -240,7 +226,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                               placeholder="Ceritakan motivasi Anda melamar posisi ini, pengalaman relevan, dan mengapa Anda cocok untuk tim kami...">{{ old('cover_letter') }}</textarea>
                                 </div>
 
-                                {{-- Agreement --}}
                                 <div class="col-12">
                                     <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#374151">
                                         <input type="checkbox" required
@@ -253,7 +238,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     </label>
                                 </div>
 
-                                {{-- Submit --}}
                                 <div class="col-12">
                                     <button type="submit" class="btn-submit-lamar">
                                         <i class="bi bi-send-fill"></i>
@@ -280,10 +264,8 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 
             </div>
 
-            {{-- RIGHT: Sidebar --}}
             <div class="col-lg-4">
 
-                {{-- Info Singkat --}}
                 <div class="apply-sidebar mb-4">
                     <div class="apply-sidebar-header">
                         <h5><i class="bi bi-info-circle me-2" style="color:#0055a5"></i>Info Lowongan</h5>
@@ -340,7 +322,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     @endif
                 </div>
 
-                {{-- Bagikan --}}
                 <div class="apply-sidebar mb-4">
                     <div class="apply-sidebar-header">
                         <h5><i class="bi bi-share me-2" style="color:#0055a5"></i>Bagikan Lowongan</h5>
@@ -368,7 +349,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     </div>
                 </div>
 
-                {{-- Related jobs --}}
                 @if($related->count())
                 <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden">
                     <div style="padding:18px 20px;border-bottom:1px solid #f0f0f0">

@@ -2,6 +2,22 @@
 @section('title', $artikel ? 'Edit Artikel' : 'Tulis Artikel')
 @section('page-title', $artikel ? 'Edit Artikel' : 'Tulis Artikel Baru')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<style>
+.choices__inner { border-radius: 10px; border: 1.5px solid #e5eaf0; background-color: #fff; padding-bottom: 0px; }
+.choices[data-type*="select-multiple"] .choices__button, .choices[data-type*="text"] .choices__button {
+    border-left: 1px solid rgba(255,255,255,.5);
+    margin-left: 5px;
+}
+.choices__list--multiple .choices__item {
+    background-color: #0055a5;
+    border: 1px solid #003d7a;
+    border-radius: 6px;
+}
+</style>
+@endpush
+
 @section('content')
 <div class="page-hd">
     <div>
@@ -49,32 +65,28 @@
         </div>
 
         <div class="col-lg-4">
-            {{-- Publish --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
-                    <i class="bi bi-send me-2 text-primary"></i>Publikasi
+                    <i class="bi bi-tags me-2 text-primary"></i>Kategori & Publikasi
                 </h6>
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" name="is_published"
-                           id="isPublished" value="1"
-                           {{ old('is_published', $artikel->is_published ?? false) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="isPublished">
-                        <strong>Publikasikan sekarang</strong>
-                        <div class="text-muted" style="font-size:12px">Jika tidak dicentang, tersimpan sebagai draft</div>
-                    </label>
+                <div class="alert alert-info py-2" style="font-size:12px;">
+                    <i class="bi bi-info-circle me-1"></i> Artikel akan langsung dipublikasikan.
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Kategori <span class="text-danger">*</span></label>
-                    <select name="kategori_id" class="form-select" required>
-                        <option value="">Pilih Kategori</option>
+                    <div class="form-text mb-2">Tahan tombol Ctrl (Windows) atau Command (Mac) untuk memilih lebih dari satu kategori.</div>
+                    @php
+                        $selectedKategoris = old('kategori_ids', $artikel ? $artikel->kategoris->pluck('id')->toArray() : []);
+                    @endphp
+                    <select name="kategori_ids[]" id="kategoriSelect" class="form-select" multiple required>
                         @foreach($kategoris as $k)
                         <option value="{{ $k->id }}"
-                            {{ old('kategori_id', $artikel->kategori_id ?? '') == $k->id ? 'selected' : '' }}>
+                            {{ in_array($k->id, (array)$selectedKategoris) ? 'selected' : '' }}>
                             {{ $k->nama }}
                         </option>
                         @endforeach
                     </select>
-                    <div class="form-text">
+                    <div class="form-text mt-2">
                         <a href="{{ route('admin.kategori-artikel.create') }}" target="_blank">
                             <i class="bi bi-plus-circle me-1"></i>Tambah kategori baru
                         </a>
@@ -86,7 +98,6 @@
                 </button>
             </div>
 
-            {{-- Thumbnail --}}
             <div class="form-card">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
                     <i class="bi bi-image me-2 text-primary"></i>Gambar Featured
@@ -105,14 +116,51 @@
                        accept="image/*" onchange="previewThumb(this)">
                 <div class="form-text mt-1">JPG, PNG, WebP. Maks 3MB. Ideal 800×500px</div>
             </div>
+
+            <div class="form-card mt-4">
+                <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
+                    <i class="bi bi-images me-2 text-primary"></i>Galeri (Opsional)
+                </h6>
+                <div class="form-text mb-2">Upload beberapa gambar untuk dijadikan slider.</div>
+                
+                @if($artikel && is_array($artikel->galeri) && count($artikel->galeri) > 0)
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach($artikel->galeri as $i => $img)
+                    <div class="position-relative" style="width:80px;height:80px">
+                        <img src="{{ asset('storage/'.$img) }}" class="w-100 h-100 rounded object-fit-cover">
+                        <label class="position-absolute top-0 end-0 bg-danger text-white rounded-circle p-1 m-1 cursor-pointer" style="line-height:1;cursor:pointer" title="Hapus gambar ini">
+                            <input type="checkbox" name="delete_galeri[]" value="{{ $img }}" class="d-none">
+                            <i class="bi bi-trash" style="font-size:10px"></i>
+                        </label>
+                    </div>
+                    @endforeach
+                </div>
+                <div class="form-text text-danger mb-3" style="font-size:11px"><i class="bi bi-info-circle"></i> Klik ikon tempat sampah untuk menghapus gambar dari galeri.</div>
+                @endif
+
+                <input type="file" name="galeri[]" class="form-control" multiple accept="image/*">
+                <div class="form-text mt-1">Pilih beberapa file sekaligus.</div>
+            </div>
         </div>
     </div>
 </form>
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    new Choices('#kategoriSelect', {
+        removeItemButton: true,
+        placeholderValue: 'Pilih Kategori...',
+        searchPlaceholderValue: 'Cari kategori...',
+        noResultsText: 'Kategori tidak ditemukan',
+        noChoicesText: 'Tidak ada kategori lagi untuk dipilih',
+        itemSelectText: 'Tekan untuk memilih',
+    });
+});
+
 function previewThumb(input) {
     const el = document.getElementById('thumbPreview');
     const wrap = document.getElementById('thumbPreviewWrap');

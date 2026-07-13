@@ -109,7 +109,6 @@ textarea.form-control{min-height:140px;resize:vertical}
             <i class="bi bi-award-fill"></i> Layanan Unggulan
         </a>
         @endif
-        {{-- Menu berikut hanya untuk Super Admin --}}
         @if(auth()->user()->isSuperAdmin())
         <a href="{{ route('admin.kontak.index') }}" class="nav-item {{ request()->routeIs('admin.kontak.*') ? 'active' : '' }}">
             <i class="bi bi-chat-text-fill"></i> Pesan Masuk

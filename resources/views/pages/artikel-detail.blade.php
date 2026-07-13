@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Hamori Update</h1>
@@ -17,21 +16,20 @@
     </div>
 </div>
 
-{{-- ── ARTICLE BODY ── --}}
 <section class="as-section sec">
     <div class="container">
         <div class="row g-5 justify-content-center">
 
-            {{-- ── MAIN ARTICLE ── --}}
             <div class="col-lg-8">
                 <article class="as-article">
 
-                    {{-- Category + Meta --}}
                     <div class="as-meta">
-                        @if($artikel->kategori)
-                        <a href="{{ route('artikel.kategori', $artikel->kategori->slug) }}" class="as-badge">
-                            {{ $artikel->kategori->nama }}
-                        </a>
+                        @if($artikel->kategoris && $artikel->kategoris->count() > 0)
+                            @foreach($artikel->kategoris as $kat)
+                                <a href="{{ route('artikel.kategori', $kat->slug) }}" class="as-badge me-1 mb-2 d-inline-block">
+                                    {{ $kat->nama }}
+                                </a>
+                            @endforeach
                         @endif
                         <span class="as-meta-item">
                             <i class="fas fa-calendar-alt"></i>
@@ -53,16 +51,41 @@
                         @endif
                     </div>
 
-                    {{-- Title --}}
                     <h1 class="as-title">{{ $artikel->judul }}</h1>
 
-                    {{-- Ringkasan --}}
                     @if($artikel->ringkasan)
                     <p class="as-lead">{{ $artikel->ringkasan }}</p>
                     @endif
 
-                    {{-- Thumbnail --}}
-                    @if($artikel->thumbnail)
+                    @if(is_array($artikel->galeri) && count($artikel->galeri) > 0)
+                    <div class="as-thumb-wrap" style="padding-bottom: 30px;">
+                        <div class="swiper artikelGaleriSwiper" style="border-radius: 12px; overflow: hidden;">
+                            <div class="swiper-wrapper">
+                                @if($artikel->thumbnail)
+                                <div class="swiper-slide">
+                                    <a href="{{ asset('storage/' . $artikel->thumbnail) }}" class="glightbox as-thumb-link" data-gallery="artikel-galeri">
+                                        <img src="{{ asset('storage/' . $artikel->thumbnail) }}" alt="{{ $artikel->judul }}" class="as-thumb" loading="eager" style="width:100%;height:400px;object-fit:cover;">
+                                        <span class="as-thumb-overlay"><i class="fas fa-expand-alt"></i></span>
+                                    </a>
+                                </div>
+                                @endif
+                                @foreach($artikel->galeri as $img)
+                                <div class="swiper-slide">
+                                    <a href="{{ asset('storage/' . $img) }}" class="glightbox as-thumb-link" data-gallery="artikel-galeri">
+                                        <img src="{{ asset('storage/' . $img) }}" alt="Galeri" class="as-thumb" loading="lazy" style="width:100%;height:400px;object-fit:cover;">
+                                        <span class="as-thumb-overlay"><i class="fas fa-expand-alt"></i></span>
+                                    </a>
+                                </div>
+                                @endforeach
+                            </div>
+                            <!-- Add Pagination -->
+                            <div class="swiper-pagination"></div>
+                            <!-- Add Navigation -->
+                            <div class="swiper-button-next" style="color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                            <div class="swiper-button-prev" style="color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                        </div>
+                    </div>
+                    @elseif($artikel->thumbnail)
                     <div class="as-thumb-wrap">
                         <a href="{{ asset('storage/' . $artikel->thumbnail) }}"
                            class="glightbox as-thumb-link">
@@ -77,12 +100,10 @@
                     </div>
                     @endif
 
-                    {{-- Content --}}
                     <div class="as-content article-content">
                         {!! $artikel->konten !!}
                     </div>
 
-                    {{-- Tags --}}
                     @if(isset($artikel->tags) && $artikel->tags->count())
                     <div class="as-tags">
                         <span class="as-tags-label"><i class="fas fa-tag"></i> Tag:</span>
@@ -92,7 +113,6 @@
                     </div>
                     @endif
 
-                    {{-- Share --}}
                     <div class="as-share">
                         <span class="as-share-label">Bagikan artikel ini:</span>
                         <div class="as-share-btns">
@@ -115,7 +135,6 @@
                         </div>
                     </div>
 
-                    {{-- Author Card --}}
                     @if($artikel->author ?? false)
                     <div class="as-author-card">
                         <div class="as-author-avatar">
@@ -133,17 +152,16 @@
 
                 </article>
 
-                {{-- ── RELATED ARTICLES ── --}}
-                @if(isset($related) && $related->count())
+                @if(isset($artikelTerkait) && $artikelTerkait->count())
                 <div class="as-related mt-5">
                     <div class="as-related-head">
                         <span class="eyebrow">Baca Juga</span>
                         <h4 class="as-related-title">Artikel Terkait</h4>
                     </div>
                     <div class="row g-4">
-                        @foreach($related->take(3) as $rel)
+                        @foreach($artikelTerkait->take(3) as $rel)
                         <div class="col-md-4">
-                            <a href="{{ route('artikel.show', [$rel->kategori?->slug ?? 'artikel', $rel->slug]) }}"
+                            <a href="{{ route('artikel.show', [$rel->kategoris->first()?->slug ?? 'artikel', $rel->slug]) }}"
                                class="as-rel-card">
                                 <div class="as-rel-thumb">
                                     @if($rel->thumbnail)
@@ -154,8 +172,12 @@
                                             <i class="fas fa-newspaper"></i>
                                         </div>
                                     @endif
-                                    @if($rel->kategori)
-                                    <span class="as-rel-badge">{{ $rel->kategori->nama }}</span>
+                                    @if($rel->kategoris && $rel->kategoris->count() > 0)
+                                        <div style="position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; flex-wrap: wrap; gap: 5px;">
+                                            @foreach($rel->kategoris as $kat)
+                                                <span class="as-rel-badge" style="position: relative; top: 0; left: 0;">{{ $kat->nama }}</span>
+                                            @endforeach
+                                        </div>
                                     @endif
                                 </div>
                                 <div class="as-rel-body">
@@ -178,11 +200,9 @@
 
             </div>
 
-            {{-- ── SIDEBAR ── --}}
             <div class="col-lg-4">
                 <div class="as-sidebar">
 
-                    {{-- CTA Konsultasi --}}
                     <div class="as-widget as-widget-cta">
                         <div class="as-cta-glow"></div>
                         <div class="as-cta-icon"><i class="fas fa-stethoscope"></i></div>
@@ -196,19 +216,18 @@
                         </a>
                     </div>
 
-                    {{-- Artikel Terbaru --}}
                     <div class="as-widget mt-4">
                         <div class="as-widget-header">
                             <span class="as-widget-icon"><i class="fas fa-newspaper"></i></span>
-                            <h5 class="as-widget-title">Artikel Terbaru</h5>
+                            <h5 class="as-widget-title">Artikel Terkait</h5>
                         </div>
-                        @if(isset($terbaru) && $terbaru->count())
+                        @if(isset($artikelTerkait) && $artikelTerkait->count())
                         <ul class="as-recent-list">
-                            @foreach($terbaru->take(5) as $i => $rec)
+                            @foreach($artikelTerkait->take(4) as $i => $rec)
                             <li class="as-recent-item">
                                 <span class="as-recent-num">{{ str_pad($i+1, 2, '0', STR_PAD_LEFT) }}</span>
                                 <div class="as-recent-body">
-                                    <a href="{{ route('artikel.show', [$rec->kategori?->slug ?? 'artikel', $rec->slug]) }}"
+                                    <a href="{{ route('artikel.show', [$rec->kategoris->first()?->slug ?? 'artikel', $rec->slug]) }}"
                                        class="as-recent-title">{{ $rec->judul }}</a>
                                     <span class="as-recent-date">
                                         <i class="fas fa-calendar-alt"></i>
@@ -219,14 +238,13 @@
                             @endforeach
                         </ul>
                         @else
-                        <p class="text-muted" style="font-size:13px">Belum ada artikel lain.</p>
+                        <p class="text-muted" style="font-size:13px">Belum ada artikel terkait.</p>
                         @endif
                         <a href="{{ route('artikel.index') }}" class="as-widget-link">
                             Lihat Semua Artikel <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
 
-                    {{-- Kategori --}}
                     @if(isset($kategoris) && $kategoris->count())
                     <div class="as-widget mt-4">
                         <div class="as-widget-header">
@@ -267,6 +285,31 @@ function copyUrl(btn) {
     });
 }
 </script>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if(document.querySelector('.artikelGaleriSwiper')) {
+        new Swiper('.artikelGaleriSwiper', {
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            }
+        });
+    }
+});
+</script>
+@endpush
 
 
 

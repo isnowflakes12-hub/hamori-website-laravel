@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Buat Appointment</h1>
@@ -16,13 +15,10 @@
     </div>
 </div>
 
-{{-- ═══ PILIHAN APPOINTMENT (VERTIKAL) ═══ --}}
 <section class="appt-section">
     <div class="appt-container">
 
-        {{-- OPSI 1: Aplikasi Mobile --}}
         <div class="appt-app-section">
-            {{-- Header: Judul + Deskripsi + Tombol Unduh (atas, full width) --}}
             <div class="appt-app-top">
                 <div class="appt-app-top-text">
                     <div class="appt-card-badge">Paling Praktis</div>
@@ -41,7 +37,6 @@
                 </div>
             </div>
 
-            {{-- Slider Gambar Tutorial (bawah, full width) --}}
             <div class="swiper apptFeatSwiper">
                 <div class="swiper-wrapper">
                     @for($i = 1; $i <= 8; $i++)
@@ -59,7 +54,6 @@
         </div>
 
 
-        {{-- OPSI 2: WhatsApp (Full Width) --}}
         <div class="appt-card-fw appt-card-fw--wa mt-4">
             <div class="appt-fw-media appt-fw-media--wa">
                 <div class="appt-chat-wrap">
@@ -94,7 +88,6 @@
             </div>
         </div>
 
-        {{-- OPSI 3: Call Center (Full Width) --}}
         <div class="appt-card-fw appt-card-fw--call mt-4">
             <div class="appt-fw-content d-flex align-items-center justify-content-between flex-wrap gap-4">
                 <div>
@@ -107,9 +100,7 @@
             </div>
         </div>
 
-        {{-- INFORMASI PENTING (Jadwal & BPJS) --}}
         <div class="row g-4 mt-5">
-            {{-- Akses Cepat Jadwal Dokter --}}
             <div class="col-md-6">
                 <div class="appt-info-box">
                     <div class="appt-info-icon bg-primary-light text-primary"><i class="bi bi-calendar2-week"></i></div>
@@ -120,7 +111,6 @@
                     </div>
                 </div>
             </div>
-            {{-- Panduan BPJS --}}
             <div class="col-md-6">
                 <div class="appt-info-box">
                     <div class="appt-info-icon bg-success-light text-success"><i class="bi bi-shield-check"></i></div>
@@ -133,7 +123,6 @@
             </div>
         </div>
 
-        {{-- FAQ PENDAFTARAN --}}
         <div class="appt-faq-sec mt-5 pt-4">
             <div class="text-center mb-4">
                 <h3 class="fw-bold" style="color:var(--ink);">Pertanyaan Umum (FAQ) Pendaftaran</h3>
@@ -182,7 +171,6 @@
     </div>
 </section>
 
-{{-- MODAL INFO BPJS --}}
 <div class="modal fade" id="bpjsModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0">

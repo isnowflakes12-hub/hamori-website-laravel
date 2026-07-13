@@ -3,12 +3,10 @@
 
 @section('content')
 
-{{-- ── INTRO STRIP ── --}}
 <div class="pm-intro">
     <div class="pm-intro-glow pm-intro-glow--left"></div>
     <div class="pm-intro-glow pm-intro-glow--right"></div>
 
-    {{-- Watermark Logo Blend --}}
     @php
         $favicon = \App\Models\SiteSetting::get('favicon');
     @endphp
@@ -28,30 +26,12 @@
                 <p class="sec-sub mt-2">
                     RS Hamori menyediakan berbagai layanan dan fasilitas medis dengan standar pelayanan prima. Fasilitas kami dilengkapi dengan teknologi terkini dan ditangani oleh tenaga medis profesional.
                 </p>
-            </div>
-            <div class="pm-intro-badges">
-                <div class="pm-intro-badge">
-                    <i class="fas fa-hospital-user"></i>
-                    <span>Pelayanan Medis Terpadu</span>
-                </div>
-                <div class="pm-intro-badge">
-                    <i class="fas fa-stethoscope"></i>
-                    <span>Dokter Ahli</span>
-                </div>
-                <div class="pm-intro-badge">
-                    <i class="fas fa-vial"></i>
-                    <span>Penunjang Medis Modern</span>
-                </div>
-                <div class="pm-intro-badge">
-                    <i class="fas fa-bed"></i>
-                    <span>Rawat Inap Nyaman</span>
-                </div>
+                <br>
             </div>
         </div>
     </div>
 </div>
 
-{{-- ── SEARCH BAR ── --}}
 <div class="pm-search-section">
     <div class="container">
         <form method="GET" action="{{ route('fasilitas.index') }}" class="pm-search-wrap">
@@ -74,7 +54,6 @@
     </div>
 </div>
 
-{{-- ── FASILITAS GRID ── --}}
 <section class="pm-section sec">
     <div class="container">
 
@@ -117,7 +96,6 @@
             @endforeach
         </div>
 
-        {{-- Pagination --}}
         @if($fasilitas->hasPages())
         <div class="mt-5 d-flex justify-content-center">
             {{ $fasilitas->links('pagination::bootstrap-5') }}
@@ -147,6 +125,14 @@
 
 @push('styles')
 <style>
+/* ── PROMO SECTION PADDING ── */
+.pm-intro {
+    padding: 30px 0 !important;
+}
+.pm-section {
+    padding-top: 20px !important;
+}
+
 /* ── SEARCH BAR STYLES ── */
 .pm-search-section {
     background: var(--bg);

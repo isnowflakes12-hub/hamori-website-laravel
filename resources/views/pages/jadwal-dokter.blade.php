@@ -18,7 +18,6 @@
 
 <section class="py-5">
     <div class="container">
-        {{-- Filter --}}
         <div class="filter-card mb-4">
             <form method="GET" action="{{ route('dokter.index') }}">
                 <div class="row g-3 align-items-end">
@@ -53,7 +52,6 @@
             </form>
         </div>
 
-        {{-- Results --}}
         @if($dokters->isEmpty())
         <div class="empty-state text-center py-5">
             <i class="bi bi-person-x display-1 text-muted"></i>

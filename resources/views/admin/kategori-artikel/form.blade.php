@@ -56,7 +56,6 @@
             </div>
         </div>
 
-        {{-- Preview --}}
         <div class="mb-4 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
             <div class="form-text mb-2">Preview label kategori:</div>
             <span id="katPreview" style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:100px;color:#fff;background:{{ $kategori->warna ?? '#005bab' }}">

@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Milestone extends Model
 {
     protected $guarded = [];
+
+    protected $casts = [
+        'galeri' => 'array',
+    ];
 }

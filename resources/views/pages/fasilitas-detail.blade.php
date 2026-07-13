@@ -3,12 +3,10 @@
 
 @section('content')
 
-{{-- ── INTRO STRIP ── --}}
 <div class="pm-intro pb-4">
     <div class="pm-intro-glow pm-intro-glow--left"></div>
     <div class="pm-intro-glow pm-intro-glow--right"></div>
 
-    {{-- Watermark Logo Blend --}}
     @php
         $favicon = \App\Models\SiteSetting::get('favicon');
     @endphp
@@ -46,13 +44,11 @@
     </div>
 </div>
 
-{{-- ── MAIN CONTENT ── --}}
 <section class="fd-section sec bg-light py-5">
     <div class="container">
         <div class="row g-5">
             <div class="col-lg-10 mx-auto">
                 
-                {{-- GAMBAR UTAMA / SLIDER --}}
                 @if(!empty($fasilitas->galeri) && count($fasilitas->galeri) > 1)
                     <div id="fasilitasCarousel" class="carousel slide fd-main-slider shadow-sm mb-5 rounded-4 overflow-hidden" data-bs-ride="carousel" style="border: 1px solid var(--border);">
                         <div class="carousel-indicators">
@@ -82,10 +78,8 @@
                     </div>
                 @endif
 
-                {{-- KONTEN --}}
                 <div class="fd-content bg-white p-4 p-md-5 rounded-4 shadow-sm position-relative" style="border: 1px solid var(--border); margin-top: -80px; z-index: 2;">
                     
-                    {{-- Deskripsi Singkat Diletakkan Di Atas --}}
                     @if($fasilitas->deskripsi)
                     <div class="mb-5 pb-4" style="border-bottom: 1px dashed var(--border);">
                         <div class="d-flex align-items-start gap-3">

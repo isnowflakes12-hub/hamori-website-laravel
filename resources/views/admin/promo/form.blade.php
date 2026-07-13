@@ -12,7 +12,6 @@
     </a>
 </div>
 
-{{-- Featured info --}}
 @if($featured->count() > 0)
 <div class="alert mb-4" style="background:#fffbeb;border-radius:12px;border:1px solid #fbbf24;font-size:13px">
     <strong>⭐ Promo unggulan saat ini ({{ $featured->count() }}/3):</strong>
@@ -31,16 +30,13 @@
 
     <div class="row g-4">
 
-        {{-- ── LEFT: Konten Utama ── --}}
         <div class="col-lg-8">
 
-            {{-- Informasi Promo --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-4" style="font-size:14px;color:#374151;border-bottom:1px solid #e2e8f0;padding-bottom:12px">
                     <i class="bi bi-info-circle me-2 text-primary"></i>Informasi Promo
                 </h6>
 
-                {{-- Judul --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Judul Promo <span class="text-danger">*</span></label>
                     <input type="text" name="judul" class="form-control @error('judul') is-invalid @enderror"
@@ -50,7 +46,6 @@
                     @error('judul') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
-                {{-- Deskripsi Singkat --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Deskripsi Singkat
                         <span class="text-muted fw-normal float-end" id="descCount" style="font-size:12px"></span>
@@ -63,7 +58,6 @@
                     @error('deskripsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
-                {{-- Detail --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Detail Promo
                         <span class="text-muted fw-normal float-end" id="detailCount" style="font-size:12px"></span>
@@ -77,7 +71,6 @@
                 </div>
             </div>
 
-            {{-- Benefit & Cara Mendapatkan --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-4" style="font-size:14px;color:#374151;border-bottom:1px solid #e2e8f0;padding-bottom:12px">
                     <i class="bi bi-list-check me-2 text-success"></i>Benefit & Cara Mendapatkan
@@ -103,7 +96,6 @@
                 </div>
             </div>
 
-            {{-- Syarat & Ketentuan --}}
             <div class="form-card mb-0">
                 <h6 class="fw-bold mb-4" style="font-size:14px;color:#374151;border-bottom:1px solid #e2e8f0;padding-bottom:12px">
                     <i class="bi bi-shield-check me-2 text-warning"></i>Syarat & Ketentuan
@@ -115,10 +107,8 @@
 
         </div>
 
-        {{-- ── RIGHT: Sidebar ── --}}
         <div class="col-lg-4">
 
-            {{-- Gambar Promo --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
                     <i class="bi bi-image me-2 text-primary"></i>Gambar Promo
@@ -133,7 +123,6 @@
                 <div class="form-text mt-1">JPG, PNG, WebP. Maks 4MB. Ideal 800×500px.</div>
             </div>
 
-            {{-- Jadwal Promo --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
                     <i class="bi bi-calendar-event me-2 text-primary"></i>Jadwal Promo
@@ -150,13 +139,11 @@
                 </div>
             </div>
 
-            {{-- Pengaturan --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
                     <i class="bi bi-gear me-2 text-primary"></i>Pengaturan
                 </h6>
 
-                {{-- Unggulan --}}
                 <div class="p-3 rounded-3 mb-3 {{ !$canFeatured && !($promo->is_featured??false) ? 'bg-light' : 'bg-warning bg-opacity-10' }}"
                      style="border:1.5px solid {{ !$canFeatured && !($promo->is_featured??false) ? '#e2e8f0' : '#f59e0b' }};border-radius:12px!important">
                     <div class="form-check mb-0">
@@ -171,7 +158,6 @@
                     </div>
                 </div>
 
-                {{-- Beranda & Popup --}}
                 <div class="p-3 rounded-3 mb-3 bg-primary bg-opacity-10"
                      style="border:1.5px solid #0055a5;border-radius:12px!important">
                     <div class="form-check mb-0">
@@ -185,7 +171,6 @@
                     </div>
                 </div>
 
-                {{-- BPJS --}}
                 <div class="p-3 rounded-3 bg-success bg-opacity-10"
                      style="border:1.5px solid #16a34a;border-radius:12px!important">
                     <div class="form-check mb-0">
@@ -200,7 +185,6 @@
                 </div>
             </div>
 
-            {{-- Submit Button --}}
             <button type="submit" class="btn btn-primary w-100 py-3" style="font-size:15px;font-weight:600;border-radius:12px">
                 <i class="bi bi-save me-2"></i>
                 {{ $promo ? 'Simpan Perubahan' : 'Tambah Promo' }}

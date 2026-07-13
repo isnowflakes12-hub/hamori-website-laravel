@@ -12,10 +12,8 @@ $heroSlides = $banners->count() ? $banners : collect([
 @endphp
 
 
-{{-- â•â•â• HERO + PROMO SEJAJAR â•â•â• --}}
 <div class="hero-promo-wrap">
 
-    {{-- Carousel kiri --}}
     <div id="hero">
         @foreach($heroSlides as $i => $slide)
         <div class="hs{{ $i===0?' on':'' }}">
@@ -45,7 +43,6 @@ $heroSlides = $banners->count() ? $banners : collect([
         <div class="hc-bar"><div id="hcFill"></div></div>
     </div>
 
-    {{-- Promo panel kanan â€” ambil urutan ke-1 dari DB --}}
     <div class="hero-promo-panel">
     @php
         try {
@@ -108,7 +105,6 @@ $heroSlides = $banners->count() ? $banners : collect([
     </div>
 </div>
 
-{{-- â•â•â• QUICK ACTION BAR â•â•â• --}}
 <div class="qbar">
     <div class="qbar-inner">
         <a href="{{ route('dokter.index') }}" class="qa"><div class="qa-ic"><i class="bi bi-person-badge-fill"></i></div><span>Cari Dokter</span></a>
@@ -121,7 +117,6 @@ $heroSlides = $banners->count() ? $banners : collect([
     </div>
 </div>
 
-{{-- â•â•â• LAYANAN UNGGULAN â•â•â• --}}
 <section class="sec" style="background:#fff">
     <div class="sec-cont">
         <div class="sec-head">
@@ -198,7 +193,6 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-{{-- â•â•â• STATS â•â•â• --}}
 <div class="stats-sec">
     <div class="stats-grid">
         <div class="st"><span class="st-n">32<sup>+</sup></span><span class="st-l">Dokter Spesialis</span></div>
@@ -209,7 +203,6 @@ $heroSlides = $banners->count() ? $banners : collect([
 </div>
 
 
-{{-- â•â•â• PROMO AKTIF â•â•â• --}}
 @if(isset($promoAktif) && $promoAktif->count())
 <section class="sec" style="background:#f8fafc">
     <div class="sec-cont">
@@ -221,8 +214,8 @@ $heroSlides = $banners->count() ? $banners : collect([
             </div>
             <a href="{{ route('promo.index') }}" class="btn-ol">Lihat Semua <i class="bi bi-arrow-right ms-1"></i></a>
         </div>
-        <div class="row g-4">
-            @foreach($promoAktif->take(3) as $p)
+        <div class="row g-4 mobile-slider">
+            @foreach($promoAktif->take(5) as $p)
             <div class="col-md-6 col-lg-4 pm-item-col" data-promo-item>
                 <div class="pm-card-clean">
                     <div class="pm-card-clean-img">
@@ -262,7 +255,6 @@ $heroSlides = $banners->count() ? $banners : collect([
 </section>
 @endif
 
-{{-- â•â•â• ARTIKEL â•â•â• --}}
 <section class="sec" style="background:#f8fafc">
     <div class="sec-cont"> 
         <div class="sec-head">
@@ -316,69 +308,56 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-{{-- â•â•â• KRITIK & SARAN TERPILIH â•â•â• --}}
 @if(isset($kritikSaranFeatured) && $kritikSaranFeatured->count())
-<section class="sec ks-section">
+<section class="sec ks-section" style="background:#f8fafc; padding: 80px 0;">
     <div class="sec-cont">
         <div class="sec-head">
             <div>
                 <span class="eyebrow" style="color:#1ba99e;background:rgba(27,169,158,0.1)">Suara Pasien</span>
                 <h2 class="sec-h2">Kritik & Saran Membangun</h2>
-                <p class="sec-sub">Kritik dan saran dari Anda adalah pendorong utama kami untuk terus meningkatkan kualitas pelayanan RS Hamori.</p>
+                <p class="sec-sub">Ulasan dan masukan dari Anda membantu kami untuk terus meningkatkan kualitas pelayanan RS Hamori.</p>
             </div>
-            <a href="{{ route('kritik-saran') }}" class="btn-ol" style="border-color:#1ba99e;color:#1ba99e">Tulis Masukan <i class="bi bi-pencil-square ms-1"></i></a>
+            <a href="{{ route('kritik-saran') }}" class="btn-ol">Tulis Masukan <i class="bi bi-pencil-square ms-1"></i></a>
         </div>
 
-        {{-- CAROUSEL / SLIDER WRAPPER --}}
-        <div class="ks-carousel-wrap">
-            {{-- Prev button (desktop only) --}}
-            <button class="ks-nav ks-nav--prev" id="ksPrev" aria-label="Sebelumnya">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-
-            {{-- Track --}}
-            <div class="ks-track-outer" id="ksOuter">
-                <div class="ks-track" id="ksTrack">
-                    @foreach($kritikSaranFeatured as $ks)
-                    <div class="ks-slide">
-                        <div class="ks-card">
-                            {{-- Header: avatar + rating --}}
-                            <div class="ks-card-head">
-                                <div class="ks-avatar">{{ strtoupper(substr($ks->nama, 0, 1)) }}</div>
-                                <div class="ks-meta">
-                                    <div class="ks-name">{{ $ks->nama }}</div>
-                                    <div class="ks-date">{{ $ks->created_at->format('d M Y') }}</div>
-                                </div>
-                                @if($ks->rating)
-                                <div class="ks-stars">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        @if($i <= $ks->rating)
-                                            <i class="fas fa-star" style="color:#f59e0b;font-size:13px"></i>
-                                        @else
-                                            <i class="far fa-star" style="color:#e2e8f0;font-size:13px"></i>
-                                        @endif
-                                    @endfor
-                                </div>
-                                @endif
+        <div class="swiper ksSwiper" style="padding-bottom: 50px; margin-top: 40px;">
+            <div class="swiper-wrapper">
+                @foreach($kritikSaranFeatured as $ks)
+                <div class="swiper-slide" style="height: auto;">
+                    <div class="ks-pro-card" style="background:#fff; border-radius:16px; padding:30px; box-shadow:0 10px 30px rgba(0,0,0,0.04); height:100%; display:flex; flex-direction:column; position:relative; border-top: 4px solid var(--primary); transition: transform 0.3s, box-shadow 0.3s;">
+                        <i class="fas fa-quote-right" style="position:absolute; top:30px; right:30px; font-size:40px; color:rgba(27,169,157,0.06);"></i>
+                        
+                        <div style="display:flex; align-items:center; margin-bottom:20px;">
+                            <div style="width:50px; height:50px; border-radius:50%; background:var(--primary-light); color:var(--primary-dark); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px; margin-right:15px;">
+                                {{ strtoupper(substr($ks->nama, 0, 1)) }}
                             </div>
-                            {{-- Kategori --}}
-                            <div class="ks-kategori">{{ $ks->kategori }}</div>
-                            {{-- Pesan --}}
-                            <p class="ks-pesan">&ldquo;{{ Str::limit($ks->pesan, 160) }}&rdquo;</p>
+                            <div>
+                                <h5 style="margin:0; font-size:16px; font-weight:700; color:var(--ink);">{{ $ks->nama }}</h5>
+                                <span style="font-size:13px; color:var(--muted);">{{ $ks->created_at->format('d M Y') }} &bull; {{ $ks->kategori }}</span>
+                            </div>
                         </div>
+                        
+                        <p style="font-size:15px; line-height:1.7; color:var(--ink-2); flex-grow:1; font-style:italic; margin-bottom:0;">
+                            "{{ Str::limit($ks->pesan, 200) }}"
+                        </p>
+                        
+                        @if($ks->rating)
+                        <div style="margin-top:20px; color:#f59e0b; font-size:14px;">
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= $ks->rating)
+                                    <i class="fas fa-star"></i>
+                                @else
+                                    <i class="far fa-star" style="color:#e2e8f0;"></i>
+                                @endif
+                            @endfor
+                        </div>
+                        @endif
                     </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
-
-            {{-- Next button (desktop only) --}}
-            <button class="ks-nav ks-nav--next" id="ksNext" aria-label="Berikutnya">
-                <i class="bi bi-chevron-right"></i>
-            </button>
+            <div class="swiper-pagination"></div>
         </div>
-
-        {{-- Dots --}}
-        <div class="ks-dots" id="ksDots"></div>
 
     </div>
 </section>
@@ -387,7 +366,6 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-{{-- â•â•â• APP DOWNLOAD â•â•â• --}}
 <div class="app-sec">
     <div class="app-card">
         <div class="app-inner">
@@ -407,7 +385,6 @@ $heroSlides = $banners->count() ? $banners : collect([
 </div>
 
 
-    {{-- Floating Promo Button --}}
     <button class="promo-float-btn" id="promoFloatBtn" title="Lihat Promo Spesial">
         <div class="promo-float-pulse"></div>
         <div class="promo-float-inner">
@@ -470,7 +447,6 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-{{-- AUTO SHOW POPUP --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -494,113 +470,33 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-{{-- KRITIK SARAN CAROUSEL --}}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-(function() {
-    const track   = document.getElementById('ksTrack');
-    const outer   = document.getElementById('ksOuter');
-    const btnPrev = document.getElementById('ksPrev');
-    const btnNext = document.getElementById('ksNext');
-    const dotsEl  = document.getElementById('ksDots');
-    if (!track || !outer) return;
-
-    const slides = track.querySelectorAll('.ks-slide');
-    const total  = slides.length;
-    if (total === 0) return;
-
-    let VISIBLE  = getVisible();
-    let cur      = 0;
-    let autoTimer;
-    let touchStartX = 0;
-
-    // â”€â”€ Build dots â”€â”€
-    function buildDots() {
-        dotsEl.innerHTML = '';
-        const pages = Math.ceil(total / VISIBLE);
-        for (let i = 0; i < pages; i++) {
-            const d = document.createElement('button');
-            d.className = 'ks-dot' + (i === 0 ? ' ks-dot--active' : '');
-            d.addEventListener('click', () => { goTo(i * VISIBLE); resetAuto(); });
-            dotsEl.appendChild(d);
-        }
-    }
-
-    function updateDots() {
-        dotsEl.querySelectorAll('.ks-dot').forEach((d, i) => {
-            d.classList.toggle('ks-dot--active', i === Math.round(cur / VISIBLE));
+document.addEventListener("DOMContentLoaded", function () {
+    if(document.querySelector('.ksSwiper')) {
+        new Swiper('.ksSwiper', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 24,
+                },
+                992: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                }
+            }
         });
     }
-
-    function getVisible() {
-        return window.innerWidth >= 992 ? 3 : (window.innerWidth >= 640 ? 2 : 1);
-    }
-
-    function setSlideWidth() {
-        VISIBLE = getVisible();
-        const gap = 24;
-        const w   = (outer.offsetWidth - gap * (VISIBLE - 1)) / VISIBLE;
-        slides.forEach(s => { s.style.minWidth = w + 'px'; s.style.maxWidth = w + 'px'; });
-        track.style.gap = gap + 'px';
-        goTo(cur, false);
-        buildDots();
-    }
-
-    function goTo(index, animate = true) {
-        const maxIndex = Math.max(0, total - VISIBLE);
-        cur = Math.min(Math.max(index, 0), maxIndex);
-        updateDots();
-
-        if (window.innerWidth < 768) {
-            const slideW = slides[0].offsetWidth + 16;
-            outer.scrollTo({ left: cur * slideW, behavior: animate ? 'smooth' : 'auto' });
-            return;
-        }
-
-        const slideW = slides[0].offsetWidth + 24; // width + gap
-        track.style.transition = animate ? 'transform 0.45s cubic-bezier(.4,0,.2,1)' : 'none';
-        track.style.transform  = `translateX(-${cur * slideW}px)`;
-        
-        // disable buttons at edges
-        if (btnPrev) btnPrev.disabled = cur === 0;
-        if (btnNext) btnNext.disabled = cur >= maxIndex;
-    }
-
-    function next() { goTo(cur + VISIBLE <= total - VISIBLE ? cur + VISIBLE : 0); }
-    function prev() { goTo(cur - VISIBLE >= 0 ? cur - VISIBLE : Math.max(0, total - VISIBLE)); }
-
-    function resetAuto() {
-        clearInterval(autoTimer);
-        autoTimer = setInterval(next, 5000);
-    }
-
-    if (btnPrev) btnPrev.addEventListener('click', () => { prev(); resetAuto(); });
-    if (btnNext) btnNext.addEventListener('click', () => { next(); resetAuto(); });
-
-    // Desktop Touch / Swipe
-    outer.addEventListener('touchstart', e => { 
-        if (window.innerWidth >= 768) touchStartX = e.touches[0].clientX; 
-    }, { passive: true });
-    outer.addEventListener('touchend', e => {
-        if (window.innerWidth >= 768) {
-            const dx = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); resetAuto(); }
-        }
-    });
-
-    // Mobile native scroll sync
-    outer.addEventListener('scroll', () => {
-        if (window.innerWidth < 768) {
-            const slideW = slides[0].offsetWidth + 16;
-            cur = Math.round(outer.scrollLeft / slideW);
-            updateDots();
-        }
-    }, { passive: true });
-
-    // Init
-    setSlideWidth();
-    resetAuto();
-
-    window.addEventListener('resize', () => { setSlideWidth(); });
-})();
+});
 </script>
 @endpush

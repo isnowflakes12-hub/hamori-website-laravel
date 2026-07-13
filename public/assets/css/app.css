@@ -81,6 +81,13 @@ body {
     line-height: 1.65;
 }
 
+/* Simulasi zoom 90% untuk layar Desktop agar proporsional */
+@media (min-width: 992px) {
+    body {
+        zoom: 0.9;
+    }
+}
+
 img {
     max-width: 100%;
     display: block;
@@ -1528,7 +1535,7 @@ button {
 /* Gambar promo card â€” tinggi konsisten */
 .promo-card-img {
     position: relative;
-    height: 200px;
+    height: 170px;
     width: 100%;
     overflow: hidden;
     background: var(--bg-2);
@@ -1561,10 +1568,10 @@ button {
 }
 
 .promo-card-body {
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     flex: 1;
 }
 
@@ -2418,7 +2425,7 @@ button {
 /* Thumb artikel inner pages â€” tinggi konsisten */
 .artikel-thumb {
     width: 100%;
-    height: 200px;
+    height: 170px;
     overflow: hidden;
     flex-shrink: 0;
 }
@@ -2436,7 +2443,7 @@ button {
 }
 
 .artikel-body {
-    padding: 20px;
+    padding: 16px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -2510,6 +2517,7 @@ button {
 .pagination .page-item.active .page-link {
     background: var(--primary);
     border-color: var(--primary);
+    color: #fff;
 }
 
 .pagination .page-link:hover {
@@ -6856,7 +6864,7 @@ button {
 /* Thumbnail â€” ukuran konsisten */
 .au-thumb {
     width: 100%;
-    height: 200px;
+    height: 170px;
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
@@ -6864,7 +6872,7 @@ button {
 }
 
 .au-card--featured .au-thumb {
-    height: 320px;
+    height: 260px;
 }
 
 .au-thumb img {
@@ -6926,7 +6934,7 @@ button {
 
 /* Body */
 .au-body {
-    padding: 22px 24px;
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -14419,4 +14427,39 @@ button {
     max-width: none;
     display: block;
     background: #f8fafc;
+}
+/* Native Mobile Slider Utility */
+@media (max-width: 767px) {
+    .mobile-slider {
+        display: flex;
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 16px;
+        scroll-padding-right: 16px;
+        padding-bottom: 24px;
+        -webkit-overflow-scrolling: touch;
+        margin-left: -12px;
+        margin-right: -12px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .mobile-slider > * {
+        flex: 0 0 85%;
+        max-width: 85%;
+        scroll-snap-align: start;
+    }
+    .mobile-slider::-webkit-scrollbar {
+        display: none;
+    }
+    .mobile-slider {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+@media (min-width: 768px) {
+    .mobile-slider .pm-item-col:nth-child(n+4) {
+        display: none !important;
+    }
 }

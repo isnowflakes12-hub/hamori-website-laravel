@@ -46,7 +46,6 @@
 </head>
 <body>
 
-    {{-- Top Bar --}}
     {{-- <div class="topbar d-none d-lg-block">
         <div class="container-fluid px-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -71,7 +70,6 @@
         </div>
     </div> --}}
 
-    {{-- Main Navbar --}}
     <nav class="navbar navbar-expand-lg main-navbar" id="mainNavbar">
         <div class="container-fluid px-0">
             <div class="navbar-inner-wrap w-100 px-4">
@@ -106,14 +104,12 @@
                         Fasilitas
                         </a>
                         <ul class="dropdown-menu mega-menu">
-                            {{-- Header bar: Semua Fasilitas di pojok kanan, dipisah dari kategori --}}
                             <li class="mega-menu-header">
                                 <span style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);">Layanan & Fasilitas</span>
                                 <a href="{{ route('fasilitas.index') }}" class="mega-menu-all-link">
                                     Semua Fasilitas <i class="bi bi-arrow-right"></i>
                                 </a>
                             </li>
-                            {{-- Wrapper baris: semua kolom kategori sejajar --}}
                             <li class="mega-menu-cols-row">
                                 <div class="mega-menu-col">
                                     <a href="{{ route('fasilitas.kategori', 'pelayanan-medis') }}" class="text-decoration-none"><h6 class="mega-menu-title hover-primary">Pelayanan Medis</h6></a>
@@ -174,12 +170,10 @@
         </div>
     </nav>
 
-    {{-- Page Content --}}
     <main>
         @yield('content')
     </main>
 
-    {{-- Footer --}}
     <footer class="footer">
         <div class="footer-top">
             <div class="container">
@@ -251,7 +245,6 @@
         </div>
 
 
-    {{-- WhatsApp Float Button --}}
     <a href="https://wa.me/6281111121705" target="_blank" class="whatsapp-float" title="Chat via WhatsApp">
         <i class="bi bi-whatsapp"></i>
     </a>

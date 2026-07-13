@@ -24,7 +24,6 @@
     </button>
 </div>
 
-{{-- Statistik --}}
 <div class="row g-3 mb-4">
 
     <div class="col-lg-3 col-md-6">
@@ -89,7 +88,6 @@
 
 </div>
 
-{{-- Alert --}}
 @if(session('success'))
 <div class="alert alert-success border-0 shadow-sm">
     <i class="bi bi-check-circle-fill me-2"></i>
@@ -104,7 +102,6 @@
 </div>
 @endif
 
-{{-- Filter --}}
 <div class="form-card mb-4">
     <form method="GET"
           action="{{ route('admin.ulasan.index') }}">
@@ -177,7 +174,6 @@
     </form>
 </div>
 
-{{-- Bulk Action --}}
 <form method="POST"
       action="{{ route('admin.ulasan.bulk') }}"
       id="bulkForm">
@@ -211,7 +207,6 @@
 
     </div>
 
-    {{-- Table --}}
     <div class="admin-table">
 
         <table class="table align-middle">
@@ -416,7 +411,6 @@
 <div class="mt-4">
     {{ $ulasans->links() }}
 </div>
-{{-- Modal Tambah / Edit Ulasan --}}
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content border-0">
@@ -447,10 +441,8 @@
 
                     <div class="row g-4">
 
-                        {{-- LEFT --}}
                         <div class="col-lg-8">
 
-                            {{-- Informasi Pengirim --}}
                             <div class="form-card mb-4">
 
                                 <h6 class="fw-bold mb-4"
@@ -537,7 +529,6 @@
 
                             </div>
 
-                            {{-- Isi Ulasan --}}
                             <div class="form-card mb-4">
 
                                 <h6 class="fw-bold mb-4"
@@ -621,7 +612,6 @@
 
                             </div>
 
-                            {{-- Catatan Admin --}}
                             <div class="form-card">
 
                                 <h6 class="fw-bold mb-4"
@@ -646,10 +636,8 @@
 
                         </div>
 
-                        {{-- RIGHT SIDEBAR --}}
                         <div class="col-lg-4">
 
-                            {{-- Preview --}}
                             <div class="form-card mb-4">
 
                                 <h6 class="fw-bold mb-3"
@@ -679,7 +667,6 @@
 
                             </div>
 
-                            {{-- Pengaturan --}}
                             <div class="form-card mb-4">
 
                                 <h6 class="fw-bold mb-3"

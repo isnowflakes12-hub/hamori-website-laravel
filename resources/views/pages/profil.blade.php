@@ -9,7 +9,6 @@
 </style>
 @endpush
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Profil RS Hamori</h1>
@@ -22,12 +21,10 @@
     </div>
 </div>
 
-{{-- ── TENTANG KAMI ── --}}
 <section class="pr-section sec">
     <div class="container">
         <div class="row g-5 align-items-center">
 
-            {{-- Teks --}}
             <div class="col-lg-6">
                 <span class="eyebrow">Tentang Kami</span>
                 <div class="d-flex align-items-center gap-3 mt-1 mb-4">
@@ -40,7 +37,6 @@
                     {!! nl2br(e($profil->deskripsi)) !!}
                 </p>
 
-                {{-- Stats --}}
                 <div class="pr-stats">
                     <div class="pr-stat">
                         <span class="pr-stat-n">{{ $profil->total_dokter }}</span>
@@ -60,7 +56,6 @@
                     </div>
                 </div>
 
-                {{-- Trust badges --}}
                 <div class="pr-trust">
                     <span class="pr-trust-item">
                         <i class="fas fa-check-circle"></i> Terakreditasi Paripurna KARS
@@ -72,10 +67,8 @@
                 </div>
             </div>
 
-            {{-- Galeri / Foto --}}
             <div class="col-lg-6">
                 <div class="pr-gallery">
-                    {{-- Foto utama --}}
                     @php $imgUtama = $profil->gambar_utama ? asset('storage/'.$profil->gambar_utama) : asset('assets/images/hamoripf.jpeg'); @endphp
                     <a href="{{ $imgUtama }}"
                        class="glightbox pr-img-main"
@@ -89,14 +82,12 @@
                         </span>
                     </a>
 
-                    {{-- Foto tambahan (hidden, untuk galeri) --}}
                     <a href="{{ asset('assets/images/hamoripf2.jpeg') }}"
                        class="glightbox d-none"
                        data-gallery="rs-gallery"
                        data-title="Rumah Sakit Hamori – Subang | &copy; {{ date('Y') }} RS HAMORI">
                     </a>
 
-                    {{-- Badge lokasi --}}
                     <div class="pr-location-badge">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Subang, Jawa Barat</span>
@@ -108,7 +99,6 @@
     </div>
 </section>
 
-{{-- ── VISI & MISI ── --}}
 <section class="pr-vm-section sec bg-light">
     <div class="container">
 
@@ -121,7 +111,6 @@
 
         <div class="row g-4 align-items-start">
 
-            {{-- VISI --}}
             <div class="col-lg-4">
                 <div class="pr-vm-card pr-vm-card--visi">
                     {{--<div class="pr-vm-icon">
@@ -135,7 +124,6 @@
                 </div>
             </div>
 
-            {{-- MISI --}}
             <div class="col-lg-8">
                 <div class="pr-vm-card pr-vm-card--misi">
                      {{-- <div class="pr-vm-icon pr-vm-icon--accent">
@@ -161,7 +149,6 @@
     </div>
 </section>
 
-{{-- ── MILESTONE ── --}}
 @if($milestones->isNotEmpty())
 <section class="pr-milestone-section sec">
     <div class="container">
@@ -169,7 +156,7 @@
             <span class="eyebrow">Perjalanan Kami</span>
             <h2 class="sec-h2 mt-1">Milestone RS Hamori</h2>
         </div>
-        
+
         <div class="ms-timeline">
             @foreach($milestones as $i => $ms)
             <div class="ms-item {{ $i % 2 == 0 ? 'ms-left' : 'ms-right' }}">
@@ -180,15 +167,138 @@
                     @if($ms->gambar)
                         <img src="{{ asset('storage/'.$ms->gambar) }}" alt="{{ $ms->judul }}" class="ms-img">
                     @endif
+
+                    @if(is_array($ms->galeri) && count($ms->galeri) > 0)
+                    <button type="button"
+                            class="ms-gallery-btn"
+                            onclick="openMsGallery({{ $ms->id }})"
+                            title="Lihat {{ count($ms->galeri) }} foto kejadian">
+                        <i class="fas fa-images"></i>
+                        Lihat Foto ({{ count($ms->galeri) }})
+                    </button>
+
+                    <div id="ms-gallery-data-{{ $ms->id }}" style="display:none;"
+                         data-images='@json(array_map(fn($p) => asset("storage/".$p), $ms->galeri))'
+                         data-title="{{ $ms->tahun }} – {{ $ms->judul }}">
+                    </div>
+                    @endif
                 </div>
             </div>
             @endforeach
         </div>
     </div>
 </section>
+
+<div id="msLightboxModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
+    <div style="position:absolute; top:20px; right:20px;">
+        <button onclick="closeMsGallery()" style="background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:44px; height:44px; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div style="text-align:center; color:#fff; margin-bottom:16px; padding:0 20px;">
+        <h5 id="msLightboxTitle" style="margin:0; font-size:16px; opacity:.8;"></h5>
+    </div>
+    <div style="position:relative; display:flex; align-items:center; justify-content:center; width:100%; max-width:900px; padding:0 60px;">
+        <button onclick="msPrevSlide()" style="position:absolute; left:10px; background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:44px; height:44px; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <img id="msLightboxImg" src="" alt="" style="max-height:70vh; max-width:100%; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+        <button onclick="msNextSlide()" style="position:absolute; right:10px; background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:44px; height:44px; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    <div id="msLightboxCounter" style="color:rgba(255,255,255,0.6); margin-top:14px; font-size:14px;"></div>
+    <div id="msLightboxDots" style="display:flex; gap:8px; margin-top:12px;"></div>
+</div>
+
+<style>
+.ms-gallery-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    padding: 8px 18px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border: 1.5px solid var(--primary);
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.ms-gallery-btn:hover {
+    background: var(--primary);
+    color: #fff;
+}
+</style>
+
+<script>
+let msImages = [];
+let msCurrent = 0;
+
+function openMsGallery(id) {
+    const el = document.getElementById('ms-gallery-data-' + id);
+    msImages = JSON.parse(el.dataset.images);
+    const title = el.dataset.title;
+    msCurrent = 0;
+    document.getElementById('msLightboxTitle').textContent = title;
+    document.getElementById('msLightboxModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    msRenderSlide();
+    msRenderDots();
+}
+
+function closeMsGallery() {
+    document.getElementById('msLightboxModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function msRenderSlide() {
+    document.getElementById('msLightboxImg').src = msImages[msCurrent];
+    document.getElementById('msLightboxCounter').textContent = (msCurrent + 1) + ' / ' + msImages.length;
+    document.querySelectorAll('.ms-dot').forEach((d, i) => {
+        d.style.opacity = i === msCurrent ? '1' : '0.4';
+    });
+}
+
+function msRenderDots() {
+    const container = document.getElementById('msLightboxDots');
+    container.innerHTML = '';
+    msImages.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'ms-dot';
+        d.style.cssText = 'width:8px;height:8px;border-radius:50%;border:none;background:#fff;cursor:pointer;opacity:' + (i === 0 ? '1' : '0.4') + ';padding:0;';
+        d.onclick = () => { msCurrent = i; msRenderSlide(); };
+        container.appendChild(d);
+    });
+}
+
+function msPrevSlide() {
+    msCurrent = (msCurrent - 1 + msImages.length) % msImages.length;
+    msRenderSlide();
+}
+
+function msNextSlide() {
+    msCurrent = (msCurrent + 1) % msImages.length;
+    msRenderSlide();
+}
+
+// Close on backdrop click
+document.getElementById('msLightboxModal').addEventListener('click', function(e) {
+    if (e.target === this) closeMsGallery();
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (document.getElementById('msLightboxModal').style.display !== 'flex') return;
+    if (e.key === 'ArrowRight') msNextSlide();
+    if (e.key === 'ArrowLeft') msPrevSlide();
+    if (e.key === 'Escape') closeMsGallery();
+});
+</script>
 @endif
 
-{{-- ── NILAI / VALUE ── --}}
 <section class="pr-values-section sec">
     <div class="container">
 
@@ -231,7 +341,6 @@
     </div>
 </section>
 
-{{-- ── CTA BANNER ── --}}
 <section class="pr-cta-section">
     <div class="container">
         <div class="pr-cta-inner">

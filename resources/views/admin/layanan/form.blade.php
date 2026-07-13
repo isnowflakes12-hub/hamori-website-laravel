@@ -52,7 +52,6 @@
         </div>
 
         <div class="col-lg-4">
-            {{-- Logo --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
                     <i class="bi bi-image me-2 text-primary"></i>Logo / Ikon Layanan
@@ -72,7 +71,6 @@
                 <div class="form-text mt-1">PNG/SVG transparan. Maks 2MB. Ideal 200×200px</div>
             </div>
 
-            {{-- Settings --}}
             <div class="form-card mb-4">
                 <h6 class="fw-bold mb-3" style="font-size:14px;color:#374151">
                     <i class="bi bi-gear me-2 text-primary"></i>Pengaturan

@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Privacy Policy</h1>
@@ -16,12 +15,10 @@
     </div>
 </div>
 
-{{-- ── MAIN ── --}}
 <section class="pv-section sec">
     <div class="container">
         <div class="row g-5">
 
-            {{-- ── SIDEBAR: TOC ── --}}
             @if($policies->isNotEmpty())
             <div class="col-lg-3 d-none d-lg-block">
                 <div class="pv-toc">
@@ -48,11 +45,9 @@
             </div>
             @endif
 
-            {{-- ── MAIN DOCUMENT ── --}}
             <div class="{{ $policies->isNotEmpty() ? 'col-lg-9' : 'col-lg-12' }}">
                 <div class="pv-doc">
 
-                    {{-- Doc header --}}
                     <div class="pv-doc-header">
                         <div class="pv-doc-icon"><i class="fas fa-shield-halved"></i></div>
                         <div class="pv-doc-meta">
@@ -67,7 +62,6 @@
                         </div>
                     </div>
 
-                    {{-- Body --}}
                     <div class="pv-doc-body">
 
                         @forelse($policies as $i => $policy)
@@ -90,7 +84,6 @@
 
                     </div>
 
-                    {{-- Footer note --}}
                     @if($policies->isNotEmpty())
                     <div class="pv-doc-footer">
                         <i class="fas fa-circle-info"></i>
@@ -110,7 +103,6 @@
 </section>
 
 
-{{-- Scroll-spy untuk TOC --}}
 <script>
 (function () {
     const links    = document.querySelectorAll('[data-toc-link]');

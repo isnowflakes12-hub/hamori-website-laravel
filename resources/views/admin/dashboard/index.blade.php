@@ -6,7 +6,6 @@
 @php $user = auth()->user(); @endphp
 
 <div class="row g-4 mb-4">
-    {{-- Stats untuk semua yang punya akses banner/marketing --}}
     @if(isset($stats['banners']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.banner.index') }}" class="stat-card">
@@ -45,7 +44,6 @@
             <div class="stat-label">Kritik & Saran Pending</div>
         </a>
     </div>
-    {{-- Stat tambahan hanya untuk Super Admin --}}
     @if($user->isSuperAdmin())
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.dokter.index') }}" class="stat-card">
@@ -98,7 +96,6 @@
 </div>
 
 <div class="row g-4">
-    {{-- Lamaran Terbaru: hanya SDM/Super Admin --}}
     @if($recentLamarans->count() && ($user->isSuperAdmin() || $user->isAdminSdm()))
     <div class="col-lg-6">
         <div class="admin-table">
@@ -124,7 +121,6 @@
         </div>
     </div>
     @endif
-    {{-- Pesan Masuk: hanya Super Admin --}}
     @if($recentKontaks->count() && $user->isSuperAdmin())
     <div class="col-lg-6">
         <div class="admin-table">
@@ -149,7 +145,6 @@
         </div>
     </div>
     @endif
-    {{-- Kritik & Saran: tampil untuk Marketing dan Super Admin --}}
     @if(isset($recentKritikSarans) && $recentKritikSarans->count())
     <div class="col-lg-6">
         <div class="admin-table">

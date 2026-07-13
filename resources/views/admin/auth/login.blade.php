@@ -293,13 +293,11 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif}
 <body>
 <div class="login-page">
 
-    {{-- ═══ LEFT PANEL ═══ --}}
     <div class="login-left">
         <div class="ll-deco ll-deco-1"></div>
         <div class="ll-deco ll-deco-2"></div>
         <div class="ll-deco ll-deco-3"></div>
 
-        {{-- Brand --}}
         <div class="ll-brand">
             <div class="ll-brand-icon"><i class="bi bi-hospital-fill"></i></div>
             <div>
@@ -308,7 +306,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif}
             </div>
         </div>
 
-        {{-- Main copy --}}
         <div class="ll-main">
             <div class="ll-tag">
                 <span class="ll-tag-dot"></span>
@@ -337,13 +334,11 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif}
             </div>
         </div>
 
-        {{-- Footer --}}
         <div class="ll-footer">
             <p>&copy; {{ date('Y') }} RS Hamori. All rights reserved. &nbsp;·&nbsp; <a href="{{ url('/') }}">Lihat Website</a></p>
         </div>
     </div>
 
-    {{-- ═══ RIGHT PANEL ═══ --}}
     <div class="login-right">
         <div class="lr-deco"></div>
 
@@ -355,7 +350,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif}
                 <p class="lr-sub">Masukkan kredensial Anda untuk mengakses dashboard pengelolaan RS Hamori.</p>
             </div>
 
-            {{-- Alerts --}}
             @if(session('error'))
             <div class="alert alert-danger">
                 <i class="bi bi-exclamation-circle-fill"></i>
@@ -377,7 +371,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif}
             </div>
             @endif
 
-            {{-- Form --}}
             <form method="POST" action="{{ route('admin.login.post') }}" id="loginForm">
                 @csrf
 
@@ -433,7 +426,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif}
 
             </form>
 
-            {{-- Demo accounts --}}
             <div class="divider">Akun Demo</div>
             <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;text-align:center">Klik role untuk isi otomatis</div>
             <div class="role-pills">

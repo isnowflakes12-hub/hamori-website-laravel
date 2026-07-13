@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -11,9 +12,11 @@ class ArtikelController extends Controller
 {
     public function index(Request $request)
     {
-        $q = Artikel::with('kategori')->latest();
+        $q = Artikel::with('kategoris')->latest();
         if ($request->filled('search'))   $q->where('judul','like','%'.$request->search.'%');
-        if ($request->filled('kategori')) $q->where('kategori_id',$request->kategori);
+        if ($request->filled('kategori')) $q->whereHas('kategoris', function($query) use ($request) {
+            $query->where('kategori_artikels.id', $request->kategori);
+        });
         if ($request->filled('status')) {
             $q->where('is_published', $request->status === 'published');
         }
@@ -31,27 +34,45 @@ class ArtikelController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul'      => 'required|string|max:255',
-            'konten'     => 'required|string',
-            'kategori_id'=> 'exists:kategori_artikels,id',
-            'thumbnail'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'judul'         => 'required|string|max:255',
+            'konten'        => 'required|string',
+            'kategori_ids'  => 'required|array|min:1',
+            'kategori_ids.*'=> 'exists:kategori_artikels,id',
+            'thumbnail'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'galeri.*'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
         ]);
 
-        $data = $request->only('judul','konten','kategori_id','ringkasan');
+        $data = $request->only('judul','konten','ringkasan');
         $data['slug']         = Str::slug($request->judul).'-'.time();
-        $data['is_published'] = $request->boolean('is_published');
-        $data['published_at'] = $data['is_published'] ? now() : null;
+        // Auto publish - tidak ada draft
+        $data['is_published'] = true;
+        $data['published_at'] = now();
+        // Set kategori_id utama (first selection) untuk URL & backward compat
+        $data['kategori_id']  = $request->kategori_ids[0];
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('artikels','public');
         }
 
-        Artikel::create($data);
-        return redirect()->route('admin.artikel.index')->with('success','Artikel berhasil ditambahkan.');
+        $galeri = [];
+        if ($request->hasFile('galeri')) {
+            foreach ($request->file('galeri') as $file) {
+                $galeri[] = $file->store('artikels/galeri','public');
+            }
+        }
+        $data['galeri'] = count($galeri) > 0 ? $galeri : null;
+
+        $artikel = Artikel::create($data);
+
+        // Sync many-to-many kategoris
+        $artikel->kategoris()->sync($request->kategori_ids);
+
+        return redirect()->route('admin.artikel.index')->with('success','Artikel berhasil ditambahkan dan dipublikasikan.');
     }
 
     public function edit(Artikel $artikel)
     {
+        $artikel->load('kategoris');
         $kategoris = KategoriArtikel::where('is_active', true)->orderBy('urutan')->get();
         return view('admin.artikel.form', compact('artikel','kategoris'));
     }
@@ -59,27 +80,50 @@ class ArtikelController extends Controller
     public function update(Request $request, Artikel $artikel)
     {
         $request->validate([
-            'judul'      => 'required|string|max:255',
-            'konten'     => 'required|string',
-            'kategori_id'=> 'required|exists:kategori_artikels,id',
-            'thumbnail'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'judul'         => 'required|string|max:255',
+            'konten'        => 'required|string',
+            'kategori_ids'  => 'required|array|min:1',
+            'kategori_ids.*'=> 'exists:kategori_artikels,id',
+            'thumbnail'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'galeri.*'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
         ]);
 
-        $data = $request->only('judul','konten','kategori_id','ringkasan');
-        $data['is_published'] = $request->boolean('is_published');
-        if ($data['is_published'] && !$artikel->published_at) {
+        $data = $request->only('judul','konten','ringkasan');
+        // Auto-publish on update juga
+        $data['is_published'] = true;
+        if (!$artikel->published_at) {
             $data['published_at'] = now();
         }
+        // Update kategori_id utama
+        $data['kategori_id'] = $request->kategori_ids[0];
+
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('artikels','public');
         }
 
+        $galeri_lama = is_array($artikel->galeri) ? $artikel->galeri : [];
+        if ($request->delete_galeri) {
+            $galeri_lama = array_diff($galeri_lama, $request->delete_galeri);
+        }
+
+        if ($request->hasFile('galeri')) {
+            foreach ($request->file('galeri') as $file) {
+                $galeri_lama[] = $file->store('artikels/galeri','public');
+            }
+        }
+        $data['galeri'] = count($galeri_lama) > 0 ? array_values($galeri_lama) : null;
+
         $artikel->update($data);
+
+        // Sync many-to-many kategoris
+        $artikel->kategoris()->sync($request->kategori_ids);
+
         return redirect()->route('admin.artikel.index')->with('success','Artikel berhasil diperbarui.');
     }
 
     public function destroy(Artikel $artikel)
     {
+        $artikel->kategoris()->detach();
         $artikel->delete();
         return back()->with('success','Artikel berhasil dihapus.');
     }

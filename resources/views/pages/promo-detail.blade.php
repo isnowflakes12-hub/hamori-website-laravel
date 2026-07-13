@@ -3,13 +3,11 @@
 
 @section('content')
 
-{{-- ── HERO ── --}}
 <section class="ld-hero ld-hero--compact">
     <div class="ld-hero-bg-pattern"></div>
     <div class="ld-hero-glow"></div>
     <div class="container position-relative">
         <div class="ld-hero-inner">
-            {{-- Teks --}}
             <div class="ld-hero-text">
                 <span class="ld-hero-badge">
                     <i class="fas fa-star-of-life"></i>
@@ -29,7 +27,6 @@
 
             </div>
 
-            {{-- Media --}}
             <div class="ld-hero-media">
                 <div class="ld-hero-media-ring ld-hero-media-ring--outer"></div>
                 <div class="ld-hero-media-ring ld-hero-media-ring--inner"></div>
@@ -39,22 +36,18 @@
 </section>     
                 
 
-{{-- ── MAIN CONTENT ── --}}
 <section class="pd-body sec">
     <div class="container">
         <div class="row g-5">
 
-            {{-- ── KOLOM UTAMA ── --}}
             <div class="col-lg-8">
 
-                {{-- Tentang Promo --}}
                 <div class="pd-card">
                     <div class="pd-card-header">
                         <span class="pd-card-icon"><i class="fas fa-info-circle"></i></span>
                         <h3 class="pd-card-title">Tentang Promo</h3>
                     </div>
 
-                    {{-- Menampilkan gambar promo di sini --}}
                     @if($promo->gambar)
                     <div class="pd-body-image-wrapper">
                         <img src="{{ asset('storage/'.$promo->gambar) }}"
@@ -68,7 +61,6 @@
                     </div>
                 </div>
 
-                {{-- Benefit --}}
                 @if(isset($promo->benefit) && count($promo->benefit) > 0)
                 <div class="pd-card mt-4">
                     <div class="pd-card-header">
@@ -86,7 +78,6 @@
                 </div>
                 @endif
 
-                {{-- Syarat & Ketentuan --}}
                 @if($promo->syarat_ketentuan)
                 <div class="pd-card mt-4">
                     <div class="pd-card-header">
@@ -99,7 +90,6 @@
                 </div>
                 @endif
 
-                {{-- Cara Mendapatkan --}}
                 @if($promo->cara_mendapatkan && count($promo->cara_mendapatkan) > 0)
                 <div class="pd-card mt-4">
                     <div class="pd-card-header">
@@ -120,11 +110,9 @@
                 @endif
             </div>
 
-            {{-- ── SIDEBAR ── --}}
             <div class="col-lg-4">
                 <div class="pd-sidebar">
 
-                    {{-- Daftar Promo --}}
                     <div class="pd-card pd-sidebar-cta">
                         <div class="pd-sidebar-cta-badge">
                             <i class="fas fa-headset"></i> Siap Membantu 24 Jam
@@ -155,7 +143,6 @@
                         </a>
                     </div>
 
-                    {{-- Masa Berlaku --}}
                     @if($promo->berlaku_sampai ?? false)
                     <div class="pd-card mt-4">
                         <div class="pd-card-header">
@@ -175,7 +162,6 @@
                     </div>
                     @endif
 
-                    {{-- BPJS Info --}}
                     <div class="pd-card mt-4" style="border:1.5px solid {{ $promo->terima_bpjs ? '#00a859' : '#e5eaf0' }}">
                         <div class="pd-card-header">
                             <span class="pd-card-icon" style="background:{{ $promo->terima_bpjs ? '#f0fdf4' : '#f8fafc' }}"><i class="fas fa-shield-halved" style="color:{{ $promo->terima_bpjs ? '#00a859' : '#94a3b8' }}"></i></span>
@@ -206,7 +192,6 @@
     </div>
 </section>
 
-{{-- ── PROMO TERKAIT ── --}}
 @if(isset($related) && $related->count())
 <section class="pd-related sec bg-light">
     <div class="container">
@@ -225,7 +210,6 @@
             <div class="col-md-4">
                 <a href="{{ route('pages.promo-detail', $item->id) }}" class="pd-related-card">
                     
-                    {{-- Gambar terkait ── ukuran konsisten --}}
                     <div class="pd-related-media">
                         @if($item->gambar)
                             <img src="{{ asset('storage/'.$item->gambar) }}"

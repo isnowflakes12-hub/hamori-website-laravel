@@ -20,7 +20,6 @@
         ═══════════════════════════════════════ --}}
         <div class="col-lg-8">
 
-            {{-- ── SOCIAL MEDIA ── --}}
             <div class="form-card mb-4">
                 <h6 class="settings-section-title">
                     <i class="bi bi-share-fill me-2 text-primary"></i>Sosial Media
@@ -59,7 +58,6 @@
                 </div>
             </div>
 
-            {{-- ── MOBILE APPS ── --}}
             <div class="form-card mb-4">
                 <h6 class="settings-section-title">
                     <i class="bi bi-phone-fill me-2 text-info"></i>Aplikasi Mobile
@@ -80,7 +78,6 @@
                 </div>
             </div>
 
-            {{-- ── PHONE NUMBERS ── --}}
             <div class="form-card mb-4">
                 <h6 class="settings-section-title">
                     <i class="bi bi-telephone-fill me-2 text-success"></i>Nomor Telepon
@@ -123,7 +120,6 @@
                 </div>
             </div>
 
-            {{-- ── ADDRESS & MAPS ── --}}
             <div class="form-card mb-4">
                 <h6 class="settings-section-title">
                     <i class="bi bi-geo-alt-fill me-2 text-danger"></i>Lokasi & Peta
@@ -148,7 +144,6 @@
                         <div class="form-text">Link langsung ke Google Maps (untuk tombol "Lihat di Maps")</div>
                     </div>
 
-                    {{-- Maps Preview --}}
                     @if(!empty($settings['maps_embed_url']))
                     <div class="col-12">
                         <label class="form-label fw-bold text-muted">Preview Peta</label>
@@ -168,13 +163,11 @@
         ═══════════════════════════════════════ --}}
         <div class="col-lg-4">
 
-            {{-- ── LOGO ── --}}
             <div class="form-card mb-4">
                 <h6 class="settings-section-title">
                     <i class="bi bi-image me-2 text-primary"></i>Logo & Branding
                 </h6>
 
-                {{-- Logo Utama --}}
                 <div class="mb-4">
                     <label class="form-label">Logo Utama (Navbar)</label>
                     <div class="settings-img-preview mb-2" id="logoPreviewWrap">
@@ -193,7 +186,6 @@
                     <div class="form-text">SVG, PNG, JPG. Maks 2MB.</div>
                 </div>
 
-                {{-- Logo Putih --}}
                 <div class="mb-4">
                     <label class="form-label">Logo Putih (Footer)</label>
                     <div class="settings-img-preview settings-img-dark mb-2" id="logoWhitePreviewWrap">
@@ -212,7 +204,6 @@
                     <div class="form-text">Logo dengan warna terang untuk background gelap</div>
                 </div>
 
-                {{-- Favicon --}}
                 <div class="mb-3">
                     <label class="form-label">Favicon</label>
                     <div class="settings-img-preview mb-2" id="faviconPreviewWrap">
@@ -232,7 +223,6 @@
                 </div>
             </div>
 
-            {{-- Save Button --}}
             <button type="submit" class="btn btn-primary w-100 py-3" style="font-size:15px">
                 <i class="bi bi-check-circle-fill me-2"></i>Simpan Pengaturan
             </button>

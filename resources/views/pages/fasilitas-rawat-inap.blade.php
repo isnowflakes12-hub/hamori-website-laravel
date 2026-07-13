@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Fasilitas Rawat Inap</h1>
@@ -16,7 +15,6 @@
     </div>
 </div>
 
-{{-- ── MAIN CONTENT ── --}}
 <section class="fri-section sec">
     <div class="container">
 

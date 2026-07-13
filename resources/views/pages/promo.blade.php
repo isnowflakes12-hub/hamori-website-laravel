@@ -4,12 +4,10 @@
 @section('content')
 
 
-{{-- ── INTRO STRIP ── --}}
 <div class="pm-intro">
     <div class="pm-intro-glow pm-intro-glow--left"></div>
     <div class="pm-intro-glow pm-intro-glow--right"></div>
 
-    {{-- Watermark Logo Blend --}}
     @php
         $favicon = \App\Models\SiteSetting::get('favicon');
     @endphp
@@ -30,30 +28,12 @@
                     Dapatkan akses layanan medis berkualitas dengan harga spesial.
                     Semua paket ditangani langsung oleh dokter spesialis berpengalaman.
                 </p>
-            </div>
-            <div class="pm-intro-badges">
-                <div class="pm-intro-badge">
-                    <i class="fas fa-tag"></i>
-                    <span>Harga Terjangkau</span>
-                </div>
-                <div class="pm-intro-badge">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Waktu Terbatas</span>
-                </div>
-                <div class="pm-intro-badge">
-                    <i class="fas fa-user-md"></i>
-                    <span>Dokter Spesialis</span>
-                </div>
-                <div class="pm-intro-badge">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Khusus Penjamin Umum</span>
-                </div>
+                <br>
             </div>
         </div>
     </div>
 </div>
 
-{{-- ── SEARCH BAR ── --}}
 <div class="pm-search-section">
     <div class="container">
         <form method="GET" action="{{ route('promo.index') }}" class="pm-search-wrap">
@@ -75,7 +55,6 @@
         </form>
     </div>
 </div>
-{{-- ── PROMO GRID ── --}}
 <section class="pm-section sec">
     <div class="container">
 
@@ -130,14 +109,12 @@
 
         @endif
 
-        {{-- Pagination --}}
         @if($promos->hasPages())
         <div class="mt-5 d-flex justify-content-center">
             {{ $promos->links('pagination::bootstrap-5') }}
         </div>
         @endif
 
-        {{-- No Result State (Hidden by default) --}}
         <div id="pmNoResult" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; width: 100%;">
             <div style="font-size: 48px; color: var(--muted-2); margin-bottom: 16px;">
                 <i class="fas fa-search"></i>
@@ -171,6 +148,11 @@
 
 @push('styles')
 <style>
+/* ── PROMO SECTION PADDING ── */
+.pm-section {
+    padding-top: 20px !important;
+}
+
 /* ── SEARCH BAR STYLES ── */
 .pm-search-section {
     background: var(--bg);
@@ -240,6 +222,7 @@
 .pm-intro {
     position: relative;
     overflow: hidden !important;
+    padding: 30px 0 !important;
 }
 .pm-intro .container {
     z-index: 1;
@@ -391,7 +374,6 @@ nav .d-sm-flex > div:last-child {
 </style>
 @endpush
 
-{{-- ── CTA BANNER ── --}}
 @if(!$promos->isEmpty())
 <section class="pm-cta-section">
     <div class="container">

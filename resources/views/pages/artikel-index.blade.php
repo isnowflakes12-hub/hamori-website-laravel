@@ -4,7 +4,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Hamori Update</h1>
@@ -17,33 +16,12 @@
     </div>
 </div>
 
-{{-- ── MAIN CONTENT ── --}}
 <section class="au-section sec">
     <div class="container">
         <div class="row g-5">
 
-            {{-- ── KOLOM ARTIKEL ── --}}
             <div class="col-lg-8">
 
-                {{-- Category Tabs --}}
-                <div class="au-tabs">
-                    <a href="{{ route('artikel.index') }}"
-                       class="au-tab {{ !request('kategori') && !request()->routeIs('artikel.kategori') ? 'au-tab--active' : '' }}">
-                        <i class="fas fa-border-all"></i>
-                        Semua
-                    </a>
-                    @foreach($kategoris as $kat)
-                    <a href="{{ route('artikel.kategori', $kat->slug) }}"
-                       class="au-tab {{ request()->is('*/'.$kat->slug) ? 'au-tab--active' : '' }}">
-                        {{ $kat->nama }}
-                        @if($kat->artikels_count)
-                        <span class="au-tab-count">{{ $kat->artikels_count }}</span>
-                        @endif
-                    </a>
-                    @endforeach
-                </div>
-
-                {{-- Empty State --}}
                 @if($artikels->isEmpty())
                 <div class="au-empty">
                     <div class="au-empty-icon"><i class="fas fa-newspaper"></i></div>
@@ -54,14 +32,12 @@
                     </a>
                 </div>
 
-                {{-- Article Grid --}}
                 @else 
                 <div class="row g-4">
                     @foreach($artikels as $i => $artikel)
                     <div class="{{ $i === 0 ? 'col-12' : 'col-md-6' }}">
                         <article class="au-card {{ $i === 0 ? 'au-card--featured' : '' }} h-100">
 
-                            {{-- Thumbnail --}}
                             <div class="au-thumb">
                                 @if($artikel->thumbnail)
                                     <img src="{{ asset('storage/' . $artikel->thumbnail) }}"
@@ -73,18 +49,21 @@
                                     </div>
                                 @endif
 
-                                @if($artikel->kategori)
-                                <span class="au-badge">{{ $artikel->kategori->nama }}</span>
+                                @if($artikel->kategoris && $artikel->kategoris->count() > 0)
+                                    <div style="position: absolute; top: 1rem; left: 1rem; z-index: 10; display: flex; flex-wrap: wrap; gap: 5px;">
+                                    @foreach($artikel->kategoris as $kat)
+                                        <span class="au-badge" style="position: relative; top: 0; left: 0;">{{ $kat->nama }}</span>
+                                    @endforeach
+                                    </div>
                                 @endif
 
-                                @if($i === 0)
+                                @if($artikel->published_at && $artikel->published_at->diffInDays(now()) <= 7)
                                 <span class="au-featured-label">
                                     <i class="fas fa-bookmark"></i> Artikel Terbaru
                                 </span>
                                 @endif
                             </div>
 
-                            {{-- Body --}}
                             <div class="au-body">
                                 <div class="au-meta">
                                     <span class="au-meta-date">
@@ -101,7 +80,7 @@
                                 </div>
 
                                 <h5 class="au-title {{ $i === 0 ? 'au-title--lg' : '' }}">
-                                    <a href="{{ route('artikel.show', [$artikel->kategori?->slug ?? 'artikel', $artikel->slug]) }}">
+                                    <a href="{{ route('artikel.show', [$artikel->kategoris->first()?->slug ?? 'artikel', $artikel->slug]) }}">
                                         {{ $artikel->judul }}
                                     </a>
                                 </h5>
@@ -111,17 +90,19 @@
                                 </p>
 
                                 <div class="au-footer">
-                                    <a href="{{ route('artikel.show', [$artikel->kategori?->slug ?? 'artikel', $artikel->slug]) }}"
-                                       class="au-read-more">
-                                        Selengkapnya
-                                        <span class="au-read-more-arrow"><i class="fas fa-arrow-right"></i></span>
-                                    </a>
-
                                     @if($artikel->read_time ?? false)
                                     <span class="au-read-time">
                                         <i class="fas fa-clock"></i> {{ $artikel->read_time }} menit baca
                                     </span>
+                                    @else
+                                    <span></span> {{-- Empty span to push read-more to the right if no read-time --}}
                                     @endif
+
+                                    <a href="{{ route('artikel.show', [$artikel->kategoris->first()?->slug ?? 'artikel', $artikel->slug]) }}"
+                                       class="au-read-more">
+                                        Selengkapnya
+                                        <span class="au-read-more-arrow"><i class="fas fa-arrow-right"></i></span>
+                                    </a>
                                 </div>
                             </div>
 
@@ -130,7 +111,6 @@
                     @endforeach
                 </div>
 
-                {{-- Pagination --}}
                 @if($artikels->hasPages())
                 <div class="au-pagination">
                     {{ $artikels->links() }}
@@ -140,11 +120,9 @@
                 @endif
             </div>
 
-            {{-- ── SIDEBAR ── --}}
             <div class="col-lg-4">
                 <div class="au-sidebar">
 
-                    {{-- Search --}}
                     <div class="au-widget">
                         <div class="au-widget-header">
                             <span class="au-widget-icon"><i class="fas fa-search"></i></span>
@@ -165,7 +143,6 @@
                         </form>
                     </div>
 
-                    {{-- Kategori --}}
                     <div class="au-widget mt-4">
                         <div class="au-widget-header">
                             <span class="au-widget-icon au-widget-icon--accent"><i class="fas fa-tags"></i></span>
@@ -195,7 +172,6 @@
                         </ul>
                     </div>
 
-                    {{-- Artikel Populer --}}
                     @if(isset($populer) && $populer->count())
                     <div class="au-widget mt-4">
                         <div class="au-widget-header">
@@ -207,7 +183,7 @@
                             <li class="au-popular-item">
                                 <span class="au-popular-num">{{ str_pad($i+1, 2, '0', STR_PAD_LEFT) }}</span>
                                 <div class="au-popular-body">
-                                    <a href="{{ route('artikel.show', [$pop->kategori?->slug ?? 'artikel', $pop->slug]) }}"
+                                    <a href="{{ route('artikel.show', [$pop->kategoris->first()?->slug ?? 'artikel', $pop->slug]) }}"
                                        class="au-popular-title">{{ $pop->judul }}</a>
                                     <span class="au-popular-date">
                                         {{ $pop->published_at?->diffForHumans() ?? '-' }}
@@ -219,7 +195,6 @@
                     </div>
                     @endif
 
-                    {{-- Appointment CTA --}}
                     <div class="au-widget au-widget-cta mt-4">
                         <div class="au-cta-glow"></div>
                         <div class="au-cta-icon-wrap">
@@ -243,11 +218,6 @@
         </div>
     </div>
 </section>
-
-
-{{-- ================================================================
-     STYLES — scoped, inheriting design system tokens
-     ================================================================ --}}
 
 
 @endsection

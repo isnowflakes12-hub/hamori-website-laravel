@@ -13,7 +13,6 @@
     </a>
 </div>
 
-{{-- Featured status bar --}}
 @php $featuredCount = $featured->count(); $maxFeatured = 3; @endphp
 <div class="alert mb-4 d-flex align-items-center gap-3"
      style="background:{{ $featuredCount >= $maxFeatured ? '#fef2f2' : '#f0fdf4' }};border-radius:12px;border:none">
@@ -29,7 +28,6 @@
         <div style="font-size:13px;color:#d93025;margin-top:2px">Slot penuh — hapus salah satu ⭐ untuk menambah promo unggulan baru.</div>
         @endif
     </div>
-    {{-- Tombol Batalkan Semua Unggulan --}}
     @if($featuredCount > 0)
     <form method="POST" action="{{ route('admin.promo.clear-featured') }}" onsubmit="return confirm('Batalkan semua status unggulan?')">
         @csrf
@@ -40,13 +38,11 @@
     @endif
 </div>
 
-{{-- Hidden form untuk bulk submit — terpisah dari tabel agar tidak nested --}}
 <form method="POST" action="{{ route('admin.promo.bulk-featured') }}" id="bulkFeaturedForm">
     @csrf
     <div id="bulkHiddenIds"></div>{{-- JS akan inject hidden inputs ke sini --}}
 </form>
 
-{{-- Bulk Action Bar --}}
 <div id="bulkActionBar" class="d-none mb-3 p-3 align-items-center gap-3" style="background:#eff6ff;border-radius:12px;border:1px solid #bfdbfe;">
     <i class="bi bi-star-fill text-warning"></i>
     <span id="bulkSelectedCount" class="fw-semibold" style="font-size:14px">0 promo dipilih (maks. 3)</span>

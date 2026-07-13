@@ -1,7 +1,14 @@
 <?php
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+use Illuminate\Support\Facades\Artisan;
+use App\Models\Artikel;
+
+Artisan::command('migrate:categories', function () {
+    $artikels = Artikel::all();
+    foreach ($artikels as $a) {
+        if ($a->kategori_id) {
+            $a->kategoris()->syncWithoutDetaching([$a->kategori_id]);
+        }
+    }
+    $this->info('Categories migrated successfully.');
+});

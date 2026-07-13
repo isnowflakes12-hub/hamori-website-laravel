@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 
 <div class="page-header">
     <div class="container">
@@ -17,7 +16,6 @@
     </div>
 </div>
 
-{{-- ── SEARCH BAR (terpisah dari hero) ── --}}
 <div class="fq-search-section">
     <div class="container">
         <div class="fq-search-wrap">
@@ -29,7 +27,6 @@
     </div>
 </div>
 
-{{-- ── FAQ LIST ── --}}
 <section class="fq-section sec">
     <div class="container">
         <div class="fq-wrap">
@@ -76,7 +73,6 @@
     </div>
 </section>
 
-{{-- ── CTA BANNER ── --}}
 <section class="fq-cta-section">
     <div class="container">
         <div class="fq-cta-inner">
@@ -101,7 +97,6 @@
 </section>
 
 
-{{-- Live search script --}}
 <script>
 (function () {
     const input    = document.getElementById('fqSearchInput');

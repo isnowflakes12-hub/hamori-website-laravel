@@ -13,7 +13,6 @@
     </a>
 </div>
 
-{{-- Filter --}}
 <div class="filter-bar">
     <form method="GET" class="d-flex gap-2 flex-wrap w-100">
         <input type="text" name="search" class="form-control" style="max-width:260px"

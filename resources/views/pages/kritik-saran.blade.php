@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- ── PAGE HEADER ── --}}
 <div class="page-header">
     <div class="container">
         <h1 class="page-title">Kritik & Saran</h1>
@@ -16,12 +15,10 @@
     </div>
 </div>
 
-{{-- ── MAIN ── --}}
 <section class="ks-section sec">
     <div class="container">
         <div class="ks-wrap">
 
-            {{-- ── LEFT: Info Panel ── --}}
             <div class="ks-info">
 
                 <span class="eyebrow">Suara Anda Penting</span>
@@ -62,7 +59,6 @@
                     </div>
                 </div>
 
-                {{-- Kategori chips --}}
                 <div class="ks-categories">
                     <p class="ks-cat-label">Jenis Masukan yang Kami Terima:</p>
                     <div class="ks-cat-chips">
@@ -78,7 +74,6 @@
                     </div>
                 </div>
 
-                {{-- Kontak alternatif --}}
                 <div class="ks-alt-contact">
                     <p class="ks-alt-label">Atau hubungi langsung:</p>
                     <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}" target="_blank" class="ks-alt-wa">
@@ -89,10 +84,8 @@
 
             </div>
 
-            {{-- ── RIGHT: Form ── --}}
             <div class="ks-form-wrap">
 
-                {{-- Success alert --}}
                 @if(session('success'))
                 <div class="ks-alert">
                     <i class="fas fa-circle-check ks-alert-icon"></i>
@@ -121,7 +114,6 @@
 
                         <div class="row g-4">
 
-                            {{-- Nama --}}
                             <div class="col-md-6">
                                 <div class="ks-field">
                                     <label class="ks-label">Nama Lengkap <span class="ks-required">*</span></label>
@@ -137,7 +129,6 @@
                                 </div>
                             </div>
 
-                            {{-- Email --}}
                             <div class="col-md-6">
                                 <div class="ks-field">
                                     <label class="ks-label">Email <span class="ks-required">*</span></label>
@@ -153,7 +144,6 @@
                                 </div>
                             </div>
 
-                            {{-- Telepon --}}
                             <div class="col-md-6">
                                 <div class="ks-field">
                                     <label class="ks-label">Nomor Telepon <span class="ks-required">*</span></label>
@@ -169,7 +159,6 @@
                                 </div>
                             </div>
 
-                            {{-- Kategori --}}
                             <div class="col-md-6">
                                 <div class="ks-field">
                                     <label class="ks-label">Kategori <span class="ks-required">*</span></label>
@@ -188,7 +177,6 @@
                                 </div>
                             </div>
 
-                            {{-- Rating --}}
                             <div class="col-12">
                                 <div class="ks-field">
                                     <label class="ks-label">Penilaian Layanan <span class="ks-required">*</span></label>
@@ -211,7 +199,6 @@
                                 </div>
                             </div>
 
-                            {{-- Pesan --}}
                             <div class="col-12">
                                 <div class="ks-field">
                                     <label class="ks-label">Pesan <span class="ks-required">*</span></label>
@@ -228,7 +215,6 @@
                                 </div>
                             </div>
 
-                            {{-- Submit --}}
                             <div class="col-12">
                                 <div class="ks-form-footer">
                                     <p class="ks-form-note">
@@ -252,7 +238,6 @@
     </div>
 </section>
 
-{{-- Rating JS --}}
 <script>
 (function () {
     const labels  = document.querySelectorAll('.ks-rating-label');
