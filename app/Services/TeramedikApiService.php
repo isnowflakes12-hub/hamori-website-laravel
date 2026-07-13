@@ -52,9 +52,12 @@ class TeramedikApiService
     public function getSpecialistDoctorsSchedule()
     {
         $token = $this->getToken();
+        $rsid = config('services.teramedik.rsid', 316);
         
+        // Pass rsid in JSON body as required by Teramedik multi-tenant API
         $response = Http::withToken($token)
             ->acceptJson()
+            ->withBody(json_encode(['rsid' => $rsid, 'group' => true]), 'application/json')
             ->get("{$this->baseUrl}/api/v1/SpecialistDoctorsSchedule");
             
         if ($response->successful()) {
