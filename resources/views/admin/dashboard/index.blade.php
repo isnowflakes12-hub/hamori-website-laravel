@@ -173,69 +173,80 @@
 
 @if(isset($ratingAnalytics))
 <div class="mt-5">
-    <div class="d-flex align-items-center mb-4">
-        <h5 class="fw-bold mb-0">Analisa Rating & Feedback Pasien</h5>
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h5 class="fw-bold mb-1">📊 Analisa Kepuasan Pasien — Per Indikator</h5>
+            <p class="text-muted mb-0" style="font-size:13px">Rata-rata penilaian bintang (1–5) dari seluruh responden yang mengisi form kritik & saran.</p>
+        </div>
+        <a href="{{ route('admin.kritik-saran.index') }}" class="btn btn-sm btn-outline-primary">Lihat Data Lengkap</a>
     </div>
-    
-    <!-- Baris 1: Rata-Rata Rating & Kategori Feedback -->
+
+    {{-- Row 1: Overall Score + Radar Chart --}}
     <div class="row g-4 mb-4">
-        <!-- Rata-Rata Keseluruhan -->
-        <div class="col-lg-4">
-            <div class="admin-table p-4 d-flex align-items-center justify-content-center h-100" style="background: linear-gradient(135deg, #0055a5 0%, #003d7a 100%); color: white; border: none; box-shadow: 0 10px 25px rgba(0,85,165,0.2);">
-                <div class="text-center w-100">
-                    <div class="stat-icon mx-auto mb-4" style="background: rgba(255,255,255,0.15); color: #f59e0b; width: 80px; height: 80px; font-size: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                        <i class="bi bi-star-fill"></i>
+
+        {{-- Overall Score Card --}}
+        <div class="col-lg-3">
+            <div class="h-100 d-flex flex-column gap-3">
+                {{-- Big Score --}}
+                <div class="admin-table p-4 text-center flex-fill"
+                     style="background:linear-gradient(135deg,#0055a5,#003d7a);color:#fff;border:none;">
+                    <div style="font-size:13px;text-transform:uppercase;letter-spacing:1px;opacity:.7" class="mb-2">Rata-Rata Keseluruhan</div>
+                    <div style="font-size:56px;font-weight:800;line-height:1">
+                        {{ number_format($ratingAnalytics['avg_keseluruhan'], 1) }}
                     </div>
-                    <div class="text-white-50 fw-semibold mb-2" style="font-size: 15px; text-transform: uppercase; letter-spacing: 1px;">Rating Keseluruhan</div>
-                    <div class="text-white fw-bold d-flex align-items-baseline justify-content-center gap-1 mb-3" style="font-size: 56px; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                        {{ number_format($ratingAnalytics['avg_keseluruhan'], 1) }} <span class="text-white-50" style="font-size: 24px;">/ 5.0</span>
+                    <div style="font-size:13px;opacity:.6">/&nbsp;5.0</div>
+                    <div class="mt-2" style="color:#f59e0b;font-size:20px">
+                        @for($s=1;$s<=5;$s++)<i class="{{ $s <= round($ratingAnalytics['avg_keseluruhan']) ? 'fas' : 'far' }} fa-star"></i>@endfor
                     </div>
-                    <div class="text-white-50 pt-3 border-top border-light border-opacity-10" style="font-size: 14px;">
-                        <i class="bi bi-people-fill me-1"></i> Berdasarkan <strong>{{ $ratingAnalytics['total_responden'] }}</strong> Ulasan
+                    <div class="mt-3 pt-3" style="border-top:1px solid rgba(255,255,255,.15);font-size:12px;opacity:.7">
+                        <i class="bi bi-people-fill me-1"></i> {{ number_format($ratingAnalytics['total_responden']) }} Responden
                     </div>
+                </div>
+
+                {{-- Responden Stats --}}
+                <div class="admin-table p-3">
+                    <div class="fw-bold mb-2" style="font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#64748b">Jenis Responden</div>
+                    @foreach($ratingAnalytics['responden_stats'] as $r)
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge {{ $r->responden === 'pasien' ? 'bg-info' : 'bg-secondary' }}" style="font-size:11px;text-transform:capitalize">
+                            {{ $r->responden ?? 'Tidak diisi' }}
+                        </span>
+                        <strong>{{ $r->total }}</strong>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
-        
-        <!-- Kategori Feedback -->
-        <div class="col-lg-8">
+
+        {{-- Per Indicator Horizontal Bar --}}
+        <div class="col-lg-9">
             <div class="admin-table p-4 h-100">
-                <h6 class="fw-bold text-secondary mb-4" style="font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">Distribusi Kategori Feedback</h6>
-                <div style="position: relative; height: 280px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                <h6 class="fw-bold text-secondary mb-4" style="font-size:13px;text-transform:uppercase;letter-spacing:.5px">
+                    Rata-Rata Penilaian Per Indikator
+                </h6>
+                <div id="indikatorBars"></div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Row 2: Kategori + Tren Bulanan --}}
+    <div class="row g-4">
+        {{-- Kategori Feedback --}}
+        <div class="col-lg-4">
+            <div class="admin-table p-4 h-100">
+                <h6 class="fw-bold text-secondary mb-3" style="font-size:13px;text-transform:uppercase;letter-spacing:.5px">Distribusi Kategori</h6>
+                <div style="position:relative;height:260px">
                     <canvas id="chartKategori"></canvas>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Baris 2: Trend Rating Sejajar (Hari, Bulan, Tahun) -->
-    <div class="row g-4">
-        <!-- Trend 7 Hari -->
-        <div class="col-lg-4">
+
+        {{-- Tren Masukan Per Bulan --}}
+        <div class="col-lg-8">
             <div class="admin-table p-4 h-100">
-                <h6 class="fw-bold text-secondary mb-4" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Trend 7 Hari Terakhir</h6>
-                <div style="position: relative; height: 250px; width: 100%;">
-                    <canvas id="chartRatingHari"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Trend Per Bulan -->
-        <div class="col-lg-4">
-            <div class="admin-table p-4 h-100">
-                <h6 class="fw-bold text-secondary mb-4" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Trend Per Bulan</h6>
-                <div style="position: relative; height: 250px; width: 100%;">
-                    <canvas id="chartRatingBulan"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Trend Per Tahun -->
-        <div class="col-lg-4">
-            <div class="admin-table p-4 h-100">
-                <h6 class="fw-bold text-secondary mb-4" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Trend Per Tahun</h6>
-                <div style="position: relative; height: 250px; width: 100%;">
-                    <canvas id="chartRatingTahun"></canvas>
+                <h6 class="fw-bold text-secondary mb-3" style="font-size:13px;text-transform:uppercase;letter-spacing:.5px">Tren Jumlah Masukan (12 Bulan)</h6>
+                <div style="position:relative;height:260px">
+                    <canvas id="chartTrenBulan"></canvas>
                 </div>
             </div>
         </div>
@@ -250,153 +261,115 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    Chart.defaults.font.family = "'Inter', system-ui, -apple-system, sans-serif";
+    Chart.defaults.font.family = "'Metropolis', system-ui, sans-serif";
     Chart.defaults.color = '#64748b';
 
-    const commonOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                titleFont: { size: 12 },
-                bodyFont: { size: 14, weight: 'bold' },
-                padding: 12,
-                cornerRadius: 8,
-                displayColors: false,
-                callbacks: {
-                    label: function(context) {
-                        return 'Rating: ' + context.parsed.y.toFixed(1) + ' / 5.0';
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 5,
-                ticks: { stepSize: 1, padding: 10 },
-                grid: { color: '#f1f5f9', drawBorder: false }
-            },
-            x: {
-                ticks: { padding: 10 },
-                grid: { display: false, drawBorder: false }
-            }
-        },
-        interaction: {
-            intersect: false,
-            mode: 'index',
-        },
-    };
+    const indikatorData = @json($ratingAnalytics['avg_per_indikator']);
+    const kategoriData  = @json($ratingAnalytics['per_kategori']);
+    const bulanData     = @json($ratingAnalytics['masukan_per_bulan']);
 
-    const dataHari = @json($ratingAnalytics['per_hari']);
-    const dataBulan = @json($ratingAnalytics['per_bulan']);
-    const dataTahun = @json($ratingAnalytics['per_tahun']);
-    const dataKategori = @json($ratingAnalytics['per_kategori']);
+    // ── 1. Per-Indicator Horizontal Bars (custom HTML) ──
+    const container = document.getElementById('indikatorBars');
+    const colors = [
+        '#0055a5','#00a859','#e8333c','#d97706',
+        '#7c3aed','#0ea5e9','#f43f5e','#10b981','#f59e0b','#6366f1'
+    ];
+    const maxScore = 5;
 
-    // 1. Chart Rating Per Hari (Line)
-    const ctxHari = document.getElementById('chartRatingHari').getContext('2d');
-    let gradientHari = ctxHari.createLinearGradient(0, 0, 0, 300);
-    gradientHari.addColorStop(0, 'rgba(0, 85, 165, 0.2)');
-    gradientHari.addColorStop(1, 'rgba(0, 85, 165, 0)');
+    indikatorData.forEach((item, i) => {
+        const pct = (item.avg / maxScore * 100).toFixed(1);
+        const stars = Math.round(item.avg);
+        let starHtml = '';
+        for(let s=1;s<=5;s++) starHtml += `<i class="${s<=stars?'fas':'far'} fa-star" style="color:#f59e0b;font-size:11px"></i>`;
 
-    new Chart(ctxHari, {
-        type: 'line',
-        data: {
-            labels: dataHari.map(item => {
-                const date = new Date(item.tanggal);
-                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-            }),
-            datasets: [{
-                label: 'Rata-rata Rating',
-                data: dataHari.map(item => item.avg_rating),
-                borderColor: '#0055a5',
-                backgroundColor: gradientHari,
-                borderWidth: 3,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: '#0055a5',
-                pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: commonOptions
+        const row = document.createElement('div');
+        row.className = 'mb-3';
+        row.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span style="font-size:13px;font-weight:600;color:#334155;min-width:160px">${item.label}</span>
+                <span style="font-size:12px;color:#64748b">${starHtml} <strong style="color:#1e293b;margin-left:4px">${item.avg.toFixed(1)}</strong>/5.0
+                <small class="text-muted ms-2">(${item.total} resp.)</small></span>
+            </div>
+            <div style="background:#f1f5f9;border-radius:99px;height:10px;overflow:hidden">
+                <div style="width:${pct}%;background:${colors[i]};height:100%;border-radius:99px;transition:width .8s ease"></div>
+            </div>`;
+        container.appendChild(row);
     });
 
-    // 2. Chart Rating Per Bulan (Bar)
-    new Chart(document.getElementById('chartRatingBulan'), {
-        type: 'bar',
-        data: {
-            labels: dataBulan.map(item => {
-                const [year, month] = item.bulan.split('-');
-                const date = new Date(year, month - 1);
-                return date.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
-            }),
-            datasets: [{
-                label: 'Rata-rata Rating',
-                data: dataBulan.map(item => item.avg_rating),
-                backgroundColor: '#00a859',
-                borderRadius: 4,
-                barPercentage: 0.5,
-                maxBarThickness: 40
-            }]
-        },
-        options: commonOptions
-    });
-
-    // 3. Chart Rating Per Tahun (Bar)
-    new Chart(document.getElementById('chartRatingTahun'), {
-        type: 'bar',
-        data: {
-            labels: dataTahun.map(item => item.tahun),
-            datasets: [{
-                label: 'Rata-rata Rating',
-                data: dataTahun.map(item => item.avg_rating),
-                backgroundColor: '#003d7a',
-                borderRadius: 4,
-                barPercentage: 0.5,
-                maxBarThickness: 40
-            }]
-        },
-        options: commonOptions
-    });
-
-    // 4. Chart Kategori Feedback (Doughnut)
+    // ── 2. Kategori Donut ──
     new Chart(document.getElementById('chartKategori'), {
         type: 'doughnut',
         data: {
-            labels: dataKategori.map(item => item.kategori.charAt(0).toUpperCase() + item.kategori.slice(1)),
+            labels: kategoriData.map(d => d.kategori ? d.kategori.charAt(0).toUpperCase() + d.kategori.slice(1) : 'Lainnya'),
             datasets: [{
-                data: dataKategori.map(item => item.total),
-                backgroundColor: ['#e8333c', '#0055a5', '#00a859', '#d97706'],
+                data: kategoriData.map(d => d.total),
+                backgroundColor: ['#e8333c','#0055a5','#00a859','#d97706'],
                 borderWidth: 0,
-                hoverOffset: 4
+                hoverOffset: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '70%',
+            cutout: '65%',
             plugins: {
-                legend: { 
-                    position: 'bottom',
-                    labels: { padding: 20, usePointStyle: true, pointStyle: 'circle' }
-                },
+                legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyle: 'circle', font: { size: 12 } } },
                 tooltip: {
-                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                    padding: 12,
-                    cornerRadius: 8,
+                    backgroundColor: 'rgba(15,23,42,.9)',
+                    padding: 12, cornerRadius: 8,
                     callbacks: {
-                        label: function(context) {
-                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            let val = context.raw;
-                            let pct = ((val / total) * 100).toFixed(1) + '%';
-                            return ' ' + context.label + ': ' + val + ' (' + pct + ')';
+                        label: function(c) {
+                            let total = c.dataset.data.reduce((a,b)=>a+b,0);
+                            return ` ${c.label}: ${c.raw} (${((c.raw/total)*100).toFixed(1)}%)`;
                         }
                     }
+                }
+            }
+        }
+    });
+
+    // ── 3. Tren Masukan Bulanan (Bar) ──
+    const ctx = document.getElementById('chartTrenBulan').getContext('2d');
+    let grad = ctx.createLinearGradient(0, 0, 0, 280);
+    grad.addColorStop(0, 'rgba(0,85,165,.3)');
+    grad.addColorStop(1, 'rgba(0,85,165,0)');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: bulanData.map(d => {
+                const [y, m] = d.bulan.split('-');
+                return new Date(y, m-1).toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+            }),
+            datasets: [{
+                label: 'Masukan',
+                data: bulanData.map(d => d.total),
+                backgroundColor: 'rgba(0,85,165,.75)',
+                borderRadius: 5,
+                barPercentage: 0.6,
+                maxBarThickness: 40
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15,23,42,.9)',
+                    padding: 10, cornerRadius: 8, displayColors: false,
+                    callbacks: { label: c => ` ${c.raw} masukan` }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, padding: 8 },
+                    grid: { color: '#f1f5f9', drawBorder: false }
+                },
+                x: {
+                    ticks: { padding: 8 },
+                    grid: { display: false, drawBorder: false }
                 }
             }
         }
@@ -405,3 +378,4 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 @endif
 @endpush
+

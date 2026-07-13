@@ -59,79 +59,75 @@ class DashboardController extends Controller
         $ratingAnalytics = null;
         if ($user->isSuperAdmin() || $user->isAdminMarketing()) {
 
-            $driver = DB::getDriverName(); // 'sqlite', 'pgsql', 'mysql'
+            $driver = DB::getDriverName();
 
-            // Helper: format date expression sesuai driver
-            $dateFmt = fn(string $format, string $col): string => match ($driver) {
-                'pgsql'  => "TO_CHAR($col, '$format')",
-                'mysql'  => "DATE_FORMAT($col, '$format')",
-                default  => "strftime('$format', $col)",
-            };
-
-            $fmtHari  = match ($driver) { 'pgsql' => 'YYYY-MM-DD', 'mysql' => '%Y-%m-%d', default => '%Y-%m-%d' };
-            $fmtBulan = match ($driver) { 'pgsql' => 'YYYY-MM',    'mysql' => '%Y-%m',    default => '%Y-%m'    };
-            $fmtTahun = match ($driver) { 'pgsql' => 'YYYY',       'mysql' => '%Y',       default => '%Y'       };
             $castType = $driver === 'pgsql' ? 'NUMERIC' : 'REAL';
 
-            // Rating per hari (7 hari terakhir)
-            $ratingPerHari = KritikSaran::whereNotNull('rating')
-                ->where('created_at', '>=', now()->subDays(6)->startOfDay())
-                ->select(
-                    DB::raw($dateFmt($fmtHari, 'created_at') . ' as tanggal'),
-                    DB::raw("ROUND(AVG(CAST(rating AS $castType)), 1) as avg_rating"),
-                    DB::raw('COUNT(*) as total')
-                )
-                ->groupBy('tanggal')
-                ->orderBy('tanggal')
-                ->get();
+            // Rata-rata per indikator
+            $indikators = [
+                'rating_kepuasan_rs'      => 'Kepuasan RS',
+                'rating_alur_pelayanan'   => 'Alur Pelayanan',
+                'rating_fasilitas'        => 'Fasilitas',
+                'rating_kesesuaian_biaya' => 'Kesesuaian Biaya',
+                'rating_pelayanan_dokter' => 'Pelayanan Dokter',
+                'rating_pelayanan_perawat'=> 'Pelayanan Perawat',
+                'rating_laboratorium'     => 'Laboratorium',
+                'rating_radiologi'        => 'Radiologi',
+                'rating_fisioterapi'      => 'Fisioterapi',
+                'rating_farmasi'          => 'Farmasi',
+            ];
 
-            // Rating per bulan (12 bulan terakhir)
-            $ratingPerBulan = KritikSaran::whereNotNull('rating')
-                ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
-                ->select(
-                    DB::raw($dateFmt($fmtBulan, 'created_at') . ' as bulan'),
-                    DB::raw("ROUND(AVG(CAST(rating AS $castType)), 1) as avg_rating"),
-                    DB::raw('COUNT(*) as total')
-                )
-                ->groupBy('bulan')
-                ->orderBy('bulan')
-                ->get();
+            $avgPerIndikator = [];
+            $totalResponden  = KritikSaran::count();
 
-            // Rating per tahun (5 tahun terakhir)
-            $ratingPerTahun = KritikSaran::whereNotNull('rating')
-                ->where('created_at', '>=', now()->subYears(4)->startOfYear())
-                ->select(
-                    DB::raw($dateFmt($fmtTahun, 'created_at') . ' as tahun'),
-                    DB::raw("ROUND(AVG(CAST(rating AS $castType)), 1) as avg_rating"),
-                    DB::raw('COUNT(*) as total')
-                )
-                ->groupBy('tahun')
-                ->orderBy('tahun')
-                ->get();
+            foreach ($indikators as $col => $label) {
+                $avg = KritikSaran::whereNotNull($col)->avg($col);
+                $avgPerIndikator[] = [
+                    'label' => $label,
+                    'col'   => $col,
+                    'avg'   => $avg ? round($avg, 2) : 0,
+                    'total' => KritikSaran::whereNotNull($col)->count(),
+                ];
+            }
+
+            // Rata-rata keseluruhan dari semua indikator
+            $allAvgs = array_filter(array_column($avgPerIndikator, 'avg'));
+            $avgKeseluruhan = count($allAvgs) ? round(array_sum($allAvgs) / count($allAvgs), 2) : 0;
 
             // Distribusi per kategori
             $ratingPerKategori = KritikSaran::select('kategori', DB::raw('COUNT(*) as total'))
                 ->groupBy('kategori')
                 ->get();
 
-            // Distribusi bintang rating 1-5
-            $distribusiRating = KritikSaran::whereNotNull('rating')
-                ->select('rating', DB::raw('COUNT(*) as total'))
-                ->groupBy('rating')
-                ->orderBy('rating')
+            // Responden per jenis
+            $respondenStats = KritikSaran::select('responden', DB::raw('COUNT(*) as total'))
+                ->groupBy('responden')
                 ->get();
 
-            // Rata-rata rating keseluruhan
-            $avgRatingKeseluruhan = KritikSaran::whereNotNull('rating')->avg('rating');
+            // Masukan per bulan (12 bulan terakhir)
+            $dateFmt = fn(string $format, string $col): string => match ($driver) {
+                'pgsql'  => "TO_CHAR($col, '$format')",
+                'mysql'  => "DATE_FORMAT($col, '$format')",
+                default  => "strftime('$format', $col)",
+            };
+            $fmtBulan = match ($driver) { 'pgsql' => 'YYYY-MM', 'mysql' => '%Y-%m', default => '%Y-%m' };
+
+            $masukanPerBulan = KritikSaran::where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+                ->select(
+                    DB::raw($dateFmt($fmtBulan, 'created_at') . ' as bulan'),
+                    DB::raw('COUNT(*) as total')
+                )
+                ->groupBy('bulan')
+                ->orderBy('bulan')
+                ->get();
 
             $ratingAnalytics = [
-                'per_hari'          => $ratingPerHari,
-                'per_bulan'         => $ratingPerBulan,
-                'per_tahun'         => $ratingPerTahun,
-                'per_kategori'      => $ratingPerKategori,
-                'distribusi_rating' => $distribusiRating,
-                'avg_keseluruhan'   => round($avgRatingKeseluruhan ?? 0, 1),
-                'total_responden'   => KritikSaran::whereNotNull('rating')->count(),
+                'avg_per_indikator'  => $avgPerIndikator,
+                'avg_keseluruhan'    => $avgKeseluruhan,
+                'total_responden'    => $totalResponden,
+                'per_kategori'       => $ratingPerKategori,
+                'responden_stats'    => $respondenStats,
+                'masukan_per_bulan'  => $masukanPerBulan,
             ];
         }
 
