@@ -68,14 +68,38 @@ class SyncTeramedikCommand extends Command
 
                 if (!$tmid) continue;
 
-                $poli = Poli::updateOrCreate(
-                    ['teramedik_id' => (string) $tmid],
-                    [
+                $slug = Str::slug($namaSpesialis);
+
+                // Cari poli berdasarkan teramedik_id
+                $poli = Poli::where('teramedik_id', (string) $tmid)->first();
+
+                if (!$poli) {
+                    // Jika tidak ada by teramedik_id, cari berdasarkan slug (poli manual yang sudah ada)
+                    $poli = Poli::where('slug', $slug)->first();
+                    if ($poli) {
+                        // Jika ada poli lama dengan slug ini, update teramedik_id nya
+                        $poli->update([
+                            'teramedik_id' => (string) $tmid,
+                            'nama' => $namaSpesialis,
+                            'is_active' => true,
+                        ]);
+                    } else {
+                        // Jika belum ada sama sekali, buat baru
+                        $poli = Poli::create([
+                            'teramedik_id' => (string) $tmid,
+                            'nama' => $namaSpesialis,
+                            'slug' => $slug,
+                            'is_active' => true,
+                        ]);
+                    }
+                } else {
+                    // Jika poli sudah terhubung dengan teramedik_id, cukup update
+                    $poli->update([
                         'nama' => $namaSpesialis,
-                        'slug' => Str::slug($namaSpesialis),
                         'is_active' => true,
-                    ]
-                );
+                    ]);
+                }
+                
                 $totalPoli++;
 
                 // 2. Looping Dokter
