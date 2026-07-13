@@ -106,7 +106,18 @@
                 <div class="poli-body">
                     <div class="dokter-grid">
                         @foreach($poli->dokters as $dokter)
-                        <div class="dokter-card-v2">
+                        @php
+                            $jadwalSorted = $dokter->jadwal->sortBy(fn($j) => ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8);
+                            $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
+                        @endphp
+                        {{-- Card klik → buka modal --}}
+                        <div class="dokter-card-v2" onclick="openDokterModal(this)" style="cursor:pointer;"
+                            data-nama="{{ $dokter->nama_lengkap }}"
+                            data-spesialis="{{ $poli->nama }}"
+                            data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
+                            data-wa="{{ $waNumber }}"
+                            data-jadwal='@json($jadwalSorted->values()->map(fn($j) => ["hari"=>$j->hari,"mulai"=>substr($j->jam_mulai,0,5),"selesai"=>substr($j->jam_selesai,0,5)]))'>
+
                             <div class="dokter-card-photo">
                                 @if($dokter->foto)
                                 <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" loading="lazy">
@@ -119,28 +130,10 @@
                             <div class="dokter-card-body">
                                 <h5 class="dokter-card-nama">{{ $dokter->nama_lengkap }}</h5>
                                 <p class="dokter-card-spesialis">{{ $poli->nama }}</p>
-
-                                @if($dokter->jadwal->count())
-                                <button class="dokter-jadwal-toggle" type="button" onclick="toggleJadwal(this)">
-                                    <i class="bi bi-calendar3 me-2"></i>Lihat Jadwal Praktek
-                                    <i class="bi bi-chevron-down ms-auto dokter-jadwal-chevron"></i>
-                                </button>
-                                <div class="dokter-schedule-wrap" style="display:none;">
-                                    <div class="dokter-schedule-label"><i class="bi bi-clock me-1"></i>Jadwal Praktek</div>
-                                    @foreach($dokter->jadwal->sortBy(fn($j) => ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8) as $jadwal)
-                                    <div class="dokter-schedule-row">
-                                        <span class="dokter-schedule-hari">{{ $jadwal->hari }}</span>
-                                        <span class="dokter-schedule-jam">{{ substr($jadwal->jam_mulai,0,5) }} – {{ substr($jadwal->jam_selesai,0,5) }}</span>
-                                    </div>
-                                    @endforeach
+                                <div class="dokter-card-hint">
+                                    <i class="bi bi-hand-index-thumb me-1"></i>
+                                    {{ $jadwalSorted->count() > 0 ? $jadwalSorted->count().' jadwal tersedia' : 'Klik untuk info' }}
                                 </div>
-                                @else
-                                <div class="dokter-no-schedule"><i class="bi bi-info-circle me-1"></i>Jadwal belum tersedia</div>
-                                @endif
-
-                                <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}" target="_blank" class="dokter-wa-btn">
-                                    <i class="bi bi-whatsapp me-2"></i>Buat Janji
-                                </a>
                             </div>
                         </div>
                         @endforeach
@@ -154,6 +147,41 @@
         @endif
     </div>
 </section>
+
+{{-- MODAL DOKTER --}}
+<div id="dokter-modal" class="dokter-modal-overlay" onclick="closeDokterModal(event)">
+    <div class="dokter-modal-box">
+        <button class="dokter-modal-close" onclick="closeDokterModal()"><i class="bi bi-x-lg"></i></button>
+
+        <div class="dokter-modal-inner">
+            {{-- Foto --}}
+            <div class="dokter-modal-photo-wrap">
+                <div id="modal-photo-placeholder" class="dokter-modal-photo-placeholder"><i class="bi bi-person-fill"></i></div>
+                <img id="modal-foto" class="dokter-modal-foto" src="" alt="" style="display:none;">
+            </div>
+
+            {{-- Info --}}
+            <div class="dokter-modal-info">
+                <p id="modal-spesialis" class="dokter-modal-spesialis"></p>
+                <h4 id="modal-nama" class="dokter-modal-nama"></h4>
+
+                {{-- Jadwal --}}
+                <div class="dokter-modal-jadwal-wrap">
+                    <div class="dokter-modal-jadwal-title"><i class="bi bi-calendar3-fill me-2"></i>Jadwal Praktek</div>
+                    <div id="modal-jadwal-list" class="dokter-modal-jadwal-list"></div>
+                    <div id="modal-no-jadwal" class="dokter-modal-no-jadwal" style="display:none;">
+                        <i class="bi bi-calendar-x me-2"></i>Jadwal belum tersedia
+                    </div>
+                </div>
+
+                {{-- Action --}}
+                <a id="modal-wa-btn" href="#" target="_blank" class="dokter-modal-wa-btn">
+                    <i class="bi bi-whatsapp me-2"></i>Buat Janji via WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
 /* ──────────────────────────────────────────────────
@@ -595,33 +623,193 @@
     font-size: 11.5px;
 }
 
-.dokter-no-schedule {
+.dokter-card-hint {
     font-size: 12px;
     color: #9ba5b4;
-    background: #f7f9fc;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 12px;
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
 }
 
-.dokter-wa-btn {
+/* ──────────────────────────────────────────────────
+   MODAL DOKTER
+────────────────────────────────────────────────── */
+.dokter-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.dokter-modal-overlay.is-open {
+    display: flex;
+    animation: fadeIn .2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.dokter-modal-box {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp .25s ease;
+    box-shadow: 0 24px 64px rgba(0,0,0,.2);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dokter-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s;
+    z-index: 10;
+}
+
+.dokter-modal-close:hover { background: #e0e0e0; }
+
+.dokter-modal-inner {
+    display: flex;
+    gap: 0;
+    flex-direction: column;
+}
+
+.dokter-modal-photo-wrap {
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(135deg, #e4e9f0, #f0f4f8);
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+    flex-shrink: 0;
+}
+
+.dokter-modal-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.dokter-modal-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    color: #9ba5b4;
+}
+
+.dokter-modal-info {
+    padding: 24px;
+}
+
+.dokter-modal-spesialis {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary, #0d6efd);
+    margin-bottom: 6px;
+}
+
+.dokter-modal-nama {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+.dokter-modal-jadwal-wrap {
+    background: #f7f9fc;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #eef1f6;
+}
+
+.dokter-modal-jadwal-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.dokter-modal-jadwal-list { display: flex; flex-direction: column; gap: 6px; }
+
+.dokter-modal-jadwal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-radius: 8px;
+    padding: 9px 12px;
+    border: 1px solid #eef1f6;
+}
+
+.dokter-modal-jadwal-hari {
+    font-weight: 700;
+    font-size: 13px;
+    color: #1a202c;
+}
+
+.dokter-modal-jadwal-jam {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.dokter-modal-no-jadwal {
+    color: #9ba5b4;
+    font-size: 13px;
+    text-align: center;
+    padding: 12px;
+}
+
+.dokter-modal-wa-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     background: #25D366;
     color: #fff;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 13px;
-    font-weight: 600;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
     text-decoration: none;
     transition: background .2s, transform .15s;
-    margin-top: auto;
 }
 
-.dokter-wa-btn:hover {
+.dokter-modal-wa-btn:hover {
     background: #1da851;
     color: #fff;
     transform: translateY(-1px);
@@ -646,18 +834,62 @@ function togglePoli(btn) {
     accordion.classList.toggle('is-open', !isOpen);
 }
 
-function toggleJadwal(btn) {
-    const wrap = btn.nextElementSibling;
-    const isOpen = btn.classList.contains('is-open');
-    if (isOpen) {
-        wrap.style.display = 'none';
-        btn.classList.remove('is-open');
-        btn.querySelector('span') && (btn.querySelector('span').textContent = 'Lihat Jadwal Praktek');
+function openDokterModal(card) {
+    const nama      = card.dataset.nama;
+    const spesialis = card.dataset.spesialis;
+    const foto      = card.dataset.foto;
+    const wa        = card.dataset.wa;
+    const jadwal    = JSON.parse(card.dataset.jadwal || '[]');
+
+    document.getElementById('modal-nama').textContent      = nama;
+    document.getElementById('modal-spesialis').textContent = spesialis;
+    document.getElementById('modal-wa-btn').href           = 'https://wa.me/' + wa;
+
+    // Foto
+    const imgEl = document.getElementById('modal-foto');
+    const phEl  = document.getElementById('modal-photo-placeholder');
+    if (foto) {
+        imgEl.src          = foto;
+        imgEl.style.display = 'block';
+        phEl.style.display  = 'none';
     } else {
-        wrap.style.display = 'block';
-        btn.classList.add('is-open');
+        imgEl.style.display = 'none';
+        phEl.style.display  = 'flex';
     }
+
+    // Jadwal
+    const listEl   = document.getElementById('modal-jadwal-list');
+    const noJadwal = document.getElementById('modal-no-jadwal');
+    listEl.innerHTML = '';
+    if (jadwal.length > 0) {
+        noJadwal.style.display = 'none';
+        listEl.style.display   = 'flex';
+        jadwal.forEach(j => {
+            listEl.innerHTML += `
+            <div class="dokter-modal-jadwal-row">
+                <span class="dokter-modal-jadwal-hari">${j.hari}</span>
+                <span class="dokter-modal-jadwal-jam">${j.mulai} – ${j.selesai}</span>
+            </div>`;
+        });
+    } else {
+        listEl.style.display   = 'none';
+        noJadwal.style.display = 'block';
+    }
+
+    document.getElementById('dokter-modal').classList.add('is-open');
+    document.body.style.overflow = 'hidden';
 }
+
+function closeDokterModal(e) {
+    if (e && e.target !== document.getElementById('dokter-modal')) return;
+    document.getElementById('dokter-modal').classList.remove('is-open');
+    document.body.style.overflow = '';
+}
+
+// ESC key close
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDokterModal();
+});
 
 // Auto-open the first poli if no search filters active
 document.addEventListener('DOMContentLoaded', function() {
