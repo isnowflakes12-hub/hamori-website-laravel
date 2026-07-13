@@ -23,7 +23,7 @@ class BannersTableSeeder extends Seeder
             array (
                 'id' => 1,
                 'judul' => NULL,
-                'gambar' => NULL,
+                'gambar' => 'placeholder.png',
                 'gambar_mobile' => NULL,
                 'link' => NULL,
                 'urutan' => 0,
@@ -35,7 +35,7 @@ class BannersTableSeeder extends Seeder
             array (
                 'id' => 2,
                 'judul' => NULL,
-                'gambar' => NULL,
+                'gambar' => 'placeholder.png',
                 'gambar_mobile' => NULL,
                 'link' => NULL,
                 'urutan' => 0,
