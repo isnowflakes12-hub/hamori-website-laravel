@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class Dokter extends Model
 {
     protected $fillable = [
-        'nama', 'foto', 'gelar_depan', 'gelar_belakang',
+        'teramedik_id', 'nama', 'foto', 'gelar_depan', 'gelar_belakang',
         'poli_id', 'spesialisasi', 'pendidikan', 'bio', 'is_active'
     ];
     protected $casts = ['is_active' => 'boolean'];
