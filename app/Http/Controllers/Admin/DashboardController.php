@@ -59,12 +59,26 @@ class DashboardController extends Controller
         $ratingAnalytics = null;
         if ($user->isSuperAdmin() || $user->isAdminMarketing()) {
 
+            $driver = DB::getDriverName(); // 'sqlite', 'pgsql', 'mysql'
+
+            // Helper: format date expression sesuai driver
+            $dateFmt = fn(string $format, string $col): string => match ($driver) {
+                'pgsql'  => "TO_CHAR($col, '$format')",
+                'mysql'  => "DATE_FORMAT($col, '$format')",
+                default  => "strftime('$format', $col)",
+            };
+
+            $fmtHari  = match ($driver) { 'pgsql' => 'YYYY-MM-DD', 'mysql' => '%Y-%m-%d', default => '%Y-%m-%d' };
+            $fmtBulan = match ($driver) { 'pgsql' => 'YYYY-MM',    'mysql' => '%Y-%m',    default => '%Y-%m'    };
+            $fmtTahun = match ($driver) { 'pgsql' => 'YYYY',       'mysql' => '%Y',       default => '%Y'       };
+            $castType = $driver === 'pgsql' ? 'NUMERIC' : 'REAL';
+
             // Rating per hari (7 hari terakhir)
             $ratingPerHari = KritikSaran::whereNotNull('rating')
                 ->where('created_at', '>=', now()->subDays(6)->startOfDay())
                 ->select(
-                    DB::raw("strftime('%Y-%m-%d', created_at) as tanggal"),
-                    DB::raw('ROUND(AVG(CAST(rating AS REAL)), 1) as avg_rating'),
+                    DB::raw($dateFmt($fmtHari, 'created_at') . ' as tanggal'),
+                    DB::raw("ROUND(AVG(CAST(rating AS $castType)), 1) as avg_rating"),
                     DB::raw('COUNT(*) as total')
                 )
                 ->groupBy('tanggal')
@@ -75,8 +89,8 @@ class DashboardController extends Controller
             $ratingPerBulan = KritikSaran::whereNotNull('rating')
                 ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
                 ->select(
-                    DB::raw("strftime('%Y-%m', created_at) as bulan"),
-                    DB::raw('ROUND(AVG(CAST(rating AS REAL)), 1) as avg_rating'),
+                    DB::raw($dateFmt($fmtBulan, 'created_at') . ' as bulan'),
+                    DB::raw("ROUND(AVG(CAST(rating AS $castType)), 1) as avg_rating"),
                     DB::raw('COUNT(*) as total')
                 )
                 ->groupBy('bulan')
@@ -87,8 +101,8 @@ class DashboardController extends Controller
             $ratingPerTahun = KritikSaran::whereNotNull('rating')
                 ->where('created_at', '>=', now()->subYears(4)->startOfYear())
                 ->select(
-                    DB::raw("strftime('%Y', created_at) as tahun"),
-                    DB::raw('ROUND(AVG(CAST(rating AS REAL)), 1) as avg_rating'),
+                    DB::raw($dateFmt($fmtTahun, 'created_at') . ' as tahun'),
+                    DB::raw("ROUND(AVG(CAST(rating AS $castType)), 1) as avg_rating"),
                     DB::raw('COUNT(*) as total')
                 )
                 ->groupBy('tahun')
