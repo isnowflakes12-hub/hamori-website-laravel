@@ -110,24 +110,90 @@
             </div>
         </div>
     </div>
+
+    {{-- Live Preview --}}
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size: 13px; letter-spacing: 1px;">Live Preview</h6>
+        <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; position: sticky; top: 90px;">
+            <div class="card-body p-4 text-center">
+                <div class="mb-3 d-flex justify-content-center align-items-center" style="height: 120px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                    @if($partner->logo)
+                        <img src="{{ asset('storage/' . $partner->logo) }}" id="live-logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    @else
+                        <img src="" id="live-logo" class="d-none" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        <i class="bi bi-building fs-1 text-muted" id="live-logo-icon"></i>
+                    @endif
+                </div>
+                
+                <h5 class="fw-bold mb-1" id="live-nama" style="color: #1e293b;">
+                    {{ $partner->nama ?: 'Nama Partner' }}
+                </h5>
+                
+                <div class="mb-3">
+                    <span class="badge" id="live-kategori" style="background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; font-weight: 600; padding: 5px 10px;">
+                        {{ $partner->kategori ?: 'Kategori' }}
+                    </span>
+                </div>
+                
+                <div class="text-muted" style="font-size: 13px;">
+                    Preview ini menunjukkan bagaimana tampilan logo dan informasi partner pada halaman depan website.
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Preview image
-    document.getElementById('logo').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('logo-preview');
-                const placeholder = document.getElementById('logo-preview-placeholder');
-                
-                preview.src = e.target.result;
-                preview.classList.remove('d-none');
-                if (placeholder) placeholder.classList.add('d-none');
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputNama = document.querySelector('input[name="nama"]');
+        const inputKategori = document.querySelector('input[name="kategori"]');
+        const liveNama = document.getElementById('live-nama');
+        const liveKategori = document.getElementById('live-kategori');
+        
+        // Update Nama
+        inputNama.addEventListener('input', function() {
+            liveNama.textContent = this.value || 'Nama Partner';
+        });
+
+        // Update Kategori
+        inputKategori.addEventListener('input', function() {
+            liveKategori.textContent = this.value || 'Kategori';
+            if(this.value) {
+                liveKategori.style.display = 'inline-block';
+            } else {
+                liveKategori.style.display = 'none'; // Optional: sembunyikan jika kosong
             }
-            reader.readAsDataURL(file);
+        });
+        
+        // Init state for kategori
+        if(!inputKategori.value) {
+            liveKategori.textContent = 'Kategori';
         }
+
+        // Preview image
+        document.getElementById('logo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Update main preview
+                    const preview = document.getElementById('logo-preview');
+                    const placeholder = document.getElementById('logo-preview-placeholder');
+                    
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                    if (placeholder) placeholder.classList.add('d-none');
+                    
+                    // Update live preview
+                    const liveLogo = document.getElementById('live-logo');
+                    const liveIcon = document.getElementById('live-logo-icon');
+                    liveLogo.src = e.target.result;
+                    liveLogo.classList.remove('d-none');
+                    if (liveIcon) liveIcon.classList.add('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
     });
 </script>
 @endsection
