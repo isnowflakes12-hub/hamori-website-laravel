@@ -95,7 +95,7 @@ class KritikSaranAdminController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['ID', 'Tanggal', 'Nama', 'Email', 'Telepon', 'Responden', 'Poliklinik', 'Kategori', 'Rating', 'Pesan', 'Status'];
+        $columns = ['ID', 'Tanggal', 'Nama', 'Email', 'Telepon', 'Responden', 'Poliklinik', 'Kategori', 'Pesan', 'Kepuasan RS', 'Alur Pelayanan', 'Fasilitas', 'Kesesuaian Biaya', 'Pelayanan Dokter', 'Pelayanan Perawat', 'Pelayanan Penunjang', 'Status'];
 
         $callback = function() use($data, $columns) {
             $file = fopen('php://output', 'w');
@@ -127,4 +127,5 @@ class KritikSaranAdminController extends Controller
         return back()->with('success', 'Data berhasil dihapus.');
     }
 }
+
 

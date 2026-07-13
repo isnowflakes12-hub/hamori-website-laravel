@@ -31,13 +31,39 @@
                 <div class="p-4 rounded bg-light" style="font-size:15px;line-height:1.7;color:#334155;white-space:pre-wrap">{{ $kritik_saran->pesan }}</div>
             </div>
 
-            @if($kritik_saran->rating)
+            @php
+                $allRatings = [
+                    'Kepuasan Rumah Sakit'  => $kritik_saran->rating_kepuasan_rs,
+                    'Alur Pelayanan'        => $kritik_saran->rating_alur_pelayanan,
+                    'Fasilitas'             => $kritik_saran->rating_fasilitas,
+                    'Kesesuaian Biaya'      => $kritik_saran->rating_kesesuaian_biaya,
+                    'Pelayanan Dokter'      => $kritik_saran->rating_pelayanan_dokter,
+                    'Pelayanan Perawat'     => $kritik_saran->rating_pelayanan_perawat,
+                    'Pelayanan Penunjang'   => $kritik_saran->rating_pelayanan_penunjang,
+                ];
+            @endphp
             <div class="mb-4">
-                <h6 class="fw-bold text-muted mb-2">Rating Diberikan:</h6>
-                <span style="color:#f59e0b;font-size:24px">{{ str_repeat('★', $kritik_saran->rating) }}</span>
-                <span style="color:#e2e8f0;font-size:24px">{{ str_repeat('★', 5 - $kritik_saran->rating) }}</span>
+                <h6 class="fw-bold text-muted mb-3">Penilaian Layanan:</h6>
+                <div class="row g-2">
+                    @foreach($allRatings as $label => $val)
+                    <div class="col-md-6">
+                        <div class="p-2 border rounded bg-light d-flex justify-content-between align-items-center">
+                            <span style="font-size:13px;font-weight:600">{{ $label }}</span>
+                            <span>
+                                @if($val)
+                                    @for($s=1;$s<=5;$s++)
+                                        <i class="fas fa-star" style="color:{{ $s <= $val ? '#f59e0b' : '#e2e8f0' }};font-size:14px"></i>
+                                    @endfor
+                                    <small class="ms-1 text-muted">({{ $val }}/5)</small>
+                                @else
+                                    <span class="text-muted" style="font-size:12px">-</span>
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
-            @endif
 
             <hr>
             

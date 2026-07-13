@@ -52,7 +52,13 @@ class KontakController extends Controller
             'telepon'  => 'required|string|max:20',
             'kategori' => 'nullable|in:kritik,saran,pertanyaan',
             'pesan'    => 'required|string',
-            'rating'   => 'required|integer|min:1|max:5',
+                        'rating_kepuasan_rs' => 'required|integer|min:1|max:5',
+            'rating_alur_pelayanan' => 'required|integer|min:1|max:5',
+            'rating_fasilitas' => 'required|integer|min:1|max:5',
+            'rating_kesesuaian_biaya' => 'required|integer|min:1|max:5',
+            'rating_pelayanan_dokter' => 'required|integer|min:1|max:5',
+            'rating_pelayanan_perawat' => 'required|integer|min:1|max:5',
+            'rating_pelayanan_penunjang' => 'required|integer|min:1|max:5',
         ], [
             'nama.required' => 'Nama harus diisi.',
             'nama.min' => 'Nama minimal 2 huruf.',
@@ -62,7 +68,13 @@ class KontakController extends Controller
             'kategori.required' => 'Kategori harus diisi.',
             'kategori.in' => 'Kategori tidak valid.',
             'pesan.required' => 'Pesan harus diisi.',
-            'rating.required' => 'Penilaian harus diisi.',
+                        'rating_kepuasan_rs.required' => 'Penilaian Kepuasan RS harus diisi.',
+            'rating_alur_pelayanan.required' => 'Penilaian Alur Pelayanan harus diisi.',
+            'rating_fasilitas.required' => 'Penilaian Fasilitas harus diisi.',
+            'rating_kesesuaian_biaya.required' => 'Penilaian Kesesuaian Biaya harus diisi.',
+            'rating_pelayanan_dokter.required' => 'Penilaian Pelayanan Dokter harus diisi.',
+            'rating_pelayanan_perawat.required' => 'Penilaian Pelayanan Perawat harus diisi.',
+            'rating_pelayanan_penunjang.required' => 'Penilaian Pelayanan Penunjang harus diisi.',
         ]);
 
         KritikSaran::create($request->only(['nama', 'email', 'telepon', 'kategori', 'pesan', 'rating']));
@@ -70,4 +82,5 @@ class KontakController extends Controller
         return redirect()->back()->with('success', 'Terima kasih atas masukan Anda!');
     }
 }
+
 

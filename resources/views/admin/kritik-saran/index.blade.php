@@ -50,13 +50,29 @@
                 <div style="font-size:10px;color:#94a3b8;margin-top:4px">{{ $ks->created_at->diffForHumans() }}</div>
             </td>
             <td style="font-size:13px;color:#475569;max-width:300px">{{ Str::limit($ks->pesan, 80) }}</td>
-            <td>`n                <span class="badge bg-info mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->responden ?? '-' }}</span><br>`n                <span style="font-size:10px;color:#64748b">{{ $ks->nama_poliklinik ?? '-' }}</span>`n            </td>`n            <td>`n                <span class="badge bg-secondary mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->kategori }}</span><br>
-                @if($ks->rating)
-                <span style="color:#f59e0b;font-size:12px">{{ str_repeat('★', $ks->rating) }}{{ str_repeat('☆', 5 - $ks->rating) }}</span>
+            <td>`n                <span class="badge bg-info mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->responden ?? '-' }}</span><br>`n                <span style="font-size:10px;color:#64748b">{{ $ks->nama_poliklinik ?? '-' }}</span>`n            </td>`n            <td>`n                @php
+                    $ratingVals = array_filter([
+                        $ks->rating_kepuasan_rs,
+                        $ks->rating_alur_pelayanan,
+                        $ks->rating_fasilitas,
+                        $ks->rating_kesesuaian_biaya,
+                        $ks->rating_pelayanan_dokter,
+                        $ks->rating_pelayanan_perawat,
+                        $ks->rating_pelayanan_penunjang,
+                    ]);
+                    $avgRating = count($ratingVals) ? round(array_sum($ratingVals) / count($ratingVals), 1) : null;
+                @endphp
+                <td>
+                <span class="badge bg-secondary mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->kategori ?? '-' }}</span><br>
+                @if($avgRating)
+                    <span style="color:#f59e0b;font-size:12px">
+                        @for($s=1;$s<=5;$s++)<i class="{{ $s <= round($avgRating) ? 'fas' : 'far' }} fa-star"></i>@endfor
+                    </span>
+                    <small class="text-muted" style="font-size:10px"> {{ $avgRating }}/5</small>
                 @else
-                <span style="font-size:11px;color:#94a3b8">-</span>
+                    <span style="font-size:11px;color:#94a3b8">-</span>
                 @endif
-            </td>
+                </td>
             <td>
                 @if($ks->status === 'pending') <span class="badge bg-warning text-dark">Pending</span>
                 @elseif($ks->status === 'approved') <span class="badge bg-success">Disetujui</span>

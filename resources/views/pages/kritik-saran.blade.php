@@ -114,15 +114,16 @@
 
                         <div class="row g-4">
 
-                                                        <div class="col-md-12">
+                            {{-- Responden --}}
+                            <div class="col-md-12">
                                 <div class="ks-field">
                                     <label class="ks-label">Responden <span class="ks-required">*</span></label>
                                     <div class="d-flex gap-4 mt-2">
-                                        <label class="d-flex align-items-center gap-2">
+                                        <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-weight:500">
                                             <input type="radio" name="responden" value="pasien" class="form-check-input" id="respPasien" {{ old('responden') == 'pasien' ? 'checked' : '' }} required>
                                             Pasien
                                         </label>
-                                        <label class="d-flex align-items-center gap-2">
+                                        <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-weight:500">
                                             <input type="radio" name="responden" value="pengunjung" class="form-check-input" id="respPengunjung" {{ old('responden') == 'pengunjung' ? 'checked' : '' }} required>
                                             Pengunjung
                                         </label>
@@ -133,7 +134,8 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12" id="poliWrap" style="display: none;">
+                            {{-- Poliklinik (only visible for Pasien) --}}
+                            <div class="col-md-12" id="poliWrap" style="display:none;">
                                 <div class="ks-field">
                                     <label class="ks-label">Nama Poliklinik</label>
                                     <div class="ks-input-wrap {{ $errors->has('nama_poliklinik') ? 'ks-input-wrap--error' : '' }}">
@@ -148,6 +150,7 @@
                                 </div>
                             </div>
 
+                            {{-- Nama --}}
                             <div class="col-md-6">
                                 <div class="ks-field">
                                     <label class="ks-label">Nama Pasien/Pengunjung <span class="ks-required">*</span></label>
@@ -163,6 +166,7 @@
                                 </div>
                             </div>
 
+                            {{-- Telepon --}}
                             <div class="col-md-6">
                                 <div class="ks-field">
                                     <label class="ks-label">Nomor Telepon <span class="ks-required">*</span></label>
@@ -178,28 +182,60 @@
                                 </div>
                             </div>
 
+                            {{-- Multiple Star Ratings --}}
+                            @php
+                                $ratingFields = [
+                                    'rating_kepuasan_rs'         => ['label' => 'Kepuasan Rumah Sakit',     'sub' => null],
+                                    'rating_alur_pelayanan'      => ['label' => 'Alur Pelayanan',            'sub' => null],
+                                    'rating_fasilitas'           => ['label' => 'Fasilitas',                 'sub' => null],
+                                    'rating_kesesuaian_biaya'    => ['label' => 'Kesesuaian Biaya',          'sub' => null],
+                                    'rating_pelayanan_dokter'    => ['label' => 'Pelayanan Dokter',          'sub' => null],
+                                    'rating_pelayanan_perawat'   => ['label' => 'Pelayanan Perawat',         'sub' => null],
+                                    'rating_pelayanan_penunjang' => ['label' => 'Pelayanan Penunjang',       'sub' => 'Laboratorium, Radiologi, Fisioterapi, Farmasi'],
+                                ];
+                            @endphp
+
                             <div class="col-12">
                                 <div class="ks-field">
-                                    <label class="ks-label">Penilaian Layanan <span class="ks-required">*</span></label>
-                                    <div class="ks-rating-wrap {{ $errors->has('rating') ? 'border border-danger rounded' : '' }}" style="{{ $errors->has('rating') ? 'padding: 10px;' : '' }}">
-                                        @for($i = 1; $i <= 5; $i++)
-                                        <label class="ks-rating-label" data-val="{{ $i }}">
-                                            <input type="radio" name="rating" value="{{ $i }}"
-                                                   class="ks-rating-input"
-                                                   {{ old('rating') == $i ? 'checked' : '' }} required>
-                                            <span class="ks-rating-star">
-                                                <i class="fas fa-star"></i>
-                                            </span>
-                                        </label>
-                                        @endfor
-                                        <span class="ks-rating-hint" id="ratingHint">Pilih penilaian Anda</span>
+                                    <label class="ks-label mb-3">Penilaian Layanan <span class="ks-required">*</span></label>
+                                    <div class="row g-3">
+                                        @foreach($ratingFields as $field => $info)
+                                        <div class="col-md-6">
+                                            <div class="p-3 rounded {{ $errors->has($field) ? 'border border-danger bg-danger bg-opacity-10' : 'border bg-light' }}">
+                                                <label class="d-block fw-semibold mb-1" style="font-size:14px">
+                                                    {{ $info['label'] }}
+                                                    @if($info['sub'])
+                                                    <br><small class="text-muted fw-normal" style="font-size:11px">{{ $info['sub'] }}</small>
+                                                    @endif
+                                                </label>
+                                                <div class="ks-rating-wrap ks-multi-rating" data-field="{{ $field }}">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                    <label class="ks-rating-label {{ old($field) >= $i ? 'ks-rating-label--active' : '' }}" data-val="{{ $i }}">
+                                                        <input type="radio" name="{{ $field }}" value="{{ $i }}"
+                                                               class="ks-rating-input"
+                                                               {{ old($field) == $i ? 'checked' : '' }} required>
+                                                        <span class="ks-rating-star"><i class="fas fa-star"></i></span>
+                                                    </label>
+                                                    @endfor
+                                                    <span class="ks-rating-hint ms-2" style="font-size:12px;font-weight:600">
+                                                        @php
+                                                            $ov = old($field);
+                                                            $hintTexts = [1=>'Sangat Buruk',2=>'Buruk',3=>'Cukup',4=>'Baik',5=>'Sangat Baik'];
+                                                        @endphp
+                                                        {{ $ov && isset($hintTexts[$ov]) ? $hintTexts[$ov] : 'Pilih' }}
+                                                    </span>
+                                                </div>
+                                                @error($field)
+                                                <span class="ks-error-msg mt-2 d-block"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        @endforeach
                                     </div>
-                                    @error('rating')
-                                    <span class="ks-error-msg mt-2 d-block"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
-                                    @enderror
                                 </div>
                             </div>
 
+                            {{-- Pesan / Kritik & Saran --}}
                             <div class="col-12">
                                 <div class="ks-field">
                                     <label class="ks-label">Kritik dan Saran <span class="ks-required">*</span></label>
@@ -216,6 +252,7 @@
                                 </div>
                             </div>
 
+                            {{-- Submit --}}
                             <div class="col-12">
                                 <div class="ks-form-footer">
                                     <p class="ks-form-note">
@@ -241,18 +278,14 @@
 
 <script>
 (function () {
-    const labels  = document.querySelectorAll('.ks-rating-label');
-    const inputs  = document.querySelectorAll('.ks-rating-input');
-    const hint    = document.getElementById('ratingHint');
-    const hints   = ['', 'Sangat Buruk', 'Buruk', 'Cukup', 'Baik', 'Sangat Baik'];
-
-        const respPasien = document.getElementById('respPasien');
-    const respPeng = document.getElementById('respPengunjung');
-    const poliWrap = document.getElementById('poliWrap');
-    const poliSelect = document.getElementById('poliSelect');
+    // Poli toggle
+    const respPasien  = document.getElementById('respPasien');
+    const respPeng    = document.getElementById('respPengunjung');
+    const poliWrap    = document.getElementById('poliWrap');
+    const poliSelect  = document.getElementById('poliSelect');
 
     function checkPoli() {
-        if(respPasien.checked) {
+        if (respPasien && respPasien.checked) {
             poliWrap.style.display = 'block';
             poliSelect.setAttribute('required', 'required');
         } else {
@@ -260,42 +293,40 @@
             poliSelect.removeAttribute('required');
         }
     }
-    
-    if(respPasien) respPasien.addEventListener('change', checkPoli);
-    if(respPeng) respPeng.addEventListener('change', checkPoli);
-    if(respPasien || respPeng) checkPoli();
 
-    function update(active) {
-        labels.forEach((l, i) => {
-            l.classList.toggle('ks-rating-label--active', i < active);
-        });
-        hint.textContent = active ? hints[active] : 'Pilih penilaian Anda';
-        hint.style.color = active >= 4
-            ? 'var(--green)'
-            : active >= 3
-            ? 'var(--amber)'
-            : active
-            ? 'var(--red)'
-            : 'var(--muted-2)';
-    }
+    if (respPasien) respPasien.addEventListener('change', checkPoli);
+    if (respPeng)   respPeng.addEventListener('change', checkPoli);
+    checkPoli();
 
-    labels.forEach((label, i) => {
-        label.addEventListener('mouseenter', () => update(i + 1));
-        label.addEventListener('mouseleave', () => {
-            const checked = [...inputs].findIndex(r => r.checked);
-            update(checked >= 0 ? checked + 1 : 0);
+    // Star rating for each criteria
+    const hints = ['', 'Sangat Buruk', 'Buruk', 'Cukup', 'Baik', 'Sangat Baik'];
+
+    document.querySelectorAll('.ks-multi-rating').forEach(wrap => {
+        const labels = wrap.querySelectorAll('.ks-rating-label');
+        const inputs = wrap.querySelectorAll('.ks-rating-input');
+        const hint   = wrap.querySelector('.ks-rating-hint');
+
+        function update(active) {
+            labels.forEach((l, i) => l.classList.toggle('ks-rating-label--active', i < active));
+            if (hint) {
+                hint.textContent = active ? hints[active] : 'Pilih';
+                hint.style.color = active >= 4 ? 'var(--green)' : active >= 3 ? 'var(--amber)' : active ? 'var(--red)' : 'var(--muted-2)';
+            }
+        }
+
+        labels.forEach((label, i) => {
+            label.addEventListener('mouseenter', () => update(i + 1));
+            label.addEventListener('mouseleave', () => {
+                const checked = [...inputs].findIndex(r => r.checked);
+                update(checked >= 0 ? checked + 1 : 0);
+            });
+            label.addEventListener('click', () => update(i + 1));
         });
-        label.addEventListener('click', () => update(i + 1));
+
+        const checked = [...inputs].findIndex(r => r.checked);
+        if (checked >= 0) update(checked + 1);
     });
-
-    // restore old value on page load
-    const checked = [...inputs].findIndex(r => r.checked);
-    if (checked >= 0) update(checked + 1);
 })();
 </script>
 
-
-
-
 @endsection
-
