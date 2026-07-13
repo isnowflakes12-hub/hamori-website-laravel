@@ -76,9 +76,55 @@ class KritikSaranAdminController extends Controller
         return back()->with('success', 'Status featured berhasil diperbarui.');
     }
 
+        public function export(Request $request)
+    {
+        $status = $request->query('status', 'all');
+        $query = KritikSaran::query();
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+        $data = $query->latest()->get();
+
+        $filename = "Kritik_Saran_RSHamori_" . date('Ymd_His') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Tanggal', 'Nama', 'Email', 'Telepon', 'Responden', 'Poliklinik', 'Kategori', 'Rating', 'Pesan', 'Status'];
+
+        $callback = function() use($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($data as $row) {
+                fputcsv($file, [
+                    $row->id,
+                    $row->created_at->format('Y-m-d H:i'),
+                    $row->nama,
+                    $row->email,
+                    $row->telepon,
+                    ucfirst($row->responden ?? ''),
+                    $row->nama_poliklinik,
+                    ucfirst($row->kategori ?? ''),
+                    $row->rating,
+                    $row->pesan,
+                    strtoupper($row->status)
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function destroy(KritikSaran $kritik_saran)
     {
         $kritik_saran->delete();
         return back()->with('success', 'Data berhasil dihapus.');
     }
 }
+

@@ -99,6 +99,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Kritik & Saran
         Route::get('/kritik-saran',                       [KritikSaranAdminController::class, 'index'])         ->name('kritik-saran.index');
+        Route::get('/kritik-saran/export',                [KritikSaranAdminController::class, 'export'])        ->name('kritik-saran.export');
         Route::get('/kritik-saran/{kritik_saran}',        [KritikSaranAdminController::class, 'show'])          ->name('kritik-saran.show');
         Route::patch('/kritik-saran/{kritik_saran}/status',[KritikSaranAdminController::class, 'updateStatus']) ->name('kritik-saran.status');
         Route::patch('/kritik-saran/{kritik_saran}/featured',[KritikSaranAdminController::class, 'toggleFeatured'])->name('kritik-saran.featured');

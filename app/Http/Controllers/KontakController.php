@@ -38,16 +38,19 @@ class KontakController extends Controller
 
     public function kritikSaran()
     {
-        return view('pages.kritik-saran');
+        $polis = \App\Models\Poli::orderBy('nama')->get();
+        return view('pages.kritik-saran', compact('polis'));
     }
 
     public function sendKritik(Request $request)
     {
         $request->validate([
+            'responden' => 'required|in:pasien,pengunjung',
+            'nama_poliklinik' => 'nullable|string|max:255',
             'nama'     => 'required|string|min:2|max:255',
-            'email'    => 'required|email',
+            'email'    => 'nullable|email',
             'telepon'  => 'required|string|max:20',
-            'kategori' => 'required|in:kritik,saran,pertanyaan',
+            'kategori' => 'nullable|in:kritik,saran,pertanyaan',
             'pesan'    => 'required|string',
             'rating'   => 'required|integer|min:1|max:5',
         ], [
@@ -67,3 +70,4 @@ class KontakController extends Controller
         return redirect()->back()->with('success', 'Terima kasih atas masukan Anda!');
     }
 }
+

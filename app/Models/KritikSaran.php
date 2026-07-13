@@ -3,7 +3,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class KritikSaran extends Model {
     protected $fillable = [
-        'nama', 'email', 'telepon', 'kategori', 'pesan', 'rating', 'is_read', 
+        'nama', 'email', 'telepon', 'kategori', 'responden', 'nama_poliklinik', 'pesan', 'rating', 'is_read', 
         'status', 'is_featured', 'approved_at'
     ];
     protected $casts = [

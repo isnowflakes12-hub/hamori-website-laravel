@@ -3,7 +3,7 @@
 @section('page-title','Kritik & Saran')
 @section('content')
 <div class="page-hd">
-    <div><h1 class="page-hd-title">Kritik & Saran</h1><p class="page-hd-sub">Kelola masukan, kritik, dan saran dari pasien/pengunjung</p></div>
+    <div><h1 class="page-hd-title">Kritik & Saran</h1>`n        <a href="{{ route('admin.kritik-saran.export', ['status' => $status]) }}" class="btn btn-sm btn-success"><i class="bi bi-file-earmark-excel-fill"></i> Export CSV</a><p class="page-hd-sub">Kelola masukan, kritik, dan saran dari pasien/pengunjung</p></div>
 </div>
 
 <div class="row g-3 mb-4">
@@ -39,7 +39,7 @@
 
 <div class="admin-table">
     <table class="table">
-        <thead><tr><th style="width:60px">#</th><th>Pengirim</th><th>Pesan</th><th>Kategori/Rating</th><th>Status</th><th style="width:180px">Aksi</th></tr></thead>
+        <thead><tr><th style="width:60px">#</th><th>Pengirim</th><th>Pesan</th><th>Responden</th><th>Kategori/Rating</th><th>Status</th><th style="width:180px">Aksi</th></tr></thead>
         <tbody>
         @forelse($kritikSaran as $ks)
         <tr class="{{ !$ks->is_read ? 'bg-light fw-bold' : '' }}">
@@ -50,8 +50,7 @@
                 <div style="font-size:10px;color:#94a3b8;margin-top:4px">{{ $ks->created_at->diffForHumans() }}</div>
             </td>
             <td style="font-size:13px;color:#475569;max-width:300px">{{ Str::limit($ks->pesan, 80) }}</td>
-            <td>
-                <span class="badge bg-secondary mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->kategori }}</span><br>
+            <td>`n                <span class="badge bg-info mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->responden ?? '-' }}</span><br>`n                <span style="font-size:10px;color:#64748b">{{ $ks->nama_poliklinik ?? '-' }}</span>`n            </td>`n            <td>`n                <span class="badge bg-secondary mb-1" style="text-transform:uppercase;font-size:10px">{{ $ks->kategori }}</span><br>
                 @if($ks->rating)
                 <span style="color:#f59e0b;font-size:12px">{{ str_repeat('★', $ks->rating) }}{{ str_repeat('☆', 5 - $ks->rating) }}</span>
                 @else
@@ -111,3 +110,4 @@
     <div class="p-3">{{ $kritikSaran->appends(['status' => $status])->links() }}</div>
 </div>
 @endsection
+

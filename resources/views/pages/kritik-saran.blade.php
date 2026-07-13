@@ -114,9 +114,43 @@
 
                         <div class="row g-4">
 
+                                                        <div class="col-md-12">
+                                <div class="ks-field">
+                                    <label class="ks-label">Responden <span class="ks-required">*</span></label>
+                                    <div class="d-flex gap-4 mt-2">
+                                        <label class="d-flex align-items-center gap-2">
+                                            <input type="radio" name="responden" value="pasien" class="form-check-input" id="respPasien" {{ old('responden') == 'pasien' ? 'checked' : '' }} required>
+                                            Pasien
+                                        </label>
+                                        <label class="d-flex align-items-center gap-2">
+                                            <input type="radio" name="responden" value="pengunjung" class="form-check-input" id="respPengunjung" {{ old('responden') == 'pengunjung' ? 'checked' : '' }} required>
+                                            Pengunjung
+                                        </label>
+                                    </div>
+                                    @error('responden')
+                                    <span class="ks-error-msg mt-1 d-block"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-12" id="poliWrap" style="display: none;">
+                                <div class="ks-field">
+                                    <label class="ks-label">Nama Poliklinik</label>
+                                    <div class="ks-input-wrap {{ $errors->has('nama_poliklinik') ? 'ks-input-wrap--error' : '' }}">
+                                        <i class="fas fa-hospital ks-input-icon"></i>
+                                        <select name="nama_poliklinik" class="ks-input ks-select" id="poliSelect">
+                                            <option value="">Pilih Poliklinik...</option>
+                                            @foreach($polis as $poli)
+                                                <option value="{{ $poli->nama }}" {{ old('nama_poliklinik') == $poli->nama ? 'selected' : '' }}>{{ $poli->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-6">
                                 <div class="ks-field">
-                                    <label class="ks-label">Nama Lengkap <span class="ks-required">*</span></label>
+                                    <label class="ks-label">Nama Pasien/Pengunjung <span class="ks-required">*</span></label>
                                     <div class="ks-input-wrap {{ $errors->has('nama') ? 'ks-input-wrap--error' : '' }}">
                                         <i class="fas fa-user ks-input-icon"></i>
                                         <input type="text" name="nama" class="ks-input"
@@ -131,47 +165,14 @@
 
                             <div class="col-md-6">
                                 <div class="ks-field">
-                                    <label class="ks-label">Email <span class="ks-required">*</span></label>
-                                    <div class="ks-input-wrap {{ $errors->has('email') ? 'ks-input-wrap--error' : '' }}">
-                                        <i class="fas fa-envelope ks-input-icon"></i>
-                                        <input type="email" name="email" class="ks-input"
-                                               value="{{ old('email') }}"
-                                               placeholder="email@contoh.com" required>
-                                    </div>
-                                    @error('email')
-                                    <span class="ks-error-msg"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="ks-field">
                                     <label class="ks-label">Nomor Telepon <span class="ks-required">*</span></label>
                                     <div class="ks-input-wrap {{ $errors->has('telepon') ? 'ks-input-wrap--error' : '' }}">
                                         <i class="fas fa-phone ks-input-icon"></i>
                                         <input type="text" name="telepon" class="ks-input"
                                                value="{{ old('telepon') }}"
-                                               placeholder="08xx-xxxx-xxxx" required>
+                                               placeholder="contoh: +62 856 94xxxxxx" required>
                                     </div>
                                     @error('telepon')
-                                    <span class="ks-error-msg"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="ks-field">
-                                    <label class="ks-label">Kategori <span class="ks-required">*</span></label>
-                                    <div class="ks-input-wrap {{ $errors->has('kategori') ? 'ks-input-wrap--error' : '' }}">
-                                        <i class="fas fa-tag ks-input-icon"></i>
-                                        <select name="kategori" class="ks-input ks-select" required>
-                                            <option value="">Pilih kategori...</option>
-                                            <option value="kritik"     {{ old('kategori') == 'kritik'     ? 'selected' : '' }}>Kritik</option>
-                                            <option value="saran"      {{ old('kategori') == 'saran'      ? 'selected' : '' }}>Saran</option>
-                                            <option value="pertanyaan" {{ old('kategori') == 'pertanyaan' ? 'selected' : '' }}>Pertanyaan</option>
-                                        </select>
-                                    </div>
-                                    @error('kategori')
                                     <span class="ks-error-msg"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
                                     @enderror
                                 </div>
@@ -201,12 +202,12 @@
 
                             <div class="col-12">
                                 <div class="ks-field">
-                                    <label class="ks-label">Pesan <span class="ks-required">*</span></label>
+                                    <label class="ks-label">Kritik dan Saran <span class="ks-required">*</span></label>
                                     <div class="ks-input-wrap ks-input-wrap--textarea {{ $errors->has('pesan') ? 'ks-input-wrap--error' : '' }}">
                                         <i class="fas fa-comment ks-input-icon ks-input-icon--top"></i>
                                         <textarea name="pesan" class="ks-input ks-textarea"
                                                   rows="5"
-                                                  placeholder="Tuliskan kritik, saran, atau pertanyaan Anda di sini..."
+                                                  placeholder="Isikan Kritik dan saran Anda"
                                                   required>{{ old('pesan') }}</textarea>
                                     </div>
                                     @error('pesan')
@@ -245,6 +246,25 @@
     const hint    = document.getElementById('ratingHint');
     const hints   = ['', 'Sangat Buruk', 'Buruk', 'Cukup', 'Baik', 'Sangat Baik'];
 
+        const respPasien = document.getElementById('respPasien');
+    const respPeng = document.getElementById('respPengunjung');
+    const poliWrap = document.getElementById('poliWrap');
+    const poliSelect = document.getElementById('poliSelect');
+
+    function checkPoli() {
+        if(respPasien.checked) {
+            poliWrap.style.display = 'block';
+            poliSelect.setAttribute('required', 'required');
+        } else {
+            poliWrap.style.display = 'none';
+            poliSelect.removeAttribute('required');
+        }
+    }
+    
+    if(respPasien) respPasien.addEventListener('change', checkPoli);
+    if(respPeng) respPeng.addEventListener('change', checkPoli);
+    if(respPasien || respPeng) checkPoli();
+
     function update(active) {
         labels.forEach((l, i) => {
             l.classList.toggle('ks-rating-label--active', i < active);
@@ -278,3 +298,4 @@
 
 
 @endsection
+
