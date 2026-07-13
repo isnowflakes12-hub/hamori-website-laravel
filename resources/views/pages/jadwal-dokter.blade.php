@@ -118,8 +118,7 @@
                                     'selesai' => substr($j->jam_selesai, 0, 5),
                                 ];
                             })->values()->toArray();
-                            // JSON_HEX_QUOT converts " to \u0022 — safe inside HTML double-quoted attribute
-                            $jadwalJson = json_encode($jadwalData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+                            $jadwalJson = json_encode($jadwalData); // plain json_encode, no HEX flags
                         @endphp
                         {{-- Card klik → buka modal --}}
                         <div class="dokter-card-v2" onclick="openDokterModal(this)" style="cursor:pointer;"
@@ -127,7 +126,7 @@
                             data-spesialis="{{ $poli->nama }}"
                             data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
                             data-wa="{{ $waNumber }}"
-                            data-jadwal="{!! $jadwalJson !!}">
+                            data-jadwal='{!! $jadwalJson !!}'>
 
                             <div class="dokter-card-photo">
                                 @if($dokter->foto)
