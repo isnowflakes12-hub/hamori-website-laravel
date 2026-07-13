@@ -111,13 +111,15 @@
                                 return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
                             });
                             $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
-                            $jadwalJson = $jadwalSorted->values()->map(function($j) {
+                            $jadwalData = $jadwalSorted->values()->map(function($j) {
                                 return [
                                     'hari'    => $j->hari,
                                     'mulai'   => substr($j->jam_mulai, 0, 5),
                                     'selesai' => substr($j->jam_selesai, 0, 5),
                                 ];
-                            })->toJson();
+                            })->values()->toArray();
+                            // JSON_HEX_QUOT converts " to \u0022 — safe inside HTML double-quoted attribute
+                            $jadwalJson = json_encode($jadwalData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
                         @endphp
                         {{-- Card klik → buka modal --}}
                         <div class="dokter-card-v2" onclick="openDokterModal(this)" style="cursor:pointer;"
@@ -125,7 +127,7 @@
                             data-spesialis="{{ $poli->nama }}"
                             data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
                             data-wa="{{ $waNumber }}"
-                            data-jadwal="{{ htmlspecialchars($jadwalJson, ENT_QUOTES, 'UTF-8') }}">
+                            data-jadwal="{!! $jadwalJson !!}">
 
                             <div class="dokter-card-photo">
                                 @if($dokter->foto)
@@ -844,60 +846,70 @@ function togglePoli(btn) {
 }
 
 function openDokterModal(card) {
-    const nama      = card.dataset.nama;
-    const spesialis = card.dataset.spesialis;
-    const foto      = card.dataset.foto;
-    const wa        = card.dataset.wa;
-    const jadwal    = JSON.parse(card.dataset.jadwal || '[]');
+    try {
+        const nama      = card.dataset.nama      || '';
+        const spesialis = card.dataset.spesialis || '';
+        const foto      = card.dataset.foto      || '';
+        const wa        = card.dataset.wa        || '';
+        const rawJson   = card.dataset.jadwal    || '[]';
+        const jadwal    = JSON.parse(rawJson);
 
-    document.getElementById('modal-nama').textContent      = nama;
-    document.getElementById('modal-spesialis').textContent = spesialis;
-    document.getElementById('modal-wa-btn').href           = 'https://wa.me/' + wa;
+        document.getElementById('modal-nama').textContent      = nama;
+        document.getElementById('modal-spesialis').textContent = spesialis;
+        document.getElementById('modal-wa-btn').href           = 'https://wa.me/' + wa;
 
-    // Foto
-    const imgEl = document.getElementById('modal-foto');
-    const phEl  = document.getElementById('modal-photo-placeholder');
-    if (foto) {
-        imgEl.src          = foto;
-        imgEl.style.display = 'block';
-        phEl.style.display  = 'none';
-    } else {
-        imgEl.style.display = 'none';
-        phEl.style.display  = 'flex';
+        // Foto
+        const imgEl = document.getElementById('modal-foto');
+        const phEl  = document.getElementById('modal-photo-placeholder');
+        if (foto) {
+            imgEl.src           = foto;
+            imgEl.style.display = 'block';
+            phEl.style.display  = 'none';
+        } else {
+            imgEl.style.display = 'none';
+            phEl.style.display  = 'flex';
+        }
+
+        // Jadwal
+        const listEl   = document.getElementById('modal-jadwal-list');
+        const noJadwal = document.getElementById('modal-no-jadwal');
+        listEl.innerHTML = '';
+        if (Array.isArray(jadwal) && jadwal.length > 0) {
+            noJadwal.style.display = 'none';
+            listEl.style.display   = 'flex';
+            jadwal.forEach(j => {
+                const row = document.createElement('div');
+                row.className = 'dokter-modal-jadwal-row';
+                row.innerHTML = '<span class="dokter-modal-jadwal-hari">' + j.hari + '</span>'
+                              + '<span class="dokter-modal-jadwal-jam">' + j.mulai + ' – ' + j.selesai + '</span>';
+                listEl.appendChild(row);
+            });
+        } else {
+            listEl.style.display   = 'none';
+            noJadwal.style.display = 'block';
+        }
+
+        document.getElementById('dokter-modal').classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+
+    } catch(err) {
+        console.error('Modal error:', err);
     }
-
-    // Jadwal
-    const listEl   = document.getElementById('modal-jadwal-list');
-    const noJadwal = document.getElementById('modal-no-jadwal');
-    listEl.innerHTML = '';
-    if (jadwal.length > 0) {
-        noJadwal.style.display = 'none';
-        listEl.style.display   = 'flex';
-        jadwal.forEach(j => {
-            listEl.innerHTML += `
-            <div class="dokter-modal-jadwal-row">
-                <span class="dokter-modal-jadwal-hari">${j.hari}</span>
-                <span class="dokter-modal-jadwal-jam">${j.mulai} – ${j.selesai}</span>
-            </div>`;
-        });
-    } else {
-        listEl.style.display   = 'none';
-        noJadwal.style.display = 'block';
-    }
-
-    document.getElementById('dokter-modal').classList.add('is-open');
-    document.body.style.overflow = 'hidden';
 }
 
 function closeDokterModal(e) {
-    if (e && e.target !== document.getElementById('dokter-modal')) return;
+    // Called from overlay click (e = event) or close button (e = undefined)
+    if (e instanceof Event && e.target !== document.getElementById('dokter-modal')) return;
     document.getElementById('dokter-modal').classList.remove('is-open');
     document.body.style.overflow = '';
 }
 
 // ESC key close
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeDokterModal();
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.getElementById('dokter-modal').classList.remove('is-open');
+        document.body.style.overflow = '';
+    }
 });
 
 // Auto-open the first poli if no search filters active
