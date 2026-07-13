@@ -16,8 +16,15 @@
                         {{ strtoupper(substr($kritik_saran->nama, 0, 1)) }}
                     </div>
                     <div>
-                        <h5 class="mb-0 fw-bold">{{ $kritik_saran->nama }}</h5>`n                        <div class="mb-1">`n                            <span class="badge bg-info" style="font-size:10px;text-transform:uppercase">{{ $kritik_saran->responden ?? '-' }}</span>`n                            @if($kritik_saran->nama_poliklinik)<span class="badge bg-secondary" style="font-size:10px">{{ $kritik_saran->nama_poliklinik }}</span>@endif`n                        </div>
+                        <h5 class="mb-0 fw-bold">{{ $kritik_saran->nama }}</h5>
+                        <div class="mb-1">
+                            <span class="badge bg-info" style="font-size:10px;text-transform:capitalize">{{ $kritik_saran->responden ?? '-' }}</span>
+                            @if($kritik_saran->nama_poliklinik)
+                            <span class="badge bg-secondary" style="font-size:10px">{{ $kritik_saran->nama_poliklinik }}</span>
+                            @endif
+                        </div>
                         <div class="text-muted" style="font-size:13px">{{ $kritik_saran->email ?? '-' }} &bull; {{ $kritik_saran->telepon ?? '-' }}</div>
+
                     </div>
                 </div>
                 <div class="text-end">
