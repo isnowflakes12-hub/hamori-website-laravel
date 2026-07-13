@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>@yield('title','Dashboard') — Admin RS Hamori</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/metropolis-2" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <style>
 :root{--sidebar-w:260px;--topbar-h:64px;--blue:#0055a5;--blue-dk:#003d7a;--green:#00a859;--red:#e8333c}
-*{box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4f8;min-height:100vh;margin:0}
+*{box-sizing:border-box}body{font-family:'Metropolis',sans-serif;background:#f0f4f8;min-height:100vh;margin:0}
 .sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:#0d1b3e;display:flex;flex-direction:column;z-index:200;transition:transform .3s}
 .sidebar-brand{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px;text-decoration:none}
 .sidebar-brand-icon{width:38px;height:38px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0}

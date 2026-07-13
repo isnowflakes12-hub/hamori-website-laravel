@@ -74,7 +74,7 @@ html {
 
 body {
     overflow-x: clip;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Metropolis', sans-serif;
     color: var(--ink);
     background: #fff;
     font-size: 15px;
@@ -215,7 +215,7 @@ button {
 }
 
 .navbar-brand-name {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 17px;
     font-weight: 700;
     color: var(--accent);
@@ -556,7 +556,7 @@ button {
 }
 
 .page-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     font-weight: 700;
     color: #fff;
@@ -602,7 +602,7 @@ button {
 }
 
 .sec-h2 {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.65rem, 3vw, 2.2rem);
     font-weight: 700;
     color: var(--ink);
@@ -726,7 +726,7 @@ button {
 }
 
 .hs-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.75rem, 3.5vw, 2.9rem);
     font-weight: 700;
     color: #fff;
@@ -887,7 +887,7 @@ button {
 }
 
 .hpp-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.4rem;
     font-weight: 700;
     color: #fff;
@@ -961,7 +961,7 @@ button {
 }
 
 .hpp-new {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.85rem;
     font-weight: 700;
     color: #fff;
@@ -1475,7 +1475,7 @@ button {
 }
 
 .st-n {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 2.8rem;
     font-weight: 700;
     color: #fff;
@@ -1585,7 +1585,7 @@ button {
 }
 
 .promo-card-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: var(--ink);
@@ -1638,7 +1638,7 @@ button {
 }
 
 .pcp-new {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--primary);
@@ -1882,7 +1882,7 @@ button {
 }
 
 .app-h {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.6rem, 2.8vw, 2.1rem);
     font-weight: 700;
     color: #fff;
@@ -2310,7 +2310,7 @@ button {
     border-radius: var(--radius-sm);
     padding: 11px 15px;
     font-size: 14px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Metropolis', sans-serif;
     color: var(--ink);
     transition: border-color .2s, box-shadow .2s;
 }
@@ -2665,7 +2665,7 @@ button {
 }
 
 .ld-hero-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.9rem, 4vw, 3rem);
     font-weight: 700;
     color: #fff;
@@ -2747,7 +2747,7 @@ button {
 }
 
 .ld-hero-stat-n {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.4rem;
     font-weight: 700;
     color: #fff;
@@ -2896,7 +2896,7 @@ button {
 }
 
 .ld-card-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--ink);
@@ -3069,7 +3069,7 @@ button {
 }
 
 .ld-sidebar-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
     color: #fff;
@@ -3427,7 +3427,7 @@ button {
 }
 
 .score-big {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 3.5rem;
     font-weight: 700;
     color: var(--accent);
@@ -3933,7 +3933,7 @@ button {
 }
 
 .score-big {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 3.5rem;
     font-weight: 700;
     color: var(--accent);
@@ -4322,7 +4322,7 @@ button {
 }
 
 .ulasan-modal-head h3 {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 6px;
@@ -4365,7 +4365,7 @@ button {
     font-size: 14px;
     border: 1.5px solid var(--border);
     border-radius: var(--radius-sm);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Metropolis', sans-serif;
     color: var(--ink);
     transition: border-color .2s, box-shadow .2s;
     background: #fff;
@@ -4495,7 +4495,7 @@ button {
 }
 
 .ulasan-success h3 {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.4rem;
     font-weight: 700;
     margin-bottom: 8px;
@@ -4537,7 +4537,7 @@ button {
 }
 
 .promo-price-new {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--primary);
@@ -4588,7 +4588,7 @@ button {
 }
 
 .footer-h4 {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 15px;
     font-weight: 700;
     color: #fff;
@@ -6017,7 +6017,7 @@ button {
 
 /* Title */
 .as-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.6rem, 3.5vw, 2.1rem);
     font-weight: 700;
     color: var(--ink);
@@ -6094,7 +6094,7 @@ button {
 
 .as-content.article-content h2,
 .as-content.article-content h3 {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     color: var(--ink);
     margin-top: 32px;
     margin-bottom: 12px;
@@ -6301,7 +6301,7 @@ button {
 }
 
 .as-related-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--ink);
@@ -6474,7 +6474,7 @@ button {
 }
 
 .as-widget-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: var(--ink);
@@ -6539,7 +6539,7 @@ button {
 }
 
 .as-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: #fff;
@@ -6625,7 +6625,7 @@ button {
 }
 
 .as-recent-num {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--border);
@@ -6979,7 +6979,7 @@ button {
 }
 
 .au-title--lg {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.25rem;
     line-height: 1.35;
 }
@@ -7140,7 +7140,7 @@ button {
 }
 
 .au-widget-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     color: var(--ink);
@@ -7168,7 +7168,7 @@ button {
     padding: 11px 14px;
     font-size: 13.5px;
     color: var(--ink);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Metropolis', sans-serif;
     background: transparent;
 }
 
@@ -7276,7 +7276,7 @@ button {
 }
 
 .au-popular-num {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--border);
@@ -7353,7 +7353,7 @@ button {
 }
 
 .au-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.05rem;
     font-weight: 700;
     color: #fff;
@@ -8792,7 +8792,7 @@ button {
 }
 
 .kt-form-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--ink);
@@ -8869,7 +8869,7 @@ button {
     font-size: 14px;
     color: var(--ink);
     background: transparent;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Metropolis', sans-serif;
 }
 
 .kt-input::placeholder {
@@ -9504,7 +9504,7 @@ button {
 }
 
 .ks-form-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--ink);
@@ -9581,7 +9581,7 @@ button {
     font-size: 14px;
     color: var(--ink);
     background: transparent;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Metropolis', sans-serif;
     appearance: none;
     -webkit-appearance: none;
 }
@@ -9823,7 +9823,7 @@ button {
 }
 
 .li-stat-n {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.6rem;
     font-weight: 700;
     color: var(--primary);
@@ -10070,7 +10070,7 @@ button {
 }
 
 .li-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.2rem, 2.5vw, 1.55rem);
     font-weight: 700;
     color: #fff;
@@ -10266,7 +10266,7 @@ button {
 }
 
 .pr-stat-n {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.85rem;
     font-weight: 700;
     color: var(--primary);
@@ -10432,7 +10432,7 @@ button {
 }
 
 .pr-vm-label {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--ink);
@@ -10489,7 +10489,7 @@ button {
 }
 
 .pr-misi-num {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--primary);
@@ -10627,7 +10627,7 @@ button {
 }
 
 .pr-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.2rem, 2.5vw, 1.55rem);
     font-weight: 700;
     color: #fff;
@@ -10831,7 +10831,7 @@ button {
 
 /* Title & sub */
 .pd-hero-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.9rem, 4vw, 3rem);
     font-weight: 700;
     color: #fff;
@@ -10864,7 +10864,7 @@ button {
 }
 
 .pd-price-new {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 2rem;
     font-weight: 700;
     color: #fff;
@@ -11014,7 +11014,7 @@ button {
 }
 
 .pd-card-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--ink);
@@ -11198,7 +11198,7 @@ button {
 }
 
 .pd-sidebar-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     color: #fff;
@@ -11228,7 +11228,7 @@ button {
 }
 
 .pd-sidebar-price-new {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.7rem;
     font-weight: 700;
     color: #fff;
@@ -11308,7 +11308,7 @@ button {
 }
 
 .pd-expire-date {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 2.4rem;
     font-weight: 700;
     color: var(--primary);
@@ -11475,7 +11475,7 @@ button {
 }
 
 .pd-related-price {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--primary);
@@ -11825,7 +11825,7 @@ button {
 }
 
 .pm-featured-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--ink);
@@ -11901,7 +11901,7 @@ button {
 }
 
 .pm-price-new {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.6rem;
     font-weight: 700;
     color: var(--primary);
@@ -12149,7 +12149,7 @@ button {
 }
 
 .pm-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.2rem, 2.5vw, 1.55rem);
     font-weight: 700;
     color: #fff;
@@ -12396,7 +12396,7 @@ button {
 }
 
 .pr-stat-n {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.85rem;
     font-weight: 700;
     color: var(--primary);
@@ -12562,7 +12562,7 @@ button {
 }
 
 .pr-vm-label {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--ink);
@@ -12619,7 +12619,7 @@ button {
 }
 
 .pr-misi-num {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--primary);
@@ -12757,7 +12757,7 @@ button {
 }
 
 .pr-cta-title {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: clamp(1.2rem, 2.5vw, 1.55rem);
     font-weight: 700;
     color: #fff;
@@ -12923,7 +12923,7 @@ button {
 }
 
 .ms-year {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'Metropolis', sans-serif;
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--primary);
