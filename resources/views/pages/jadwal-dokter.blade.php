@@ -107,8 +107,17 @@
                     <div class="dokter-grid">
                         @foreach($poli->dokters as $dokter)
                         @php
-                            $jadwalSorted = $dokter->jadwal->sortBy(fn($j) => ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8);
+                            $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
+                                return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
+                            });
                             $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
+                            $jadwalJson = $jadwalSorted->values()->map(function($j) {
+                                return [
+                                    'hari'    => $j->hari,
+                                    'mulai'   => substr($j->jam_mulai, 0, 5),
+                                    'selesai' => substr($j->jam_selesai, 0, 5),
+                                ];
+                            })->toJson();
                         @endphp
                         {{-- Card klik → buka modal --}}
                         <div class="dokter-card-v2" onclick="openDokterModal(this)" style="cursor:pointer;"
@@ -116,7 +125,7 @@
                             data-spesialis="{{ $poli->nama }}"
                             data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
                             data-wa="{{ $waNumber }}"
-                            data-jadwal='@json($jadwalSorted->values()->map(fn($j) => ["hari"=>$j->hari,"mulai"=>substr($j->jam_mulai,0,5),"selesai"=>substr($j->jam_selesai,0,5)]))'>
+                            data-jadwal="{{ htmlspecialchars($jadwalJson, ENT_QUOTES, 'UTF-8') }}">
 
                             <div class="dokter-card-photo">
                                 @if($dokter->foto)
