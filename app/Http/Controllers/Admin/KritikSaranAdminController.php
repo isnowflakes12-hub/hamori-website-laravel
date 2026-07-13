@@ -105,8 +105,16 @@ class KritikSaranAdminController extends Controller
 
         $callback = function() use($data, $columns) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
+            
+            // Add UTF-8 BOM for Excel compatibility
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, $columns, ';'); // Use semicolon for Excel ID locale
+            
             foreach ($data as $row) {
+                // Clean up newlines in message
+                $pesan = str_replace(["\r\n", "\r", "\n"], ' ', $row->pesan);
+                
                 fputcsv($file, [
                     $row->id,
                     $row->created_at->format('Y-m-d H:i'),
@@ -116,7 +124,7 @@ class KritikSaranAdminController extends Controller
                     ucfirst($row->responden ?? ''),
                     $row->nama_poliklinik,
                     ucfirst($row->kategori ?? ''),
-                    $row->pesan,
+                    $pesan,
                     $row->rating_kepuasan_rs,
                     $row->rating_alur_pelayanan,
                     $row->rating_fasilitas,
@@ -128,7 +136,7 @@ class KritikSaranAdminController extends Controller
                     $row->rating_fisioterapi,
                     $row->rating_farmasi,
                     strtoupper($row->status)
-                ]);
+                ], ';'); // Use semicolon
             }
             fclose($file);
         };
