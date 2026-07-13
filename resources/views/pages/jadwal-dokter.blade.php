@@ -121,7 +121,11 @@
                                 <p class="dokter-card-spesialis">{{ $poli->nama }}</p>
 
                                 @if($dokter->jadwal->count())
-                                <div class="dokter-schedule-wrap">
+                                <button class="dokter-jadwal-toggle" type="button" onclick="toggleJadwal(this)">
+                                    <i class="bi bi-calendar3 me-2"></i>Lihat Jadwal Praktek
+                                    <i class="bi bi-chevron-down ms-auto dokter-jadwal-chevron"></i>
+                                </button>
+                                <div class="dokter-schedule-wrap" style="display:none;">
                                     <div class="dokter-schedule-label"><i class="bi bi-clock me-1"></i>Jadwal Praktek</div>
                                     @foreach($dokter->jadwal->sortBy(fn($j) => ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8) as $jadwal)
                                     <div class="dokter-schedule-row">
@@ -512,13 +516,51 @@
     text-transform: uppercase;
 }
 
+.dokter-jadwal-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: #eef4ff;
+    color: var(--primary, #0d6efd);
+    border: 1.5px solid rgba(13,110,253,.15);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background .2s, border-color .2s;
+    text-align: left;
+}
+
+.dokter-jadwal-toggle:hover {
+    background: #ddeaff;
+    border-color: rgba(13,110,253,.3);
+}
+
+.dokter-jadwal-toggle.is-open {
+    background: var(--primary, #0d6efd);
+    color: #fff;
+    border-color: var(--primary, #0d6efd);
+}
+
+.dokter-jadwal-chevron {
+    transition: transform .25s;
+    margin-left: auto;
+    font-size: 12px;
+}
+
+.dokter-jadwal-toggle.is-open .dokter-jadwal-chevron {
+    transform: rotate(180deg);
+}
+
 .dokter-schedule-wrap {
     background: #fff;
     border-radius: 10px;
     padding: 10px 12px;
     margin-bottom: 12px;
     border: 1px solid #eef1f6;
-    flex: 1;
+    animation: fadeSlideDown .2s ease;
 }
 
 .dokter-schedule-label {
@@ -602,6 +644,19 @@ function togglePoli(btn) {
     const accordion = btn.closest('.poli-accordion');
     const isOpen = accordion.classList.contains('is-open');
     accordion.classList.toggle('is-open', !isOpen);
+}
+
+function toggleJadwal(btn) {
+    const wrap = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('is-open');
+    if (isOpen) {
+        wrap.style.display = 'none';
+        btn.classList.remove('is-open');
+        btn.querySelector('span') && (btn.querySelector('span').textContent = 'Lihat Jadwal Praktek');
+    } else {
+        wrap.style.display = 'block';
+        btn.classList.add('is-open');
+    }
 }
 
 // Auto-open the first poli if no search filters active
