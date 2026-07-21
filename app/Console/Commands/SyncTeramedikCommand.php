@@ -47,7 +47,7 @@ class SyncTeramedikCommand extends Command
             $duplicates = DB::table('dokters')
                 ->select('nama', 'poli_id', DB::raw('MIN(id) as keep_id'), DB::raw('COUNT(*) as count'))
                 ->groupBy('nama', 'poli_id')
-                ->having('count', '>', 1)
+                ->having(DB::raw('COUNT(*)'), '>', 1)
                 ->get();
 
             foreach ($duplicates as $dup) {
