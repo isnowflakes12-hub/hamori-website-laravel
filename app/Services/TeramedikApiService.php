@@ -14,9 +14,9 @@ class TeramedikApiService
     public function __construct()
     {
         // Using hardcoded fallback for development based on provided login.txt
-        $this->baseUrl = config('services.teramedik.base_url', 'https://v3-api-webservice-dev.teramobile.app');
-        $this->username = config('services.teramedik.username', 'Rshamori_dev');
-        $this->password = config('services.teramedik.password', 'Rshamoridev81HsR0');
+        $this->baseUrl = config('services.teramedik.base_url', env('TERAMEDIK_BASE_URL', 'https://v3-api-webservice.teramobile.app'));
+        $this->username = config('services.teramedik.username', env('TERAMEDIK_USERNAME', 'Rshamori_dev'));
+        $this->password = config('services.teramedik.password', env('TERAMEDIK_PASSWORD', 'Rshamoridev81HsR0'));
     }
 
     /**
