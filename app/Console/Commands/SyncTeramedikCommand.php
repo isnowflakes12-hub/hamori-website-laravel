@@ -43,28 +43,33 @@ class SyncTeramedikCommand extends Command
 
             DB::beginTransaction();
 
-            // CLEANUP: Hapus data dokter duplikat berdasarkan nama dan poli (terutama untuk server yang datanya masih kotor)
-            $duplicates = DB::table('dokters')
-                ->select('nama', 'poli_id', DB::raw('MIN(id) as keep_id'), DB::raw('COUNT(*) as count'))
+            // CLEANUP: Hapus data dokter duplikat berdasarkan nama dan poli
+            // Prioritaskan record yang punya teramedik_id (yang lebih baru/benar)
+            $duplicateNames = DB::table('dokters')
+                ->select('nama', 'poli_id')
                 ->groupBy('nama', 'poli_id')
                 ->having(DB::raw('COUNT(*)'), '>', 1)
                 ->get();
 
-            foreach ($duplicates as $dup) {
-                $duplicateIds = DB::table('dokters')
+            foreach ($duplicateNames as $dup) {
+                $records = DB::table('dokters')
                     ->where('nama', $dup->nama)
                     ->where('poli_id', $dup->poli_id)
-                    ->where('id', '!=', $dup->keep_id)
-                    ->pluck('id');
+                    ->orderByRaw('CASE WHEN teramedik_id IS NOT NULL THEN 0 ELSE 1 END')
+                    ->orderBy('id')
+                    ->get(['id']);
 
-                if ($duplicateIds->isNotEmpty()) {
-                    // Hapus jadwal milik dokter duplikat (bukan pindahkan, karena akan di-sync ulang)
+                // Yang pertama dipertahankan, sisanya dihapus
+                $keepId = $records->first()->id;
+                $deleteIds = $records->skip(1)->pluck('id');
+
+                if ($deleteIds->isNotEmpty()) {
                     DB::table('jadwal_dokters')
-                        ->whereIn('dokter_id', $duplicateIds)
+                        ->whereIn('dokter_id', $deleteIds)
                         ->delete();
 
                     DB::table('dokters')
-                        ->whereIn('id', $duplicateIds)
+                        ->whereIn('id', $deleteIds)
                         ->delete();
                 }
             }
