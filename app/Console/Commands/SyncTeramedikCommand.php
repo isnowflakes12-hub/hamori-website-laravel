@@ -111,10 +111,12 @@ class SyncTeramedikCommand extends Command
                     if (!$pid || !$namaDokter) continue;
 
                     $dokter = Dokter::updateOrCreate(
-                        ['teramedik_id' => (string) $pid],
                         [
                             'nama' => $namaDokter,
                             'poli_id' => $poli->id,
+                        ],
+                        [
+                            'teramedik_id' => (string) $pid,
                             'is_active' => true,
                             // Kita tidak menimpa bio / foto jika sudah ada, jadi tidak diset default empty di sini
                         ]
