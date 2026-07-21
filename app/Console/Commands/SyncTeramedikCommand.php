@@ -58,14 +58,37 @@ class SyncTeramedikCommand extends Command
                     ->pluck('id');
 
                 if ($duplicateIds->isNotEmpty()) {
+                    // Hapus jadwal milik dokter duplikat (bukan pindahkan, karena akan di-sync ulang)
                     DB::table('jadwal_dokters')
                         ->whereIn('dokter_id', $duplicateIds)
-                        ->update(['dokter_id' => $dup->keep_id]);
+                        ->delete();
 
                     DB::table('dokters')
                         ->whereIn('id', $duplicateIds)
                         ->delete();
                 }
+            }
+
+            // CLEANUP: Hapus semua jadwal lama yang tidak punya teramedik_dsid (data legacy sebelum upgrade sync)
+            $deletedLegacyJadwal = DB::table('jadwal_dokters')
+                ->whereNull('teramedik_dsid')
+                ->delete();
+
+            // CLEANUP: Hapus jadwal duplikat (sama dokter_id, hari, jam_mulai, jam_selesai)
+            $jadwalDups = DB::table('jadwal_dokters')
+                ->select('dokter_id', 'hari', 'jam_mulai', 'jam_selesai', DB::raw('MIN(id) as keep_id'), DB::raw('COUNT(*) as cnt'))
+                ->groupBy('dokter_id', 'hari', 'jam_mulai', 'jam_selesai')
+                ->having(DB::raw('COUNT(*)'), '>', 1)
+                ->get();
+
+            foreach ($jadwalDups as $jd) {
+                DB::table('jadwal_dokters')
+                    ->where('dokter_id', $jd->dokter_id)
+                    ->where('hari', $jd->hari)
+                    ->where('jam_mulai', $jd->jam_mulai)
+                    ->where('jam_selesai', $jd->jam_selesai)
+                    ->where('id', '!=', $jd->keep_id)
+                    ->delete();
             }
 
             $totalPoli = 0;
