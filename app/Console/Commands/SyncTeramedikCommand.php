@@ -123,22 +123,25 @@ class SyncTeramedikCommand extends Command
                     $syncedDokterIds[] = $dokter->id;
 
                     // 3. Sync Jadwal
-                    $schedules = $docData['schedules'] ?? [];
+                    $schedulesData = $docData['schedules'] ?? [];
                     $syncedDsids = [];
 
-                    foreach ($schedules as $jadwalData) {
-                        $dsid = $jadwalData['dsid'] ?? null;
-                        if (!$dsid) continue;
+                    foreach ($schedulesData as $poliSchedule) {
+                        $scheduleArray = $poliSchedule['schedule'] ?? [];
+                        
+                        foreach ($scheduleArray as $jadwalData) {
+                            $dsid = $jadwalData['dsid'] ?? null;
+                            if (!$dsid) continue;
 
-                        $weekday = $jadwalData['weekday'] ?? 1;
-                        $startHour = str_pad($jadwalData['start_hour'] ?? 0, 2, '0', STR_PAD_LEFT);
-                        $startMinute = str_pad($jadwalData['start_minute'] ?? 0, 2, '0', STR_PAD_LEFT);
-                        $endHour = str_pad($jadwalData['end_hour'] ?? 0, 2, '0', STR_PAD_LEFT);
-                        $endMinute = str_pad($jadwalData['end_minute'] ?? 0, 2, '0', STR_PAD_LEFT);
+                            $weekday = $jadwalData['weekday'] ?? 1;
+                            $startHour = str_pad($jadwalData['start_hour'] ?? 0, 2, '0', STR_PAD_LEFT);
+                            $startMinute = str_pad($jadwalData['start_minute'] ?? 0, 2, '0', STR_PAD_LEFT);
+                            $endHour = str_pad($jadwalData['end_hour'] ?? 0, 2, '0', STR_PAD_LEFT);
+                            $endMinute = str_pad($jadwalData['end_minute'] ?? 0, 2, '0', STR_PAD_LEFT);
 
-                        $hari = $mapHari[$weekday] ?? 'Senin';
-                        $jamMulai = "{$startHour}:{$startMinute}:00";
-                        $jamSelesai = "{$endHour}:{$endMinute}:00";
+                            $hari = $mapHari[$weekday] ?? 'Senin';
+                            $jamMulai = "{$startHour}:{$startMinute}:00";
+                            $jamSelesai = "{$endHour}:{$endMinute}:00";
 
                         JadwalDokter::updateOrCreate(
                             ['teramedik_dsid' => (string) $dsid],
@@ -152,6 +155,7 @@ class SyncTeramedikCommand extends Command
                         );
                         $totalJadwal++;
                         $syncedDsids[] = (string) $dsid;
+                        }
                     }
 
                     // Hapus jadwal dokter ini yang ada di DB lokal tetapi tidak ada di API (sudah dihapus di SIMRS)

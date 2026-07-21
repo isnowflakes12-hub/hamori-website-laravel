@@ -58,7 +58,7 @@ class TeramedikApiService
         $response = Http::withToken($token)
             ->acceptJson()
             ->withBody(json_encode(['rsid' => $rsid, 'group' => true]), 'application/json')
-            ->get("{$this->baseUrl}/api/v1/SpecialistDoctorsSchedule");
+            ->get("{$this->baseUrl}/api/v1/SpecialistDoctorsSchedulePoli");
             
         if ($response->successful()) {
             return $response->json();
