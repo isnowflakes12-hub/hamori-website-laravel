@@ -77,95 +77,99 @@
         </div>
         @else
 
-        {{-- VIEW 1: GRID POLIKLINIK --}}
-        <div id="view-poli-grid">
-            <h4 class="mb-4 text-center text-md-start fw-bold text-dark">Pilih Poliklinik</h4>
-            <div class="poli-grid mb-5">
-                @foreach($polis as $index => $poli)
-                @if($poli->dokters->count() > 0)
-                <div class="poli-card" onclick="openPoli('poli-{{ $poli->id }}')">
-                    <div class="poli-card-icon"><i class="bi bi-hospital-fill"></i></div>
-                    <div class="poli-card-name">{{ $poli->nama }}</div>
-                    <div class="poli-card-count">{{ $poli->dokters->count() }} Dokter</div>
+        <div class="row jadwal-enterprise-layout">
+            {{-- SIDEBAR KIRI (DESKTOP) --}}
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="jadwal-sidebar sticky-top" style="top: 100px; z-index: 10;">
+                    <h5 class="fw-bold mb-3 text-dark">Poliklinik</h5>
+                    <div class="list-group list-group-flush jadwal-sidebar-menu rounded-3 shadow-sm border border-light overflow-hidden">
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action border-bottom active" id="menu-all" onclick="scrollToPoli('all', this)">
+                            Semua Poliklinik
+                        </a>
+                        @foreach($polis as $poli)
+                        @if($poli->dokters->count() > 0)
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action border-bottom" id="menu-poli-{{ $poli->id }}" onclick="scrollToPoli('poli-section-{{ $poli->id }}', this)">
+                            {{ $poli->nama }}
+                        </a>
+                        @endif
+                        @endforeach
+                    </div>
                 </div>
-                @endif
-                @endforeach
-            </div>
-        </div>
-
-        {{-- VIEW 2: DOKTER GRID --}}
-        <div id="view-doctor-grid" style="display: none;">
-            <div class="d-flex align-items-center mb-4">
-                <button class="btn btn-outline-secondary rounded-pill border-0 shadow-sm me-3" style="background:#fff; color:#4a5568;" onclick="backToPoliGrid()">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali
-                </button>
-                <h5 class="mb-0 fw-bold text-primary">Daftar Dokter</h5>
             </div>
 
-            {{-- POLI CHIPS FILTER --}}
-            <div class="poli-chips-wrapper mb-4">
-                <div class="poli-chips-scroll">
-                    <button class="poli-chip active" id="chip-all" onclick="filterPoli('all', this)">Semua Poli</button>
+            {{-- KONTEN KANAN (DAFTAR DOKTER) --}}
+            <div class="col-lg-9">
+                {{-- FILTER CHIPS (MOBILE ONLY) --}}
+                <div class="poli-chips-wrapper mb-4 d-lg-none d-block">
+                    <div class="poli-chips-scroll">
+                        <button class="poli-chip active" id="chip-all" onclick="scrollToPoli('all', this, true)">Semua Poli</button>
+                        @foreach($polis as $poli)
+                        @if($poli->dokters->count() > 0)
+                        <button class="poli-chip" id="chip-poli-{{ $poli->id }}" onclick="scrollToPoli('poli-section-{{ $poli->id }}', this, true)">{{ $poli->nama }}</button>
+                        @endif
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- GRUP DOKTER PER POLI --}}
+                <div id="all-doctors-wrapper">
                     @foreach($polis as $poli)
                     @if($poli->dokters->count() > 0)
-                    <button class="poli-chip" id="chip-poli-{{ $poli->id }}" onclick="filterPoli('poli-{{ $poli->id }}', this)">{{ $poli->nama }}</button>
+                    <div class="poli-section mb-5" id="poli-section-{{ $poli->id }}">
+                        <h4 class="fw-bold text-primary mb-4 pb-2 border-bottom" style="font-size: 1.25rem;"><i class="bi bi-hospital-fill me-2"></i>{{ $poli->nama }}</h4>
+                        
+                        <div class="doctor-grid-modern">
+                            @foreach($poli->dokters as $dokter)
+                            @php
+                                $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
+                                    return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
+                                });
+                                $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
+                                $jadwalData = $jadwalSorted->values()->map(function($j) {
+                                    return [
+                                        'hari'    => $j->hari,
+                                        'mulai'   => substr($j->jam_mulai, 0, 5),
+                                        'selesai' => substr($j->jam_selesai, 0, 5),
+                                    ];
+                                })->values()->toArray();
+                                $jadwalJson = json_encode($jadwalData);
+                            @endphp
+                            <div class="doctor-card-modern" 
+                                 onclick="openDoctorOffcanvas(this)"
+                                 data-nama="{{ $dokter->nama_lengkap }}"
+                                 data-poli="{{ strtoupper($poli->nama) }}"
+                                 data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
+                                 data-wa="{{ $waNumber }}"
+                                 data-profil="{{ route('dokter.show', $dokter->id) }}"
+                                 data-jadwal='{{ $jadwalJson }}'>
+                                
+                                <div class="doctor-card-photo-wrapper">
+                                    @if($dokter->foto)
+                                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" class="doctor-card-photo" loading="lazy">
+                                    @else
+                                    <div class="doctor-card-placeholder"><i class="bi bi-person-fill"></i></div>
+                                    @endif
+                                    <div class="doctor-card-hover-overlay">
+                                        <span>Lihat Jadwal <i class="bi bi-arrow-right ms-1"></i></span>
+                                    </div>
+                                </div>
+                                <div class="doctor-card-info">
+                                    <h5 class="doctor-card-nama">{{ $dokter->nama_lengkap }}</h5>
+                                    <p class="doctor-card-spesialis">{{ strtoupper($poli->nama) }}</p>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
                     @endif
                     @endforeach
                 </div>
-            </div>
-
-            {{-- DOCTOR GRID MODERN --}}
-            <div class="doctor-grid-modern">
-                @foreach($polis as $poli)
-                @if($poli->dokters->count() > 0)
-                @foreach($poli->dokters as $dokter)
-                @php
-                    $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
-                        return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
-                    });
-                    $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
-                    $jadwalData = $jadwalSorted->values()->map(function($j) {
-                        return [
-                            'hari'    => $j->hari,
-                            'mulai'   => substr($j->jam_mulai, 0, 5),
-                            'selesai' => substr($j->jam_selesai, 0, 5),
-                        ];
-                    })->values()->toArray();
-                    $jadwalJson = json_encode($jadwalData);
-                @endphp
-                <div class="doctor-card-modern poli-item poli-{{ $poli->id }}" 
-                     onclick="openDoctorOffcanvas(this)"
-                     data-nama="{{ $dokter->nama_lengkap }}"
-                     data-poli="{{ strtoupper($poli->nama) }}"
-                     data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
-                     data-wa="{{ $waNumber }}"
-                     data-profil="{{ route('dokter.show', $dokter->id) }}"
-                     data-jadwal='{{ $jadwalJson }}'>
-                    
-                    <div class="doctor-card-photo-wrapper">
-                        @if($dokter->foto)
-                        <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" class="doctor-card-photo" loading="lazy">
-                        @else
-                        <div class="doctor-card-placeholder"><i class="bi bi-person-fill"></i></div>
-                        @endif
-                        <div class="doctor-card-hover-overlay">
-                            <span>Lihat Jadwal <i class="bi bi-arrow-right ms-1"></i></span>
-                        </div>
-                    </div>
-                    <div class="doctor-card-info">
-                        <h5 class="doctor-card-nama">{{ $dokter->nama_lengkap }}</h5>
-                        <p class="doctor-card-spesialis">{{ strtoupper($poli->nama) }}</p>
-                    </div>
+                
+                {{-- No Results --}}
+                <div id="no-doctor-found" class="text-center py-5" style="display: none;">
+                    <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3 text-muted">Tidak ada dokter ditemukan</h4>
                 </div>
-                @endforeach
-                @endif
-                @endforeach
-            </div>
-
-            {{-- No Results --}}
-            <div id="no-doctor-found" class="text-center py-5" style="display: none;">
-                <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
-                <h4 class="mt-3 text-muted">Tidak ada dokter di poliklinik ini</h4>
             </div>
         </div>
 
@@ -935,82 +939,96 @@
 </style>
 
 <script>
-// Switch Views
-function openPoli(poliId) {
-    document.getElementById('view-poli-grid').style.display = 'none';
-    document.getElementById('view-doctor-grid').style.display = 'block';
-    
-    // Auto-click the corresponding chip
-    const chip = document.getElementById('chip-' + poliId);
-    if (chip) {
-        chip.click();
-        chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+// Smooth scroll ke Poli tertentu
+function scrollToPoli(targetId, btnEl, isMobileChip = false) {
+    // 1. Update active state pada sidebar (Desktop) atau Chips (Mobile)
+    if (isMobileChip) {
+        document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        
+        // Sinkronkan ke sidebar desktop juga
+        document.querySelectorAll('.jadwal-sidebar-menu a').forEach(c => c.classList.remove('active'));
+        const desktopId = btnEl.id.replace('chip-', 'menu-');
+        const desktopMenu = document.getElementById(desktopId);
+        if (desktopMenu) desktopMenu.classList.add('active');
+
     } else {
-        document.getElementById('chip-all').click();
+        document.querySelectorAll('.jadwal-sidebar-menu a').forEach(c => c.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        
+        // Sinkronkan ke chip mobile juga
+        document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
+        const mobileId = btnEl.id.replace('menu-', 'chip-');
+        const mobileChip = document.getElementById(mobileId);
+        if (mobileChip) mobileChip.classList.add('active');
     }
-    
-    // Scroll to top of section
-    document.querySelector('.jadwal-section').scrollIntoView({ behavior: 'smooth' });
+
+    // 2. Filter / Scroll
+    const allDoctorsWrap = document.getElementById('all-doctors-wrapper');
+    const allSections = document.querySelectorAll('.poli-section');
+    const noResult = document.getElementById('no-doctor-found');
+
+    if (targetId === 'all') {
+        // Tampilkan semua poli
+        allSections.forEach(sec => sec.style.display = 'block');
+        noResult.style.display = 'none';
+        
+        // Scroll ke atas list
+        if (!isMobileChip) {
+            allDoctorsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    } else {
+        // Sembunyikan semua kecuali poli target (atau kita biarkan tampil semua lalu scroll?)
+        // Karena ini Enterprise Portal, lebih elegan kalau kita TAMPILKAN SEMUA, lalu smooth scroll ke bagian tersebut!
+        allSections.forEach(sec => sec.style.display = 'block');
+        noResult.style.display = 'none';
+
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+            // Offset untuk header/sticky top
+            const yOffset = -120; 
+            const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({top: y, behavior: 'smooth'});
+        }
+    }
 }
 
-function backToPoliGrid() {
-    document.getElementById('view-doctor-grid').style.display = 'none';
-    document.getElementById('view-poli-grid').style.display = 'block';
-    document.querySelector('.jadwal-section').scrollIntoView({ behavior: 'smooth' });
-}
+// Scrollspy sederhana untuk highlight sidebar saat scroll
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.poli-section');
+    let current = '';
+
+    sections.forEach(sec => {
+        const sectionTop = sec.offsetTop;
+        if (window.pageYOffset >= (sectionTop - 150)) {
+            current = sec.getAttribute('id');
+        }
+    });
+
+    if (current) {
+        // Hapus semua active
+        document.querySelectorAll('.jadwal-sidebar-menu a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
+        
+        // Tambahkan active ke yang sedang di scroll
+        const desktopMenu = document.getElementById('menu-' + current.replace('poli-section-', 'poli-'));
+        if (desktopMenu) desktopMenu.classList.add('active');
+
+        const mobileChip = document.getElementById('chip-' + current.replace('poli-section-', 'poli-'));
+        if (mobileChip) mobileChip.classList.add('active');
+    }
+});
 
 // Check search on load
 document.addEventListener('DOMContentLoaded', function() {
     const hasSearchQuery = {{ request()->hasAny(['nama','poli','hari']) ? 'true' : 'false' }};
     if (hasSearchQuery) {
-        // If they searched via form, immediately show doctor grid with all
-        document.getElementById('view-poli-grid').style.display = 'none';
-        document.getElementById('view-doctor-grid').style.display = 'block';
-        
         const reqPoli = "{{ request('poli') }}";
         if(reqPoli) {
-            const chip = document.getElementById('chip-poli-' + reqPoli);
-            if(chip) chip.click();
-        } else {
-            document.getElementById('chip-all').click();
+            scrollToPoli('poli-section-' + reqPoli, document.getElementById('menu-poli-' + reqPoli));
         }
     }
 });
-
-// Filter Poli (Chips)
-function filterPoli(poliId, btnEl) {
-    // 1. Update active state on chips
-    document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
-    if(btnEl) btnEl.classList.add('active');
-
-    const allCards = document.querySelectorAll('.doctor-card-modern');
-    const noResult = document.getElementById('no-doctor-found');
-    let visibleCount = 0;
-
-    // 2. Tampilkan/Sembunyikan kartu dokter
-    if (poliId === 'all') {
-        allCards.forEach(card => {
-            card.style.display = 'block';
-            visibleCount++;
-        });
-    } else {
-        allCards.forEach(card => {
-            if (card.classList.contains(poliId)) {
-                card.style.display = 'block';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    // 3. Tampilkan pesan kosong jika tidak ada dokter
-    if (visibleCount === 0) {
-        noResult.style.display = 'block';
-    } else {
-        noResult.style.display = 'none';
-    }
-}
 
 // Buka Offcanvas
 function openDoctorOffcanvas(cardEl) {
