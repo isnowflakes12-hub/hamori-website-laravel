@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'teramedik' => [
+        'base_url' => env('TERAMEDIK_BASE_URL', 'https://v3-api-webservice.teramobile.app'),
+        'username' => env('TERAMEDIK_USERNAME', 'Rshamori_dev'),
+        'password' => env('TERAMEDIK_PASSWORD', 'Rshamoridev81HsR0'),
+        'rsid' => env('TERAMEDIK_RSID', 316),
+    ],
+
 ];
