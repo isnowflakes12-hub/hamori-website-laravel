@@ -77,70 +77,96 @@
         </div>
         @else
 
-        {{-- POLI CHIPS FILTER --}}
-        <div class="poli-chips-wrapper mb-4">
-            <div class="poli-chips-scroll">
-                <button class="poli-chip active" onclick="filterPoli('all', this)">Semua Poli</button>
-                @foreach($polis as $poli)
+        {{-- VIEW 1: GRID POLIKLINIK --}}
+        <div id="view-poli-grid">
+            <h4 class="mb-4 text-center text-md-start fw-bold text-dark">Pilih Poliklinik</h4>
+            <div class="poli-grid mb-5">
+                @foreach($polis as $index => $poli)
                 @if($poli->dokters->count() > 0)
-                <button class="poli-chip" onclick="filterPoli('poli-{{ $poli->id }}', this)">{{ $poli->nama }}</button>
+                <div class="poli-card" onclick="openPoli('poli-{{ $poli->id }}')">
+                    <div class="poli-card-icon"><i class="bi bi-hospital-fill"></i></div>
+                    <div class="poli-card-name">{{ $poli->nama }}</div>
+                    <div class="poli-card-count">{{ $poli->dokters->count() }} Dokter</div>
+                </div>
                 @endif
                 @endforeach
             </div>
         </div>
 
-        {{-- DOCTOR GRID MODERN --}}
-        <div class="doctor-grid-modern">
-            @foreach($polis as $poli)
-            @if($poli->dokters->count() > 0)
-            @foreach($poli->dokters as $dokter)
-            @php
-                $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
-                    return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
-                });
-                $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
-                $jadwalData = $jadwalSorted->values()->map(function($j) {
-                    return [
-                        'hari'    => $j->hari,
-                        'mulai'   => substr($j->jam_mulai, 0, 5),
-                        'selesai' => substr($j->jam_selesai, 0, 5),
-                    ];
-                })->values()->toArray();
-                $jadwalJson = json_encode($jadwalData);
-            @endphp
-            <div class="doctor-card-modern poli-item poli-{{ $poli->id }}" 
-                 onclick="openDoctorOffcanvas(this)"
-                 data-nama="{{ $dokter->nama_lengkap }}"
-                 data-poli="{{ strtoupper($poli->nama) }}"
-                 data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
-                 data-wa="{{ $waNumber }}"
-                 data-profil="{{ route('dokter.show', $dokter->id) }}"
-                 data-jadwal='{{ $jadwalJson }}'>
-                
-                <div class="doctor-card-photo-wrapper">
-                    @if($dokter->foto)
-                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" class="doctor-card-photo" loading="lazy">
-                    @else
-                    <div class="doctor-card-placeholder"><i class="bi bi-person-fill"></i></div>
+        {{-- VIEW 2: DOKTER GRID --}}
+        <div id="view-doctor-grid" style="display: none;">
+            <div class="d-flex align-items-center mb-4">
+                <button class="btn btn-outline-secondary rounded-pill border-0 shadow-sm me-3" style="background:#fff; color:#4a5568;" onclick="backToPoliGrid()">
+                    <i class="bi bi-arrow-left me-1"></i> Kembali
+                </button>
+                <h5 class="mb-0 fw-bold text-primary">Daftar Dokter</h5>
+            </div>
+
+            {{-- POLI CHIPS FILTER --}}
+            <div class="poli-chips-wrapper mb-4">
+                <div class="poli-chips-scroll">
+                    <button class="poli-chip active" id="chip-all" onclick="filterPoli('all', this)">Semua Poli</button>
+                    @foreach($polis as $poli)
+                    @if($poli->dokters->count() > 0)
+                    <button class="poli-chip" id="chip-poli-{{ $poli->id }}" onclick="filterPoli('poli-{{ $poli->id }}', this)">{{ $poli->nama }}</button>
                     @endif
-                    <div class="doctor-card-hover-overlay">
-                        <span>Lihat Jadwal <i class="bi bi-arrow-right ms-1"></i></span>
-                    </div>
-                </div>
-                <div class="doctor-card-info">
-                    <h5 class="doctor-card-nama">{{ $dokter->nama_lengkap }}</h5>
-                    <p class="doctor-card-spesialis">{{ strtoupper($poli->nama) }}</p>
+                    @endforeach
                 </div>
             </div>
-            @endforeach
-            @endif
-            @endforeach
-        </div>
 
-        {{-- No Results --}}
-        <div id="no-doctor-found" class="text-center py-5" style="display: none;">
-            <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
-            <h4 class="mt-3 text-muted">Tidak ada dokter di poliklinik ini</h4>
+            {{-- DOCTOR GRID MODERN --}}
+            <div class="doctor-grid-modern">
+                @foreach($polis as $poli)
+                @if($poli->dokters->count() > 0)
+                @foreach($poli->dokters as $dokter)
+                @php
+                    $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
+                        return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
+                    });
+                    $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
+                    $jadwalData = $jadwalSorted->values()->map(function($j) {
+                        return [
+                            'hari'    => $j->hari,
+                            'mulai'   => substr($j->jam_mulai, 0, 5),
+                            'selesai' => substr($j->jam_selesai, 0, 5),
+                        ];
+                    })->values()->toArray();
+                    $jadwalJson = json_encode($jadwalData);
+                @endphp
+                <div class="doctor-card-modern poli-item poli-{{ $poli->id }}" 
+                     onclick="openDoctorOffcanvas(this)"
+                     data-nama="{{ $dokter->nama_lengkap }}"
+                     data-poli="{{ strtoupper($poli->nama) }}"
+                     data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
+                     data-wa="{{ $waNumber }}"
+                     data-profil="{{ route('dokter.show', $dokter->id) }}"
+                     data-jadwal='{{ $jadwalJson }}'>
+                    
+                    <div class="doctor-card-photo-wrapper">
+                        @if($dokter->foto)
+                        <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" class="doctor-card-photo" loading="lazy">
+                        @else
+                        <div class="doctor-card-placeholder"><i class="bi bi-person-fill"></i></div>
+                        @endif
+                        <div class="doctor-card-hover-overlay">
+                            <span>Lihat Jadwal <i class="bi bi-arrow-right ms-1"></i></span>
+                        </div>
+                    </div>
+                    <div class="doctor-card-info">
+                        <h5 class="doctor-card-nama">{{ $dokter->nama_lengkap }}</h5>
+                        <p class="doctor-card-spesialis">{{ strtoupper($poli->nama) }}</p>
+                    </div>
+                </div>
+                @endforeach
+                @endif
+                @endforeach
+            </div>
+
+            {{-- No Results --}}
+            <div id="no-doctor-found" class="text-center py-5" style="display: none;">
+                <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                <h4 class="mt-3 text-muted">Tidak ada dokter di poliklinik ini</h4>
+            </div>
         </div>
 
         @endif
@@ -331,6 +357,65 @@
 .jadwal-empty p {
     color: #9ba5b4;
     margin-bottom: 24px;
+}
+
+/* ──────────────────────────────────────────────────
+   GRID POLIKLINIK (Initial View)
+────────────────────────────────────────────────── */
+.poli-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.poli-card {
+    background: #fff;
+    border: 1px solid #eef1f6;
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.poli-card:hover {
+    background: #f8fbff;
+    border-color: rgba(13,110,253,0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(13,110,253,0.08);
+}
+
+.poli-card-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--primary, #0d6efd), #4a90e2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.poli-card:hover .poli-card-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.poli-card-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.poli-card-count {
+    font-size: 13px;
+    color: var(--primary, #0d6efd);
+    font-weight: 600;
 }
 
 /* ──────────────────────────────────────────────────
@@ -850,6 +935,48 @@
 </style>
 
 <script>
+// Switch Views
+function openPoli(poliId) {
+    document.getElementById('view-poli-grid').style.display = 'none';
+    document.getElementById('view-doctor-grid').style.display = 'block';
+    
+    // Auto-click the corresponding chip
+    const chip = document.getElementById('chip-' + poliId);
+    if (chip) {
+        chip.click();
+        chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    } else {
+        document.getElementById('chip-all').click();
+    }
+    
+    // Scroll to top of section
+    document.querySelector('.jadwal-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function backToPoliGrid() {
+    document.getElementById('view-doctor-grid').style.display = 'none';
+    document.getElementById('view-poli-grid').style.display = 'block';
+    document.querySelector('.jadwal-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Check search on load
+document.addEventListener('DOMContentLoaded', function() {
+    const hasSearchQuery = {{ request()->hasAny(['nama','poli','hari']) ? 'true' : 'false' }};
+    if (hasSearchQuery) {
+        // If they searched via form, immediately show doctor grid with all
+        document.getElementById('view-poli-grid').style.display = 'none';
+        document.getElementById('view-doctor-grid').style.display = 'block';
+        
+        const reqPoli = "{{ request('poli') }}";
+        if(reqPoli) {
+            const chip = document.getElementById('chip-poli-' + reqPoli);
+            if(chip) chip.click();
+        } else {
+            document.getElementById('chip-all').click();
+        }
+    }
+});
+
 // Filter Poli (Chips)
 function filterPoli(poliId, btnEl) {
     // 1. Update active state on chips
