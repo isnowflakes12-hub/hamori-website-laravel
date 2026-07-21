@@ -227,13 +227,18 @@ class SyncTeramedikCommand extends Command
                 }
             }
 
-            // Set dokter yang sudah tidak ada di API (namun sebelumnya dari API) menjadi tidak aktif
+            // HAPUS dokter yang sudah tidak ada di API (beserta jadwalnya)
             if (!empty($syncedDokterIds)) {
                 $cleanSyncedDokterIds = array_filter($syncedDokterIds);
-                $deactivated = Dokter::whereNotNull('teramedik_id')
+                $dokterIdsToDelete = Dokter::whereNotNull('teramedik_id')
                     ->whereNotIn('id', $cleanSyncedDokterIds)
-                    ->update(['is_active' => false]);
-                $this->info("Menonaktifkan {$deactivated} dokter yang tidak ada di API.");
+                    ->pluck('id');
+
+                if ($dokterIdsToDelete->isNotEmpty()) {
+                    JadwalDokter::whereIn('dokter_id', $dokterIdsToDelete)->delete();
+                    $deleted = Dokter::whereIn('id', $dokterIdsToDelete)->delete();
+                    $this->info("Menghapus {$deleted} dokter yang tidak ada di API.");
+                }
             }
 
             DB::commit();
