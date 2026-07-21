@@ -939,7 +939,7 @@
 </style>
 
 <script>
-// Smooth scroll ke Poli tertentu
+// Fungsi Tab / Tampilkan Poli Tertentu
 function scrollToPoli(targetId, btnEl, isMobileChip = false) {
     // 1. Update active state pada sidebar (Desktop) atau Chips (Mobile)
     if (isMobileChip) {
@@ -963,7 +963,7 @@ function scrollToPoli(targetId, btnEl, isMobileChip = false) {
         if (mobileChip) mobileChip.classList.add('active');
     }
 
-    // 2. Filter / Scroll
+    // 2. Filter Tampilan
     const allDoctorsWrap = document.getElementById('all-doctors-wrapper');
     const allSections = document.querySelectorAll('.poli-section');
     const noResult = document.getElementById('no-doctor-found');
@@ -973,51 +973,34 @@ function scrollToPoli(targetId, btnEl, isMobileChip = false) {
         allSections.forEach(sec => sec.style.display = 'block');
         noResult.style.display = 'none';
         
-        // Scroll ke atas list
-        if (!isMobileChip) {
-            allDoctorsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Scroll sedikit ke atas konten
+        if (!isMobileChip && window.pageYOffset > 300) {
+            window.scrollTo({top: 200, behavior: 'smooth'});
         }
     } else {
-        // Sembunyikan semua kecuali poli target (atau kita biarkan tampil semua lalu scroll?)
-        // Karena ini Enterprise Portal, lebih elegan kalau kita TAMPILKAN SEMUA, lalu smooth scroll ke bagian tersebut!
-        allSections.forEach(sec => sec.style.display = 'block');
+        // Sembunyikan semua kecuali poli target
+        allSections.forEach(sec => {
+            if (sec.id === targetId) {
+                sec.style.display = 'block';
+                // Animasi sederhana
+                sec.style.opacity = '0';
+                setTimeout(() => { sec.style.transition = 'opacity 0.3s ease'; sec.style.opacity = '1'; }, 10);
+            } else {
+                sec.style.display = 'none';
+            }
+        });
         noResult.style.display = 'none';
 
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-            // Offset untuk header/sticky top
-            const yOffset = -120; 
-            const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        // Scroll sedikit agar pas di layar jika di mobile
+        if (isMobileChip) {
+            const y = allDoctorsWrap.getBoundingClientRect().top + window.pageYOffset - 100;
             window.scrollTo({top: y, behavior: 'smooth'});
+        } else {
+            // Desktop tidak perlu scroll karena ganti tab sangat cepat
+            window.scrollTo({top: 250, behavior: 'smooth'});
         }
     }
 }
-
-// Scrollspy sederhana untuk highlight sidebar saat scroll
-window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('.poli-section');
-    let current = '';
-
-    sections.forEach(sec => {
-        const sectionTop = sec.offsetTop;
-        if (window.pageYOffset >= (sectionTop - 150)) {
-            current = sec.getAttribute('id');
-        }
-    });
-
-    if (current) {
-        // Hapus semua active
-        document.querySelectorAll('.jadwal-sidebar-menu a').forEach(a => a.classList.remove('active'));
-        document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
-        
-        // Tambahkan active ke yang sedang di scroll
-        const desktopMenu = document.getElementById('menu-' + current.replace('poli-section-', 'poli-'));
-        if (desktopMenu) desktopMenu.classList.add('active');
-
-        const mobileChip = document.getElementById('chip-' + current.replace('poli-section-', 'poli-'));
-        if (mobileChip) mobileChip.classList.add('active');
-    }
-});
 
 // Check search on load
 document.addEventListener('DOMContentLoaded', function() {
