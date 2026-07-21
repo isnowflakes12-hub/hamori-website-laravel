@@ -83,9 +83,7 @@
                 <div class="jadwal-sidebar sticky-top" style="top: 100px; z-index: 10;">
                     <h5 class="fw-bold mb-3 text-dark">Poliklinik</h5>
                     <div class="list-group list-group-flush jadwal-sidebar-menu rounded-3 shadow-sm border border-light overflow-hidden">
-                        <a href="javascript:void(0)" class="list-group-item list-group-item-action border-bottom active" id="menu-all" onclick="scrollToPoli('all', this)">
-                            Semua Poliklinik
-                        </a>
+
                         @foreach($polis as $poli)
                         @if($poli->dokters->count() > 0)
                         <a href="javascript:void(0)" class="list-group-item list-group-item-action border-bottom" id="menu-poli-{{ $poli->id }}" onclick="scrollToPoli('poli-section-{{ $poli->id }}', this)">
@@ -102,7 +100,7 @@
                 {{-- FILTER CHIPS (MOBILE ONLY) --}}
                 <div class="poli-chips-wrapper mb-4 d-lg-none d-block">
                     <div class="poli-chips-scroll">
-                        <button class="poli-chip active" id="chip-all" onclick="scrollToPoli('all', this, true)">Semua Poli</button>
+
                         @foreach($polis as $poli)
                         @if($poli->dokters->count() > 0)
                         <button class="poli-chip" id="chip-poli-{{ $poli->id }}" onclick="scrollToPoli('poli-section-{{ $poli->id }}', this, true)">{{ $poli->nama }}</button>
@@ -1009,6 +1007,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const reqPoli = "{{ request('poli') }}";
         if(reqPoli) {
             scrollToPoli('poli-section-' + reqPoli, document.getElementById('menu-poli-' + reqPoli));
+        }
+    } else {
+        // Auto-select the first poliklinik on load since "Semua" is removed
+        const firstMenu = document.querySelector('.jadwal-sidebar-menu a');
+        if (firstMenu) {
+            firstMenu.click();
         }
     }
 });
