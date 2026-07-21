@@ -77,106 +77,106 @@
         </div>
         @else
 
-        {{-- DAFTAR POLI ACCORDION --}}
-        <div class="poli-list" id="poli-list">
+        {{-- GRID POLIKLINIK --}}
+        <div class="poli-grid mb-5">
             @foreach($polis as $index => $poli)
             @if($poli->dokters->count() > 0)
-            @php
-                $isOpenByDefault = request()->hasAny(['nama','hari']) || (request('poli') == $poli->id);
-            @endphp
-            <div class="poli-accordion {{ $isOpenByDefault ? 'is-open' : '' }}" id="poli-{{ $poli->id }}">
-                {{-- POLI HEADER --}}
-                <button class="poli-header" type="button" onclick="togglePoli(this)">
-                    <div class="poli-header-left">
-                        <div class="poli-icon">
-                            <i class="bi bi-hospital-fill"></i>
-                        </div>
-                        <div>
-                            <div class="poli-nama">{{ $poli->nama }}</div>
-                            <div class="poli-count">{{ $poli->dokters->count() }} Dokter</div>
-                        </div>
-                    </div>
-                    <div class="poli-header-right">
-                        <span class="poli-badge">{{ $poli->dokters->count() }}</span>
-                        <div class="poli-chevron"><i class="bi bi-chevron-down"></i></div>
-                    </div>
-                </button>
+            <div class="poli-card" onclick="showPoliDoctors('poli-{{ $poli->id }}', this)">
+                <div class="poli-card-icon"><i class="bi bi-hospital-fill"></i></div>
+                <div class="poli-card-name">{{ $poli->nama }}</div>
+                <div class="poli-card-count">{{ $poli->dokters->count() }} Dokter</div>
+            </div>
+            @endif
+            @endforeach
+        </div>
 
-                {{-- DAFTAR DOKTER --}}
-                <div class="poli-body">
-                    <div class="dokter-list">
-                        @foreach($poli->dokters as $dokter)
-                        @php
-                            $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
-                                return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
-                            });
-                            $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
-                            $jadwalData = $jadwalSorted->values()->map(function($j) {
-                                return [
-                                    'hari'    => $j->hari,
-                                    'mulai'   => substr($j->jam_mulai, 0, 5),
-                                    'selesai' => substr($j->jam_selesai, 0, 5),
-                                ];
-                            })->values()->toArray();
-                            $jadwalJson = json_encode($jadwalData);
-                        @endphp
-                        <div class="dokter-list-row">
-                            {{-- Kiri: foto + info --}}
-                            <div class="dokter-list-left">
-                                <div class="dokter-list-photo">
-                                    @if($dokter->foto)
-                                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" loading="lazy">
-                                    @else
-                                    <div class="dokter-list-photo-placeholder"><i class="bi bi-person-fill"></i></div>
-                                    @endif
-                                </div>
-                                <div class="dokter-list-info">
-                                    <div class="dokter-list-nama">{{ $dokter->nama_lengkap }}</div>
-                                    <div class="dokter-list-spesialis">{{ strtoupper($poli->nama) }}</div>
-                                </div>
+        {{-- DAFTAR DOKTER PER POLI --}}
+        <div class="doctors-container" id="doctors-container">
+            @foreach($polis as $index => $poli)
+            @if($poli->dokters->count() > 0)
+            <div class="poli-group" id="poli-{{ $poli->id }}" style="display: none;">
+                <div class="d-flex align-items-center mb-4">
+                    <h3 class="mb-0 text-primary fw-bold"><i class="bi bi-hospital-fill me-2"></i>{{ $poli->nama }}</h3>
+                    <span class="badge bg-primary ms-3 rounded-pill px-3">{{ $poli->dokters->count() }} Dokter</span>
+                </div>
+                
+                <div class="dokter-list">
+                    @foreach($poli->dokters as $dokter)
+                    @php
+                        $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
+                            return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
+                        });
+                        $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
+                        $jadwalData = $jadwalSorted->values()->map(function($j) {
+                            return [
+                                'hari'    => $j->hari,
+                                'mulai'   => substr($j->jam_mulai, 0, 5),
+                                'selesai' => substr($j->jam_selesai, 0, 5),
+                            ];
+                        })->values()->toArray();
+                    @endphp
+                    <div class="dokter-list-row compact">
+                        {{-- Kiri: foto + info --}}
+                        <div class="dokter-list-left">
+                            <div class="dokter-list-photo">
+                                @if($dokter->foto)
+                                <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" loading="lazy">
+                                @else
+                                <div class="dokter-list-photo-placeholder"><i class="bi bi-person-fill"></i></div>
+                                @endif
                             </div>
-
-                            {{-- Tengah: tabel jadwal --}}
-                            <div class="dokter-list-jadwal">
-                                @php
-                                    $hariOrder = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
-                                    // Group jadwal per hari
-                                    $jadwalPerHari = [];
-                                    foreach($hariOrder as $h) { $jadwalPerHari[$h] = []; }
-                                    foreach($jadwalSorted as $j) {
-                                        $jadwalPerHari[$j->hari][] = substr($j->jam_mulai,0,5).' – '.substr($j->jam_selesai,0,5);
-                                    }
-                                    // Max rows needed
-                                    $maxRows = max(1, max(array_map('count', $jadwalPerHari)));
-                                @endphp
-                                <table class="jadwal-week-table">
-                                    <thead>
-                                        <tr>
-                                            @foreach($hariOrder as $h)
-                                            <th>{{ strtoupper(substr($h,0,3)) }}</th>
-                                            @endforeach
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for($row = 0; $row < $maxRows; $row++)
-                                        <tr>
-                                            @foreach($hariOrder as $h)
-                                            <td>{{ $jadwalPerHari[$h][$row] ?? '-' }}</td>
-                                            @endforeach
-                                        </tr>
-                                        @endfor
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {{-- Kanan: tombol aksi --}}
-                            <div class="dokter-list-actions">
-                                <a href="{{ route('dokter.show', $dokter->id) }}" class="btn-lihat-profil">Lihat profil</a>
-                                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Halo, saya ingin buat janji dengan '.$dokter->nama_lengkap.' di '.request()->root()) }}" target="_blank" class="btn-buat-janji">Buat janji</a>
+                            <div class="dokter-list-info">
+                                <div class="dokter-list-nama">{{ $dokter->nama_lengkap }}</div>
+                                <div class="dokter-list-spesialis">{{ strtoupper($poli->nama) }}</div>
                             </div>
                         </div>
-                        @endforeach
+
+                        {{-- Kanan: tombol aksi --}}
+                        <div class="dokter-list-actions">
+                            <button type="button" class="btn-lihat-jadwal" onclick="toggleJadwal('jadwal-{{ $dokter->id }}', this)">
+                                Lihat Jadwal <i class="bi bi-chevron-down ms-1 transition-transform"></i>
+                            </button>
+                            <a href="{{ route('dokter.show', $dokter->id) }}" class="btn-lihat-profil">Lihat profil</a>
+                            <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Halo, saya ingin buat janji dengan '.$dokter->nama_lengkap.' di '.request()->root()) }}" target="_blank" class="btn-buat-janji">Buat janji</a>
+                        </div>
+                        
+                        {{-- Bawah: tabel jadwal (hidden by default) --}}
+                        <div class="dokter-list-jadwal" id="jadwal-{{ $dokter->id }}" style="display: none;">
+                            <hr class="my-3 border-light">
+                            @php
+                                $hariOrder = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+                                $jadwalPerHari = [];
+                                foreach($hariOrder as $h) { $jadwalPerHari[$h] = []; }
+                                foreach($jadwalSorted as $j) {
+                                    $jadwalPerHari[$j->hari][] = substr($j->jam_mulai,0,5).' – '.substr($j->jam_selesai,0,5);
+                                }
+                                $maxRows = max(1, max(array_map('count', $jadwalPerHari)));
+                            @endphp
+                            @if($jadwalSorted->count() > 0)
+                            <table class="jadwal-week-table">
+                                <thead>
+                                    <tr>
+                                        @foreach($hariOrder as $h)
+                                        <th>{{ strtoupper(substr($h,0,3)) }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for($row = 0; $row < $maxRows; $row++)
+                                    <tr>
+                                        @foreach($hariOrder as $h)
+                                        <td>{{ $jadwalPerHari[$h][$row] ?? '-' }}</td>
+                                        @endforeach
+                                    </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
+                            @else
+                            <div class="text-center text-muted py-3">Jadwal belum tersedia</div>
+                            @endif
+                        </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
             @endif
@@ -187,40 +187,7 @@
     </div>
 </section>
 
-{{-- MODAL DOKTER --}}
-<div id="dokter-modal" class="dokter-modal-overlay" onclick="closeDokterModal(event)">
-    <div class="dokter-modal-box">
-        <button class="dokter-modal-close" onclick="closeDokterModal()"><i class="bi bi-x-lg"></i></button>
 
-        <div class="dokter-modal-inner">
-            {{-- Foto --}}
-            <div class="dokter-modal-photo-wrap">
-                <div id="modal-photo-placeholder" class="dokter-modal-photo-placeholder"><i class="bi bi-person-fill"></i></div>
-                <img id="modal-foto" class="dokter-modal-foto" src="" alt="" style="display:none;">
-            </div>
-
-            {{-- Info --}}
-            <div class="dokter-modal-info">
-                <p id="modal-spesialis" class="dokter-modal-spesialis"></p>
-                <h4 id="modal-nama" class="dokter-modal-nama"></h4>
-
-                {{-- Jadwal --}}
-                <div class="dokter-modal-jadwal-wrap">
-                    <div class="dokter-modal-jadwal-title"><i class="bi bi-calendar3-fill me-2"></i>Jadwal Praktek</div>
-                    <div id="modal-jadwal-list" class="dokter-modal-jadwal-list"></div>
-                    <div id="modal-no-jadwal" class="dokter-modal-no-jadwal" style="display:none;">
-                        <i class="bi bi-calendar-x me-2"></i>Jadwal belum tersedia
-                    </div>
-                </div>
-
-                {{-- Action --}}
-                <a id="modal-wa-btn" href="#" target="_blank" class="dokter-modal-wa-btn">
-                    <i class="bi bi-whatsapp me-2"></i>Buat Janji via WhatsApp
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
 /* ──────────────────────────────────────────────────
@@ -369,121 +336,54 @@
 }
 
 /* ──────────────────────────────────────────────────
-   POLI ACCORDION
+   GRID POLIKLINIK
 ────────────────────────────────────────────────── */
-.poli-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.poli-accordion {
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,.05);
-    border: 1.5px solid #eef1f6;
-    transition: box-shadow .25s;
-}
-
-.poli-accordion.is-open {
-    box-shadow: 0 6px 28px rgba(13,110,253,.1);
-    border-color: rgba(13,110,253,.2);
-}
-
-/* Header Poli */
-.poli-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    transition: background .2s;
-}
-
-.poli-header:hover {
-    background: #f7f9fc;
-}
-
-.is-open .poli-header {
-    background: linear-gradient(135deg, rgba(13,110,253,.06), rgba(13,110,253,.02));
-    border-bottom: 1px solid #eef1f6;
-}
-
-.poli-header-left {
-    display: flex;
-    align-items: center;
+.poli-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
 }
 
-.poli-icon {
-    width: 46px;
-    height: 46px;
+.poli-card {
+    background: #fff;
+    border: 1px solid #eef1f6;
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.poli-card:hover, .poli-card.active {
+    background: #f8fbff;
+    border-color: rgba(13,110,253,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(13,110,253,0.08);
+}
+
+.poli-card-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
     border-radius: 12px;
     background: linear-gradient(135deg, var(--primary, #0d6efd), #4a90e2);
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
+    font-size: 20px;
+    transition: transform 0.2s;
 }
 
-.is-open .poli-icon {
-    background: linear-gradient(135deg, #0a58ca, var(--primary, #0d6efd));
+.poli-card:hover .poli-card-icon {
+    transform: scale(1.05);
 }
 
-.poli-nama {
+.poli-card-name {
     font-size: 15px;
     font-weight: 700;
     color: #1a202c;
-    line-height: 1.3;
-}
-
-.poli-count {
-    font-size: 12px;
-    color: #9ba5b4;
-    margin-top: 2px;
-}
-
-.poli-header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-}
-
-.poli-badge {
-    background: #e7f0ff;
-    color: var(--primary, #0d6efd);
-    font-size: 12px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    min-width: 32px;
-    text-align: center;
-}
-
-.poli-chevron {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform .3s, background .2s;
-    font-size: 14px;
-    color: #6c757d;
-}
-
-.is-open .poli-chevron {
-    transform: rotate(180deg);
-    background: var(--primary, #0d6efd);
     color: #fff;
 }
 
@@ -900,85 +800,61 @@
 </style>
 
 <script>
-function togglePoli(btn) {
-    const accordion = btn.closest('.poli-accordion');
-    const isOpen = accordion.classList.contains('is-open');
-    accordion.classList.toggle('is-open', !isOpen);
-}
+function showPoliDoctors(poliId, cardEl) {
+    // 1. Reset semua active card
+    document.querySelectorAll('.poli-card').forEach(c => c.classList.remove('active'));
+    if(cardEl) {
+        cardEl.classList.add('active');
+    }
 
-function openDokterModal(card) {
-    try {
-        const nama      = card.dataset.nama      || '';
-        const spesialis = card.dataset.spesialis || '';
-        const foto      = card.dataset.foto      || '';
-        const wa        = card.dataset.wa        || '';
-        const rawJson   = card.dataset.jadwal    || '[]';
-        const jadwal    = JSON.parse(rawJson);
+    // 2. Sembunyikan semua grup dokter
+    document.querySelectorAll('.poli-group').forEach(g => {
+        g.style.display = 'none';
+    });
 
-        document.getElementById('modal-nama').textContent      = nama;
-        document.getElementById('modal-spesialis').textContent = spesialis;
-        document.getElementById('modal-wa-btn').href           = 'https://wa.me/' + wa;
-
-        // Foto
-        const imgEl = document.getElementById('modal-foto');
-        const phEl  = document.getElementById('modal-photo-placeholder');
-        if (foto) {
-            imgEl.src           = foto;
-            imgEl.style.display = 'block';
-            phEl.style.display  = 'none';
-        } else {
-            imgEl.style.display = 'none';
-            phEl.style.display  = 'flex';
-        }
-
-        // Jadwal
-        const listEl   = document.getElementById('modal-jadwal-list');
-        const noJadwal = document.getElementById('modal-no-jadwal');
-        listEl.innerHTML = '';
-        if (Array.isArray(jadwal) && jadwal.length > 0) {
-            noJadwal.style.display = 'none';
-            listEl.style.display   = 'flex';
-            jadwal.forEach(j => {
-                const row = document.createElement('div');
-                row.className = 'dokter-modal-jadwal-row';
-                row.innerHTML = '<span class="dokter-modal-jadwal-hari">' + j.hari + '</span>'
-                              + '<span class="dokter-modal-jadwal-jam">' + j.mulai + ' – ' + j.selesai + '</span>';
-                listEl.appendChild(row);
-            });
-        } else {
-            listEl.style.display   = 'none';
-            noJadwal.style.display = 'block';
-        }
-
-        document.getElementById('dokter-modal').classList.add('is-open');
-        document.body.style.overflow = 'hidden';
-
-    } catch(err) {
-        console.error('Modal error:', err);
+    // 3. Tampilkan grup dokter yang dipilih
+    const selectedGroup = document.getElementById(poliId);
+    if(selectedGroup) {
+        selectedGroup.style.display = 'block';
+        // Optional: Scroll otomatis ke list dokter
+        selectedGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
-function closeDokterModal(e) {
-    // Called from overlay click (e = event) or close button (e = undefined)
-    if (e instanceof Event && e.target !== document.getElementById('dokter-modal')) return;
-    document.getElementById('dokter-modal').classList.remove('is-open');
-    document.body.style.overflow = '';
-}
-
-// ESC key close
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        document.getElementById('dokter-modal').classList.remove('is-open');
-        document.body.style.overflow = '';
+function toggleJadwal(jadwalId, btn) {
+    const jadwalEl = document.getElementById(jadwalId);
+    const chevron = btn.querySelector('.bi-chevron-down');
+    
+    if (jadwalEl.style.display === 'none') {
+        // Tampilkan
+        jadwalEl.style.display = 'block';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        btn.classList.add('bg-light');
+    } else {
+        // Sembunyikan
+        jadwalEl.style.display = 'none';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+        btn.classList.remove('bg-light');
     }
-});
+}
 
 // Auto-open the first poli if no search filters active
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if we have active filter, if not just click the first card
     const hasFilter = {{ request()->hasAny(['nama','poli','hari']) ? 'true' : 'false' }};
     if (!hasFilter) {
-        const first = document.querySelector('.poli-accordion');
-        if (first) first.classList.add('is-open');
+        const firstCard = document.querySelector('.poli-card');
+        if (firstCard) {
+            firstCard.click();
+        }
+    } else {
+        // If there's a filter, show ALL matched doctors by displaying all non-empty poli-groups
+        document.querySelectorAll('.poli-group').forEach(g => {
+            g.style.display = 'block';
+        });
+        // Sembunyikan grid poli karena sedang mode search
+        const poliGrid = document.querySelector('.poli-grid');
+        if (poliGrid) poliGrid.style.display = 'none';
     }
 });
 </script>
