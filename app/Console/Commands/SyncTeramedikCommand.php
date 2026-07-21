@@ -43,8 +43,8 @@ class SyncTeramedikCommand extends Command
 
             DB::beginTransaction();
 
-            // CLEANUP: Hapus data dokter duplikat berdasarkan nama dan poli
-            // Prioritaskan record yang punya teramedik_id (yang lebih baru/benar)
+            // CLEANUP: Hapus SEMUA record dokter yang duplikat (nama sama, poli sama)
+            // Biarkan proses sync di bawah yang membuat ulang dari data API yang benar
             $duplicateNames = DB::table('dokters')
                 ->select('nama', 'poli_id')
                 ->groupBy('nama', 'poli_id')
@@ -52,26 +52,14 @@ class SyncTeramedikCommand extends Command
                 ->get();
 
             foreach ($duplicateNames as $dup) {
-                $records = DB::table('dokters')
+                $allIds = DB::table('dokters')
                     ->where('nama', $dup->nama)
                     ->where('poli_id', $dup->poli_id)
-                    ->orderByRaw('CASE WHEN teramedik_id IS NOT NULL THEN 0 ELSE 1 END')
-                    ->orderBy('id')
-                    ->get(['id']);
+                    ->pluck('id');
 
-                // Yang pertama dipertahankan, sisanya dihapus
-                $keepId = $records->first()->id;
-                $deleteIds = $records->skip(1)->pluck('id');
-
-                if ($deleteIds->isNotEmpty()) {
-                    DB::table('jadwal_dokters')
-                        ->whereIn('dokter_id', $deleteIds)
-                        ->delete();
-
-                    DB::table('dokters')
-                        ->whereIn('id', $deleteIds)
-                        ->delete();
-                }
+                // Hapus semua jadwal dan semua record duplikat tersebut
+                DB::table('jadwal_dokters')->whereIn('dokter_id', $allIds)->delete();
+                DB::table('dokters')->whereIn('id', $allIds)->delete();
             }
 
             // CLEANUP: Hapus semua jadwal lama yang tidak punya teramedik_dsid (data legacy sebelum upgrade sync)
