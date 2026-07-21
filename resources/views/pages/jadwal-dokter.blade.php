@@ -104,7 +104,7 @@
 
                 {{-- DAFTAR DOKTER --}}
                 <div class="poli-body">
-                    <div class="dokter-grid">
+                    <div class="dokter-list">
                         @foreach($poli->dokters as $dokter)
                         @php
                             $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
@@ -118,32 +118,61 @@
                                     'selesai' => substr($j->jam_selesai, 0, 5),
                                 ];
                             })->values()->toArray();
-                            $jadwalJson = json_encode($jadwalData); // plain json_encode, no HEX flags
+                            $jadwalJson = json_encode($jadwalData);
                         @endphp
-                        {{-- Card klik → buka modal --}}
-                        <div class="dokter-card-v2" onclick="openDokterModal(this)" style="cursor:pointer;"
-                            data-nama="{{ $dokter->nama_lengkap }}"
-                            data-spesialis="{{ $poli->nama }}"
-                            data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
-                            data-wa="{{ $waNumber }}"
-                            data-jadwal='{!! $jadwalJson !!}'>
-
-                            <div class="dokter-card-photo">
-                                @if($dokter->foto)
-                                <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" loading="lazy">
-                                @else
-                                <div class="dokter-photo-placeholder-v2">
-                                    <i class="bi bi-person-fill"></i>
+                        <div class="dokter-list-row">
+                            {{-- Kiri: foto + info --}}
+                            <div class="dokter-list-left">
+                                <div class="dokter-list-photo">
+                                    @if($dokter->foto)
+                                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" loading="lazy">
+                                    @else
+                                    <div class="dokter-list-photo-placeholder"><i class="bi bi-person-fill"></i></div>
+                                    @endif
                                 </div>
-                                @endif
+                                <div class="dokter-list-info">
+                                    <div class="dokter-list-nama">{{ $dokter->nama_lengkap }}</div>
+                                    <div class="dokter-list-spesialis">{{ strtoupper($poli->nama) }}</div>
+                                </div>
                             </div>
-                            <div class="dokter-card-body">
-                                <h5 class="dokter-card-nama">{{ $dokter->nama_lengkap }}</h5>
-                                <p class="dokter-card-spesialis">{{ $poli->nama }}</p>
-                                <div class="dokter-card-hint">
-                                    <i class="bi bi-hand-index-thumb me-1"></i>
-                                    {{ $jadwalSorted->count() > 0 ? $jadwalSorted->count().' jadwal tersedia' : 'Klik untuk info' }}
-                                </div>
+
+                            {{-- Tengah: tabel jadwal --}}
+                            <div class="dokter-list-jadwal">
+                                @php
+                                    $hariOrder = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+                                    // Group jadwal per hari
+                                    $jadwalPerHari = [];
+                                    foreach($hariOrder as $h) { $jadwalPerHari[$h] = []; }
+                                    foreach($jadwalSorted as $j) {
+                                        $jadwalPerHari[$j->hari][] = substr($j->jam_mulai,0,5).' – '.substr($j->jam_selesai,0,5);
+                                    }
+                                    // Max rows needed
+                                    $maxRows = max(1, max(array_map('count', $jadwalPerHari)));
+                                @endphp
+                                <table class="jadwal-week-table">
+                                    <thead>
+                                        <tr>
+                                            @foreach($hariOrder as $h)
+                                            <th>{{ strtoupper(substr($h,0,3)) }}</th>
+                                            @endforeach
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for($row = 0; $row < $maxRows; $row++)
+                                        <tr>
+                                            @foreach($hariOrder as $h)
+                                            <td>{{ $jadwalPerHari[$h][$row] ?? '-' }}</td>
+                                            @endforeach
+                                        </tr>
+                                        @endfor
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {{-- Kanan: tombol aksi --}}
+                            <div class="dokter-list-actions">
+                                <a href="{{ route('dokter.show', $dokter->id) }}" class="btn-lihat-profil">Lihat profil</a>
+                                <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Halo, saya ingin buat janji dengan '.$dokter->nama_lengkap.' di '.request()->root()) }}" target="_blank" class="btn-buat-janji">Buat janji</a>
                             </div>
                         </div>
                         @endforeach
@@ -475,148 +504,181 @@
 }
 
 /* ──────────────────────────────────────────────────
-   DOKTER CARD V2
+   DOKTER LIST V3 (Horizontal Layout)
 ────────────────────────────────────────────────── */
-.dokter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+.dokter-list {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
 }
 
-.dokter-card-v2 {
-    background: #f7f9fc;
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1.5px solid #eef1f6;
-    transition: transform .25s, box-shadow .25s, border-color .25s;
+.dokter-list-row {
+    background: #fff;
+    border: 1px solid #eef1f6;
+    border-radius: 12px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
+    gap: 20px;
+    transition: box-shadow 0.2s, border-color 0.2s;
 }
 
-.dokter-card-v2:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,.1);
-    border-color: rgba(13,110,253,.25);
+.dokter-list-row:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    border-color: rgba(13,110,253,0.15);
 }
 
-.dokter-card-photo {
-    width: 100%;
-    aspect-ratio: 3/4;
+@media (min-width: 992px) {
+    .dokter-list-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+/* Kiri: Foto & Info */
+.dokter-list-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.dokter-list-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
     overflow: hidden;
     background: #e4e9f0;
-    max-height: 220px;
+    flex-shrink: 0;
+    position: relative;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.dokter-card-photo img {
+.dokter-list-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: top center;
-    transition: transform .4s;
 }
 
-.dokter-card-v2:hover .dokter-card-photo img {
-    transform: scale(1.05);
-}
-
-.dokter-photo-placeholder-v2 {
+.dokter-list-photo-placeholder {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 56px;
+    font-size: 32px;
     color: #9ba5b4;
     background: linear-gradient(135deg, #eef1f6, #e4e9f0);
 }
 
-.dokter-card-body {
-    padding: 16px;
-    flex: 1;
+.dokter-list-info {
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
-.dokter-card-nama {
-    font-size: 14px;
+.dokter-list-nama {
+    font-size: 16px;
     font-weight: 700;
     color: #1a202c;
-    margin-bottom: 4px;
-    line-height: 1.35;
+    line-height: 1.3;
 }
 
-.dokter-card-spesialis {
-    font-size: 11px;
-    color: var(--primary, #0d6efd);
+.dokter-list-spesialis {
+    font-size: 12px;
+    color: #6c757d;
     font-weight: 600;
-    letter-spacing: .3px;
-    margin-bottom: 12px;
-    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.dokter-jadwal-toggle {
-    width: 100%;
+/* Kanan: Actions */
+.dokter-list-actions {
     display: flex;
     align-items: center;
-    background: #eef4ff;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.btn-lihat-profil {
+    background: #fff;
     color: var(--primary, #0d6efd);
-    border: 1.5px solid rgba(13,110,253,.15);
-    border-radius: 10px;
-    padding: 9px 14px;
+    border: 1px solid var(--primary, #0d6efd);
+    padding: 8px 16px;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: background .2s, border-color .2s;
-    text-align: left;
+    text-decoration: none;
+    transition: all 0.2s;
 }
 
-.dokter-jadwal-toggle:hover {
-    background: #ddeaff;
-    border-color: rgba(13,110,253,.3);
+.btn-lihat-profil:hover {
+    background: #f8fbff;
+    color: #0a58ca;
 }
 
-.dokter-jadwal-toggle.is-open {
-    background: var(--primary, #0d6efd);
+.btn-buat-janji {
+    background: #a91e41; /* Warna merah Hamori sesuai gambar */
     color: #fff;
-    border-color: var(--primary, #0d6efd);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
 }
 
-.dokter-jadwal-chevron {
-    transition: transform .25s;
-    margin-left: auto;
-    font-size: 12px;
+.btn-buat-janji:hover {
+    background: #8b1835;
+    color: #fff;
 }
 
-.dokter-jadwal-toggle.is-open .dokter-jadwal-chevron {
-    transform: rotate(180deg);
+/* Tengah: Tabel Jadwal */
+.dokter-list-jadwal {
+    width: 100%;
+    margin-top: 16px;
+    overflow-x: auto;
 }
 
-.dokter-schedule-wrap {
+@media (min-width: 992px) {
+    .dokter-list-jadwal {
+        width: 100%;
+        margin-top: 24px;
+        order: 3;
+    }
+    .dokter-list-row {
+        flex-wrap: wrap;
+    }
+}
+
+.jadwal-week-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
     background: #fff;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 12px;
-    border: 1px solid #eef1f6;
-    animation: fadeSlideDown .2s ease;
 }
 
-.dokter-schedule-label {
+.jadwal-week-table th {
+    background: #f8fbff;
+    color: #1a202c;
     font-size: 11px;
     font-weight: 700;
-    color: #9ba5b4;
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    margin-bottom: 8px;
+    text-align: center;
+    padding: 10px 8px;
+    border: 1px solid #eef1f6;
+    letter-spacing: 0.5px;
 }
 
-.dokter-schedule-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 0;
-    border-bottom: 1px dashed #f0f0f0;
+.jadwal-week-table td {
+    text-align: center;
+    padding: 10px 8px;
     font-size: 12px;
+    color: #3f4756;
+    border: 1px solid #eef1f6;
+    font-weight: 500;
 }
 
 .dokter-schedule-row:last-child {
