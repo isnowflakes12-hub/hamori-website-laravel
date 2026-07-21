@@ -175,6 +175,13 @@ class SyncTeramedikCommand extends Command
                 }
             }
 
+            // Set dokter yang sudah tidak ada di API (namun sebelumnya dari API) menjadi tidak aktif
+            if (!empty($syncedDokterIds)) {
+                Dokter::whereNotNull('teramedik_id')
+                    ->whereNotIn('id', $syncedDokterIds)
+                    ->update(['is_active' => false]);
+            }
+
             DB::commit();
 
             $this->info("Sinkronisasi Selesai!");
