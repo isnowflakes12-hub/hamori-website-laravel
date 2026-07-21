@@ -106,7 +106,18 @@ class SyncTeramedikCommand extends Command
             foreach ($data as $specialistData) {
                 // 1. Update / Create Poli (Spesialis)
                 $tmid = $specialistData['tmid'] ?? null;
-                $namaSpesialis = $specialistData['specialist'] ?? 'Umum';
+                $rawNama = $specialistData['specialist'] ?? 'Umum';
+
+                // Mapping Nama Spesialis sesuai request
+                $mapSpesialis = [
+                    'Spesialis Anak Anak' => 'Spesialis Anak',
+                    'Spesialis Dermato' => 'Spesialis Kulit dan Kelamin',
+                    'Spesialis Ortodonsia' => 'Spesialis Ortodonti',
+                    'Spesialis Pulmonologi dan Kedokteran Respirasi' => 'Spesialis Paru',
+                    'Spesialis Pulmonologi dan Kedokteran Respirasi (Paru)' => 'Spesialis Paru',
+                    'Spesialis Telinga Hidung Tenggorok-Bedah Kepala Leher' => 'Spesialis THT'
+                ];
+                $namaSpesialis = $mapSpesialis[$rawNama] ?? $rawNama;
 
                 if (!$tmid) continue;
 
@@ -138,6 +149,7 @@ class SyncTeramedikCommand extends Command
                     // Jika poli sudah terhubung dengan teramedik_id, cukup update
                     $poli->update([
                         'nama' => $namaSpesialis,
+                        'slug' => $slug, // slug juga diupdate agar link sinkron
                         'is_active' => true,
                     ]);
                 }

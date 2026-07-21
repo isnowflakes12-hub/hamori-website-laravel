@@ -4,7 +4,14 @@
 
 @section('content')
 
-<div class="page-header">
+@php
+    $polis = $polis->sortBy(function($poli, $key) {
+        $nama = strtolower($poli->nama);
+        if (str_contains($nama, 'umum')) return 999;
+        if (str_contains($nama, 'gigi')) return 998;
+        return $key;
+    });
+@endphp<div class="page-header">
     <div class="container">
         <h1 class="page-title">Jadwal Dokter</h1>
         <nav aria-label="breadcrumb">
@@ -28,15 +35,7 @@
                         <input type="text" name="nama" id="input-nama" class="jadwal-search-input"
                             placeholder="Cari nama dokter..." value="{{ request('nama') }}" autocomplete="off">
                     </div>
-                    <div class="jadwal-search-field">
-                        <i class="bi bi-hospital jadwal-search-icon"></i>
-                        <select name="poli" id="input-poli" class="jadwal-search-input jadwal-search-select">
-                            <option value="">Semua Poli</option>
-                            @foreach($allPolis as $p)
-                            <option value="{{ $p->id }}" {{ request('poli') == $p->id ? 'selected' : '' }}>{{ $p->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
                     <div class="jadwal-search-field">
                         <i class="bi bi-calendar3 jadwal-search-icon"></i>
                         <select name="hari" id="input-hari" class="jadwal-search-input jadwal-search-select">
@@ -97,24 +96,15 @@
 
             {{-- KONTEN KANAN (DAFTAR DOKTER) --}}
             <div class="col-lg-9">
-                {{-- FILTER CHIPS (MOBILE ONLY) --}}
-                <div class="poli-chips-wrapper mb-4 d-lg-none d-block">
-                    <div class="poli-chips-scroll">
-
-                        @foreach($polis as $poli)
-                        @if($poli->dokters->count() > 0)
-                        <button class="poli-chip" id="chip-poli-{{ $poli->id }}" onclick="scrollToPoli('poli-section-{{ $poli->id }}', this, true)">{{ $poli->nama }}</button>
-                        @endif
-                        @endforeach
-                    </div>
-                </div>
-
                 {{-- GRUP DOKTER PER POLI --}}
                 <div id="all-doctors-wrapper">
                     @foreach($polis as $poli)
                     @if($poli->dokters->count() > 0)
-                    <div class="poli-section mb-5" id="poli-section-{{ $poli->id }}">
-                        <h4 class="fw-bold text-primary mb-4 pb-2 border-bottom" style="font-size: 1.25rem;"><i class="bi bi-hospital-fill me-2"></i>{{ $poli->nama }}</h4>
+                    <div class="poli-section mb-3 mb-lg-5" id="poli-section-{{ $poli->id }}">
+                        <h4 class="poli-accordion-header fw-bold mb-0 mb-lg-4 pb-2 border-bottom" style="font-size: 1.25rem; color: #1ba99e; border-bottom-color: rgba(27, 169, 158, 0.2) !important;" onclick="toggleMobileAccordion(this)">
+                            <span>{{ $poli->nama }}</span>
+                            <i class="bi bi-chevron-down poli-accordion-icon d-lg-none"></i>
+                        </h4>
                         
                         <div class="doctor-grid-modern">
                             @foreach($poli->dokters as $dokter)
@@ -192,7 +182,7 @@
                 <div id="oc-placeholder" class="offcanvas-placeholder"><i class="bi bi-person-fill"></i></div>
             </div>
             <h4 id="oc-nama" class="fw-bold mb-1"></h4>
-            <p id="oc-poli" class="text-primary fw-semibold small mb-0"></p>
+            <p id="oc-poli" class="fw-semibold small mb-0" style="color: #1ba99e;"></p>
         </div>
 
         <div class="offcanvas-schedule-wrap">
@@ -208,8 +198,8 @@
     </div>
 
     <div class="offcanvas-footer">
-        <a href="#" id="oc-btn-profil" class="btn btn-outline-primary w-100 mb-2">Lihat Profil Lengkap</a>
-        <a href="#" id="oc-btn-wa" target="_blank" class="btn btn-danger w-100" style="background:#a91e41; border:none;">
+        <a href="#" id="oc-btn-profil" class="btn btn-outline-primary w-100 mb-2" style="color:#1ba99e; border-color:#1ba99e;">Lihat Profil Lengkap</a>
+        <a href="#" id="oc-btn-wa" target="_blank" class="btn w-100" style="background:#1ba99e; color:#fff; border:none;">
             <i class="bi bi-whatsapp me-2"></i> Buat Janji Sekarang
         </a>
     </div>
@@ -271,7 +261,7 @@
 }
 
 .jadwal-search-input:focus {
-    border-color: var(--primary, #0d6efd);
+    border-color: var(--primary, #a91e41);
     background: #fff;
     box-shadow: 0 0 0 3px rgba(13,110,253,.1);
 }
@@ -285,7 +275,7 @@
 }
 
 .jadwal-search-btn {
-    background: var(--primary, #0d6efd);
+    background: var(--primary, #a91e41);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -382,10 +372,10 @@
 }
 
 .poli-card:hover {
-    background: #f8fbff;
-    border-color: rgba(13,110,253,0.3);
+    background: #fcf1f3;
+    border-color: rgba(169,30,65,0.3);
     transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(13,110,253,0.08);
+    box-shadow: 0 12px 24px rgba(169,30,65,0.08);
 }
 
 .poli-card-icon {
@@ -393,7 +383,7 @@
     height: 56px;
     margin: 0 auto 16px;
     border-radius: 16px;
-    background: linear-gradient(135deg, var(--primary, #0d6efd), #4a90e2);
+    background: linear-gradient(135deg, var(--primary, #a91e41), #4a90e2);
     color: #fff;
     display: flex;
     align-items: center;
@@ -416,55 +406,95 @@
 
 .poli-card-count {
     font-size: 13px;
-    color: var(--primary, #0d6efd);
+    color: var(--primary, #a91e41);
     font-weight: 600;
+}
+
+
+
+
+/* Override sidebar active color */
+.jadwal-sidebar-menu .list-group-item.active {
+    background-color: #1ba99e !important;
+    border-color: #1ba99e !important;
+    color: #fff !important;
 }
 
 /* ──────────────────────────────────────────────────
-   POLI CHIPS FILTER
+   MOBILE ACCORDION
 ────────────────────────────────────────────────── */
-.poli-chips-wrapper {
-    position: relative;
-    width: 100%;
+.poli-accordion-header {
+    cursor: default;
 }
 
-.poli-chips-scroll {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 12px;
-    scrollbar-width: none; /* Firefox */
+.poli-accordion-icon {
+    display: none;
 }
 
-.poli-chips-scroll::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
-}
+@media (max-width: 991.98px) {
+    .poli-accordion-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 14px !important;
+        padding: 16px 20px !important;
+        margin-bottom: 0 !important;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        border-bottom-color: #e2e8f0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
 
-.poli-chip {
-    background: #fff;
-    color: #4a5568;
-    border: 1.5px solid #e2e8f0;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
+    .poli-accordion-header:hover {
+        border-color: #1ba99e !important;
+        background: #f0faf9;
+    }
 
-.poli-chip:hover {
-    border-color: rgba(13,110,253,0.5);
-    color: var(--primary, #0d6efd);
-    background: #f8fbff;
-}
+    .poli-accordion-header.active {
+        background: #1ba99e;
+        color: #fff !important;
+        border-color: #1ba99e !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        box-shadow: 0 4px 12px rgba(27,169,158,0.15);
+    }
 
-.poli-chip.active {
-    background: var(--primary, #0d6efd);
-    color: #fff;
-    border-color: var(--primary, #0d6efd);
-    box-shadow: 0 4px 12px rgba(13,110,253,0.2);
+    .poli-accordion-icon {
+        display: inline-block !important;
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .poli-accordion-header.active .poli-accordion-icon {
+        transform: rotate(180deg);
+        color: #fff;
+    }
+
+    .poli-section .doctor-grid-modern {
+        display: none;
+        border: 1.5px solid #e2e8f0;
+        border-top: none;
+        border-bottom-left-radius: 14px;
+        border-bottom-right-radius: 14px;
+        padding: 16px;
+        background: #fff;
+    }
+
+    .poli-section.accordion-open .doctor-grid-modern {
+        display: grid !important;
+        animation: accordionSlideDown 0.3s ease;
+    }
+
+    .poli-section {
+        margin-bottom: 12px !important;
+    }
+
+    @keyframes accordionSlideDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 }
 
 /* ──────────────────────────────────────────────────
@@ -490,7 +520,7 @@
 .doctor-card-modern:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-    border-color: rgba(13,110,253,0.2);
+    border-color: rgba(169,30,65,0.2);
 }
 
 .doctor-card-photo-wrapper {
@@ -561,7 +591,7 @@
 
 .doctor-card-spesialis {
     font-size: 11px;
-    color: var(--primary, #0d6efd);
+    color: #1ba99e;
     font-weight: 600;
     letter-spacing: 0.5px;
     margin-bottom: 0;
@@ -574,8 +604,10 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(15, 23, 42, 0.4);
     backdrop-filter: blur(4px);
     z-index: 1040;
@@ -592,10 +624,11 @@
 .doctor-offcanvas {
     position: fixed;
     top: 0;
+    bottom: 0;
     right: -400px; /* Hidden by default */
     width: 100%;
     max-width: 400px;
-    height: 100vh;
+    height: 100%;
     background: #fff;
     z-index: 1045;
     box-shadow: -10px 0 30px rgba(0,0,0,0.1);
@@ -654,7 +687,7 @@
     border-radius: 50%;
     background: #e4e9f0;
     border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(13,110,253,0.15);
+    box-shadow: 0 4px 12px rgba(169,30,65,0.15);
     overflow: hidden;
     position: relative;
 }
@@ -677,7 +710,7 @@
 }
 
 .offcanvas-schedule-wrap {
-    background: #f8fbff;
+    background: #f0faf9;
     padding: 20px;
     border-radius: 12px;
     border: 1px solid #eef1f6;
@@ -716,6 +749,7 @@
     color: #3f4756;
     border: 1px solid #eef1f6;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .dokter-schedule-row:last-child {
@@ -845,7 +879,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--primary, #0d6efd);
+    color: var(--primary, #a91e41);
     margin-bottom: 6px;
 }
 
@@ -937,82 +971,83 @@
 </style>
 
 <script>
-// Fungsi Tab / Tampilkan Poli Tertentu
-function scrollToPoli(targetId, btnEl, isMobileChip = false) {
-    // 1. Update active state pada sidebar (Desktop) atau Chips (Mobile)
-    if (isMobileChip) {
-        document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
-        if (btnEl) btnEl.classList.add('active');
-        
-        // Sinkronkan ke sidebar desktop juga
-        document.querySelectorAll('.jadwal-sidebar-menu a').forEach(c => c.classList.remove('active'));
-        const desktopId = btnEl.id.replace('chip-', 'menu-');
-        const desktopMenu = document.getElementById(desktopId);
-        if (desktopMenu) desktopMenu.classList.add('active');
+// ── Mobile Accordion Toggle ──
+function toggleMobileAccordion(headerEl) {
+    // Only work on mobile (<992px)
+    if (window.innerWidth >= 992) return;
 
-    } else {
-        document.querySelectorAll('.jadwal-sidebar-menu a').forEach(c => c.classList.remove('active'));
-        if (btnEl) btnEl.classList.add('active');
-        
-        // Sinkronkan ke chip mobile juga
-        document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
-        const mobileId = btnEl.id.replace('menu-', 'chip-');
-        const mobileChip = document.getElementById(mobileId);
-        if (mobileChip) mobileChip.classList.add('active');
-    }
+    const section = headerEl.closest('.poli-section');
+    const isOpen = section.classList.contains('accordion-open');
 
-    // 2. Filter Tampilan
-    const allDoctorsWrap = document.getElementById('all-doctors-wrapper');
-    const allSections = document.querySelectorAll('.poli-section');
-    const noResult = document.getElementById('no-doctor-found');
+    // Close all other accordions
+    document.querySelectorAll('.poli-section.accordion-open').forEach(sec => {
+        sec.classList.remove('accordion-open');
+        sec.querySelector('.poli-accordion-header').classList.remove('active');
+    });
 
-    if (targetId === 'all') {
-        // Tampilkan semua poli
-        allSections.forEach(sec => sec.style.display = 'block');
-        noResult.style.display = 'none';
-        
-        // Scroll sedikit ke atas konten
-        if (!isMobileChip && window.pageYOffset > 300) {
-            window.scrollTo({top: 200, behavior: 'smooth'});
-        }
-    } else {
-        // Sembunyikan semua kecuali poli target
-        allSections.forEach(sec => {
-            if (sec.id === targetId) {
-                sec.style.display = 'block';
-                // Animasi sederhana
-                sec.style.opacity = '0';
-                setTimeout(() => { sec.style.transition = 'opacity 0.3s ease'; sec.style.opacity = '1'; }, 10);
-            } else {
-                sec.style.display = 'none';
-            }
-        });
-        noResult.style.display = 'none';
+    // Toggle current
+    if (!isOpen) {
+        section.classList.add('accordion-open');
+        headerEl.classList.add('active');
 
-        // Scroll sedikit agar pas di layar jika di mobile
-        if (isMobileChip) {
-            const y = allDoctorsWrap.getBoundingClientRect().top + window.pageYOffset - 100;
-            window.scrollTo({top: y, behavior: 'smooth'});
-        } else {
-            // Desktop tidak perlu scroll karena ganti tab sangat cepat
-            window.scrollTo({top: 250, behavior: 'smooth'});
-        }
+        // Smooth scroll to this accordion
+        setTimeout(() => {
+            const y = headerEl.getBoundingClientRect().top + window.pageYOffset - 110;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }, 50);
     }
 }
 
-// Check search on load
+// ── Desktop Sidebar Tab ──
+function scrollToPoli(targetId, btnEl) {
+    // Update active state on sidebar
+    document.querySelectorAll('.jadwal-sidebar-menu a').forEach(c => c.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    // Filter: show only target poli section
+    const allSections = document.querySelectorAll('.poli-section');
+    const noResult = document.getElementById('no-doctor-found');
+
+    allSections.forEach(sec => {
+        if (sec.id === targetId) {
+            sec.style.display = 'block';
+            sec.style.opacity = '0';
+            setTimeout(() => { sec.style.transition = 'opacity 0.3s ease'; sec.style.opacity = '1'; }, 10);
+        } else {
+            sec.style.display = 'none';
+        }
+    });
+    noResult.style.display = 'none';
+    window.scrollTo({ top: 250, behavior: 'smooth' });
+}
+
+// ── Init on Load ──
 document.addEventListener('DOMContentLoaded', function() {
-    const hasSearchQuery = {{ request()->hasAny(['nama','poli','hari']) ? 'true' : 'false' }};
-    if (hasSearchQuery) {
-        const reqPoli = "{{ request('poli') }}";
-        if(reqPoli) {
-            scrollToPoli('poli-section-' + reqPoli, document.getElementById('menu-poli-' + reqPoli));
+    const isMobile = window.innerWidth < 992;
+
+    if (isMobile) {
+        // Mobile: show all poli sections (accordion headers visible, grids hidden via CSS)
+        document.querySelectorAll('.poli-section').forEach(sec => {
+            sec.style.display = 'block';
+        });
+        // Auto-open the first accordion
+        const firstHeader = document.querySelector('.poli-accordion-header');
+        if (firstHeader) {
+            toggleMobileAccordion(firstHeader);
         }
     } else {
-        // Auto-select the first poliklinik on load since "Semua" is removed
-        const firstMenu = document.querySelector('.jadwal-sidebar-menu a');
-        if (firstMenu) {
-            firstMenu.click();
+        // Desktop: auto-select the first sidebar item
+        const hasSearchQuery = {{ request()->hasAny(['nama','poli','hari']) ? 'true' : 'false' }};
+        if (hasSearchQuery) {
+            const reqPoli = "{{ request('poli') }}";
+            if(reqPoli) {
+                scrollToPoli('poli-section-' + reqPoli, document.getElementById('menu-poli-' + reqPoli));
+            }
+        } else {
+            const firstMenu = document.querySelector('.jadwal-sidebar-menu a');
+            if (firstMenu) {
+                firstMenu.click();
+            }
         }
     }
 });
@@ -1072,7 +1107,7 @@ function openDoctorOffcanvas(cardEl) {
 
             let tableHtml = '<table class="jadwal-week-table"><thead><tr>';
             hariOrder.forEach(h => {
-                tableHtml += `<th>${h.substring(0,3).toUpperCase()}</th>`;
+                tableHtml += `<th>${h}</th>`;
             });
             tableHtml += '</tr></thead><tbody>';
             
