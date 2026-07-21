@@ -77,117 +77,115 @@
         </div>
         @else
 
-        {{-- GRID POLIKLINIK --}}
-        <div class="poli-grid mb-5">
-            @foreach($polis as $index => $poli)
-            @if($poli->dokters->count() > 0)
-            <div class="poli-card" onclick="showPoliDoctors('poli-{{ $poli->id }}', this)">
-                <div class="poli-card-icon"><i class="bi bi-hospital-fill"></i></div>
-                <div class="poli-card-name">{{ $poli->nama }}</div>
-                <div class="poli-card-count">{{ $poli->dokters->count() }} Dokter</div>
+        {{-- POLI CHIPS FILTER --}}
+        <div class="poli-chips-wrapper mb-4">
+            <div class="poli-chips-scroll">
+                <button class="poli-chip active" onclick="filterPoli('all', this)">Semua Poli</button>
+                @foreach($polis as $poli)
+                @if($poli->dokters->count() > 0)
+                <button class="poli-chip" onclick="filterPoli('poli-{{ $poli->id }}', this)">{{ $poli->nama }}</button>
+                @endif
+                @endforeach
             </div>
+        </div>
+
+        {{-- DOCTOR GRID MODERN --}}
+        <div class="doctor-grid-modern">
+            @foreach($polis as $poli)
+            @if($poli->dokters->count() > 0)
+            @foreach($poli->dokters as $dokter)
+            @php
+                $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
+                    return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
+                });
+                $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
+                $jadwalData = $jadwalSorted->values()->map(function($j) {
+                    return [
+                        'hari'    => $j->hari,
+                        'mulai'   => substr($j->jam_mulai, 0, 5),
+                        'selesai' => substr($j->jam_selesai, 0, 5),
+                    ];
+                })->values()->toArray();
+                $jadwalJson = json_encode($jadwalData);
+            @endphp
+            <div class="doctor-card-modern poli-item poli-{{ $poli->id }}" 
+                 onclick="openDoctorOffcanvas(this)"
+                 data-nama="{{ $dokter->nama_lengkap }}"
+                 data-poli="{{ strtoupper($poli->nama) }}"
+                 data-foto="{{ $dokter->foto ? asset('storage/'.$dokter->foto) : '' }}"
+                 data-wa="{{ $waNumber }}"
+                 data-profil="{{ route('dokter.show', $dokter->id) }}"
+                 data-jadwal='{{ $jadwalJson }}'>
+                
+                <div class="doctor-card-photo-wrapper">
+                    @if($dokter->foto)
+                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" class="doctor-card-photo" loading="lazy">
+                    @else
+                    <div class="doctor-card-placeholder"><i class="bi bi-person-fill"></i></div>
+                    @endif
+                    <div class="doctor-card-hover-overlay">
+                        <span>Lihat Jadwal <i class="bi bi-arrow-right ms-1"></i></span>
+                    </div>
+                </div>
+                <div class="doctor-card-info">
+                    <h5 class="doctor-card-nama">{{ $dokter->nama_lengkap }}</h5>
+                    <p class="doctor-card-spesialis">{{ strtoupper($poli->nama) }}</p>
+                </div>
+            </div>
+            @endforeach
             @endif
             @endforeach
         </div>
 
-        {{-- DAFTAR DOKTER PER POLI --}}
-        <div class="doctors-container" id="doctors-container">
-            @foreach($polis as $index => $poli)
-            @if($poli->dokters->count() > 0)
-            <div class="poli-group" id="poli-{{ $poli->id }}" style="display: none;">
-                <div class="d-flex align-items-center mb-4">
-                    <h3 class="mb-0 text-primary fw-bold"><i class="bi bi-hospital-fill me-2"></i>{{ $poli->nama }}</h3>
-                    <span class="badge bg-primary ms-3 rounded-pill px-3">{{ $poli->dokters->count() }} Dokter</span>
-                </div>
-                
-                <div class="dokter-list">
-                    @foreach($poli->dokters as $dokter)
-                    @php
-                        $jadwalSorted = $dokter->jadwal->sortBy(function($j) {
-                            return ['Senin'=>1,'Selasa'=>2,'Rabu'=>3,'Kamis'=>4,'Jumat'=>5,'Sabtu'=>6,'Minggu'=>7][$j->hari] ?? 8;
-                        });
-                        $waNumber = \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705');
-                        $jadwalData = $jadwalSorted->values()->map(function($j) {
-                            return [
-                                'hari'    => $j->hari,
-                                'mulai'   => substr($j->jam_mulai, 0, 5),
-                                'selesai' => substr($j->jam_selesai, 0, 5),
-                            ];
-                        })->values()->toArray();
-                    @endphp
-                    <div class="dokter-list-row compact">
-                        {{-- Kiri: foto + info --}}
-                        <div class="dokter-list-left">
-                            <div class="dokter-list-photo">
-                                @if($dokter->foto)
-                                <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama }}" loading="lazy">
-                                @else
-                                <div class="dokter-list-photo-placeholder"><i class="bi bi-person-fill"></i></div>
-                                @endif
-                            </div>
-                            <div class="dokter-list-info">
-                                <div class="dokter-list-nama">{{ $dokter->nama_lengkap }}</div>
-                                <div class="dokter-list-spesialis">{{ strtoupper($poli->nama) }}</div>
-                            </div>
-                        </div>
-
-                        {{-- Kanan: tombol aksi --}}
-                        <div class="dokter-list-actions">
-                            <button type="button" class="btn-lihat-jadwal" onclick="toggleJadwal('jadwal-{{ $dokter->id }}', this)">
-                                Lihat Jadwal <i class="bi bi-chevron-down ms-1 transition-transform"></i>
-                            </button>
-                            <a href="{{ route('dokter.show', $dokter->id) }}" class="btn-lihat-profil">Lihat profil</a>
-                            <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Halo, saya ingin buat janji dengan '.$dokter->nama_lengkap.' di '.request()->root()) }}" target="_blank" class="btn-buat-janji">Buat janji</a>
-                        </div>
-                        
-                        {{-- Bawah: tabel jadwal (hidden by default) --}}
-                        <div class="dokter-list-jadwal" id="jadwal-{{ $dokter->id }}" style="display: none;">
-                            <hr class="my-3 border-light">
-                            @php
-                                $hariOrder = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
-                                $jadwalPerHari = [];
-                                foreach($hariOrder as $h) { $jadwalPerHari[$h] = []; }
-                                foreach($jadwalSorted as $j) {
-                                    $jadwalPerHari[$j->hari][] = substr($j->jam_mulai,0,5).' – '.substr($j->jam_selesai,0,5);
-                                }
-                                $maxRows = max(1, max(array_map('count', $jadwalPerHari)));
-                            @endphp
-                            @if($jadwalSorted->count() > 0)
-                            <table class="jadwal-week-table">
-                                <thead>
-                                    <tr>
-                                        @foreach($hariOrder as $h)
-                                        <th>{{ strtoupper(substr($h,0,3)) }}</th>
-                                        @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for($row = 0; $row < $maxRows; $row++)
-                                    <tr>
-                                        @foreach($hariOrder as $h)
-                                        <td>{{ $jadwalPerHari[$h][$row] ?? '-' }}</td>
-                                        @endforeach
-                                    </tr>
-                                    @endfor
-                                </tbody>
-                            </table>
-                            @else
-                            <div class="text-center text-muted py-3">Jadwal belum tersedia</div>
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @endforeach
+        {{-- No Results --}}
+        <div id="no-doctor-found" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+            <h4 class="mt-3 text-muted">Tidak ada dokter di poliklinik ini</h4>
         </div>
 
         @endif
     </div>
 </section>
 
+{{-- OFFCANVAS PANEL (SLIDE-OVER) --}}
+<div class="doctor-offcanvas-backdrop" id="doctor-backdrop" onclick="closeDoctorOffcanvas()"></div>
+<div class="doctor-offcanvas" id="doctor-offcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Detail Jadwal Dokter</h5>
+        <button type="button" class="offcanvas-close-btn" onclick="closeDoctorOffcanvas()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+    
+    <div class="offcanvas-body">
+        <div class="offcanvas-profile-wrap text-center mb-4">
+            <div class="offcanvas-photo-container mx-auto mb-3">
+                <img src="" id="oc-foto" alt="Foto Dokter" class="offcanvas-photo" style="display:none;">
+                <div id="oc-placeholder" class="offcanvas-placeholder"><i class="bi bi-person-fill"></i></div>
+            </div>
+            <h4 id="oc-nama" class="fw-bold mb-1"></h4>
+            <p id="oc-poli" class="text-primary fw-semibold small mb-0"></p>
+        </div>
 
+        <div class="offcanvas-schedule-wrap">
+            <h6 class="fw-bold mb-3"><i class="bi bi-calendar3 me-2"></i>Jadwal Praktek</h6>
+            
+            <div id="oc-jadwal-container" class="table-responsive">
+                <!-- Jadwal table injected here via JS -->
+            </div>
+            <div id="oc-no-jadwal" class="alert alert-warning" style="display:none;">
+                <i class="bi bi-info-circle me-2"></i>Jadwal belum tersedia.
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas-footer">
+        <a href="#" id="oc-btn-profil" class="btn btn-outline-primary w-100 mb-2">Lihat Profil Lengkap</a>
+        <a href="#" id="oc-btn-wa" target="_blank" class="btn btn-danger w-100" style="background:#a91e41; border:none;">
+            <i class="bi bi-whatsapp me-2"></i> Buat Janji Sekarang
+        </a>
+    </div>
+</div>
 
 <style>
 /* ──────────────────────────────────────────────────
@@ -336,238 +334,290 @@
 }
 
 /* ──────────────────────────────────────────────────
-   GRID POLIKLINIK
+   POLI CHIPS FILTER
 ────────────────────────────────────────────────── */
-.poli-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
+.poli-chips-wrapper {
+    position: relative;
+    width: 100%;
 }
 
-.poli-card {
-    background: #fff;
-    border: 1px solid #eef1f6;
-    border-radius: 12px;
-    padding: 20px 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-}
-
-.poli-card:hover, .poli-card.active {
-    background: #f8fbff;
-    border-color: rgba(13,110,253,0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(13,110,253,0.08);
-}
-
-.poli-card-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 12px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary, #0d6efd), #4a90e2);
-    color: #fff;
+.poli-chips-scroll {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    transition: transform 0.2s;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scrollbar-width: none; /* Firefox */
 }
 
-.poli-card:hover .poli-card-icon {
-    transform: scale(1.05);
+.poli-chips-scroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
 
-.poli-card-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a202c;
+.poli-chip {
+    background: #fff;
+    color: #4a5568;
+    border: 1.5px solid #e2e8f0;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.poli-chip:hover {
+    border-color: rgba(13,110,253,0.5);
+    color: var(--primary, #0d6efd);
+    background: #f8fbff;
+}
+
+.poli-chip.active {
+    background: var(--primary, #0d6efd);
     color: #fff;
-}
-
-/* Body Poli */
-.poli-body {
-    display: none;
-    padding: 24px;
-    animation: fadeSlideDown .25s ease;
-}
-
-.is-open .poli-body {
-    display: block;
-}
-
-@keyframes fadeSlideDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    border-color: var(--primary, #0d6efd);
+    box-shadow: 0 4px 12px rgba(13,110,253,0.2);
 }
 
 /* ──────────────────────────────────────────────────
-   DOKTER LIST V3 (Horizontal Layout)
+   DOCTOR GRID MODERN
 ────────────────────────────────────────────────── */
-.dokter-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.doctor-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
 }
 
-.dokter-list-row {
+.doctor-card-modern {
     background: #fff;
     border: 1px solid #eef1f6;
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: box-shadow 0.2s, border-color 0.2s;
-}
-
-.dokter-list-row:hover {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-    border-color: rgba(13,110,253,0.15);
-}
-
-@media (min-width: 992px) {
-    .dokter-list-row {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-}
-
-/* Kiri: Foto & Info */
-.dokter-list-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1;
-}
-
-.dokter-list-photo {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+    border-radius: 16px;
     overflow: hidden;
-    background: #e4e9f0;
-    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     position: relative;
-    border: 3px solid #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.dokter-list-photo img {
+.doctor-card-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+    border-color: rgba(13,110,253,0.2);
+}
+
+.doctor-card-photo-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #e4e9f0;
+    overflow: hidden;
+}
+
+.doctor-card-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: top center;
+    transition: transform 0.5s ease;
 }
 
-.dokter-list-photo-placeholder {
+.doctor-card-modern:hover .doctor-card-photo {
+    transform: scale(1.05);
+}
+
+.doctor-card-placeholder {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
+    font-size: 64px;
     color: #9ba5b4;
     background: linear-gradient(135deg, #eef1f6, #e4e9f0);
 }
 
-.dokter-list-info {
+.doctor-card-hover-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    padding: 20px 16px 16px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: flex-end;
 }
 
-.dokter-list-nama {
-    font-size: 16px;
+.doctor-card-modern:hover .doctor-card-hover-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.doctor-card-info {
+    padding: 16px;
+    text-align: center;
+}
+
+.doctor-card-nama {
+    font-size: 15px;
     font-weight: 700;
     color: #1a202c;
+    margin-bottom: 4px;
     line-height: 1.3;
 }
 
-.dokter-list-spesialis {
-    font-size: 12px;
-    color: #6c757d;
+.doctor-card-spesialis {
+    font-size: 11px;
+    color: var(--primary, #0d6efd);
     font-weight: 600;
     letter-spacing: 0.5px;
+    margin-bottom: 0;
 }
 
-/* Kanan: Actions */
-.dokter-list-actions {
+/* ──────────────────────────────────────────────────
+   OFFCANVAS PANEL (Slide-Over)
+────────────────────────────────────────────────── */
+.doctor-offcanvas-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.doctor-offcanvas-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.doctor-offcanvas {
+    position: fixed;
+    top: 0;
+    right: -400px; /* Hidden by default */
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    background: #fff;
+    z-index: 1045;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-offcanvas.show {
+    transform: translateX(-400px); /* Slide in */
+}
+
+.offcanvas-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-}
-
-.btn-lihat-profil {
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #eef1f6;
     background: #fff;
-    color: var(--primary, #0d6efd);
-    border: 1px solid var(--primary, #0d6efd);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
 }
 
-.btn-lihat-profil:hover {
-    background: #f8fbff;
-    color: #0a58ca;
+.offcanvas-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    color: #1a202c;
 }
 
-.btn-buat-janji {
-    background: #a91e41; /* Warna merah Hamori sesuai gambar */
-    color: #fff;
+.offcanvas-close-btn {
+    background: #f1f5fa;
     border: none;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a5568;
+    cursor: pointer;
     transition: background 0.2s;
 }
 
-.btn-buat-janji:hover {
-    background: #8b1835;
-    color: #fff;
+.offcanvas-close-btn:hover {
+    background: #e2e8f0;
 }
 
-/* Tengah: Tabel Jadwal */
-.dokter-list-jadwal {
+.offcanvas-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.offcanvas-photo-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #e4e9f0;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(13,110,253,0.15);
+    overflow: hidden;
+    position: relative;
+}
+
+.offcanvas-photo {
     width: 100%;
-    margin-top: 16px;
-    overflow-x: auto;
+    height: 100%;
+    object-fit: cover;
 }
 
-@media (min-width: 992px) {
-    .dokter-list-jadwal {
-        width: 100%;
-        margin-top: 24px;
-        order: 3;
-    }
-    .dokter-list-row {
-        flex-wrap: wrap;
-    }
-}
-
-.jadwal-week-table {
+.offcanvas-placeholder {
     width: 100%;
-    min-width: 600px;
-    border-collapse: collapse;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #9ba5b4;
+    background: linear-gradient(135deg, #eef1f6, #e4e9f0);
+}
+
+.offcanvas-schedule-wrap {
+    background: #f8fbff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #eef1f6;
+}
+
+.offcanvas-footer {
+    padding: 20px 24px;
+    border-top: 1px solid #eef1f6;
     background: #fff;
 }
 
+/* Table in offcanvas */
+.jadwal-week-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .jadwal-week-table th {
-    background: #f8fbff;
+    background: #f1f5fa;
     color: #1a202c;
     font-size: 11px;
     font-weight: 700;
     text-align: center;
-    padding: 10px 8px;
+    padding: 10px 4px;
     border: 1px solid #eef1f6;
     letter-spacing: 0.5px;
 }
@@ -800,61 +850,137 @@
 </style>
 
 <script>
-function showPoliDoctors(poliId, cardEl) {
-    // 1. Reset semua active card
-    document.querySelectorAll('.poli-card').forEach(c => c.classList.remove('active'));
-    if(cardEl) {
-        cardEl.classList.add('active');
-    }
+// Filter Poli (Chips)
+function filterPoli(poliId, btnEl) {
+    // 1. Update active state on chips
+    document.querySelectorAll('.poli-chip').forEach(c => c.classList.remove('active'));
+    if(btnEl) btnEl.classList.add('active');
 
-    // 2. Sembunyikan semua grup dokter
-    document.querySelectorAll('.poli-group').forEach(g => {
-        g.style.display = 'none';
-    });
+    const allCards = document.querySelectorAll('.doctor-card-modern');
+    const noResult = document.getElementById('no-doctor-found');
+    let visibleCount = 0;
 
-    // 3. Tampilkan grup dokter yang dipilih
-    const selectedGroup = document.getElementById(poliId);
-    if(selectedGroup) {
-        selectedGroup.style.display = 'block';
-        // Optional: Scroll otomatis ke list dokter
-        selectedGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-}
-
-function toggleJadwal(jadwalId, btn) {
-    const jadwalEl = document.getElementById(jadwalId);
-    const chevron = btn.querySelector('.bi-chevron-down');
-    
-    if (jadwalEl.style.display === 'none') {
-        // Tampilkan
-        jadwalEl.style.display = 'block';
-        if (chevron) chevron.style.transform = 'rotate(180deg)';
-        btn.classList.add('bg-light');
-    } else {
-        // Sembunyikan
-        jadwalEl.style.display = 'none';
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
-        btn.classList.remove('bg-light');
-    }
-}
-
-// Auto-open the first poli if no search filters active
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if we have active filter, if not just click the first card
-    const hasFilter = {{ request()->hasAny(['nama','poli','hari']) ? 'true' : 'false' }};
-    if (!hasFilter) {
-        const firstCard = document.querySelector('.poli-card');
-        if (firstCard) {
-            firstCard.click();
-        }
-    } else {
-        // If there's a filter, show ALL matched doctors by displaying all non-empty poli-groups
-        document.querySelectorAll('.poli-group').forEach(g => {
-            g.style.display = 'block';
+    // 2. Tampilkan/Sembunyikan kartu dokter
+    if (poliId === 'all') {
+        allCards.forEach(card => {
+            card.style.display = 'block';
+            visibleCount++;
         });
-        // Sembunyikan grid poli karena sedang mode search
-        const poliGrid = document.querySelector('.poli-grid');
-        if (poliGrid) poliGrid.style.display = 'none';
+    } else {
+        allCards.forEach(card => {
+            if (card.classList.contains(poliId)) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // 3. Tampilkan pesan kosong jika tidak ada dokter
+    if (visibleCount === 0) {
+        noResult.style.display = 'block';
+    } else {
+        noResult.style.display = 'none';
+    }
+}
+
+// Buka Offcanvas
+function openDoctorOffcanvas(cardEl) {
+    try {
+        const nama      = cardEl.dataset.nama      || '';
+        const poli      = cardEl.dataset.poli      || '';
+        const foto      = cardEl.dataset.foto      || '';
+        const wa        = cardEl.dataset.wa        || '';
+        const profilUrl = cardEl.dataset.profil    || '#';
+        const rawJson   = cardEl.dataset.jadwal    || '[]';
+        const jadwal    = JSON.parse(rawJson);
+
+        // Isi Data Profil
+        document.getElementById('oc-nama').textContent = nama;
+        document.getElementById('oc-poli').textContent = poli;
+        document.getElementById('oc-btn-wa').href      = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Halo, saya ingin buat janji dengan ' + nama);
+        document.getElementById('oc-btn-profil').href  = profilUrl;
+
+        // Foto
+        const imgEl = document.getElementById('oc-foto');
+        const phEl  = document.getElementById('oc-placeholder');
+        if (foto) {
+            imgEl.src = foto;
+            imgEl.style.display = 'block';
+            phEl.style.display = 'none';
+        } else {
+            imgEl.style.display = 'none';
+            phEl.style.display = 'flex';
+        }
+
+        // Render Jadwal
+        const container = document.getElementById('oc-jadwal-container');
+        const noJadwal  = document.getElementById('oc-no-jadwal');
+        
+        if (Array.isArray(jadwal) && jadwal.length > 0) {
+            noJadwal.style.display = 'none';
+            container.style.display = 'block';
+            
+            // Generate HTML table for schedule
+            const hariOrder = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+            let jadwalPerHari = {};
+            hariOrder.forEach(h => jadwalPerHari[h] = []);
+            
+            jadwal.forEach(j => {
+                if (jadwalPerHari[j.hari]) {
+                    jadwalPerHari[j.hari].push(j.mulai + ' – ' + j.selesai);
+                }
+            });
+
+            let maxRows = 1;
+            Object.values(jadwalPerHari).forEach(arr => {
+                if (arr.length > maxRows) maxRows = arr.length;
+            });
+
+            let tableHtml = '<table class="jadwal-week-table"><thead><tr>';
+            hariOrder.forEach(h => {
+                tableHtml += `<th>${h.substring(0,3).toUpperCase()}</th>`;
+            });
+            tableHtml += '</tr></thead><tbody>';
+            
+            for (let row = 0; row < maxRows; row++) {
+                tableHtml += '<tr>';
+                hariOrder.forEach(h => {
+                    const slot = jadwalPerHari[h][row] || '-';
+                    tableHtml += `<td>${slot}</td>`;
+                });
+                tableHtml += '</tr>';
+            }
+            tableHtml += '</tbody></table>';
+            
+            container.innerHTML = tableHtml;
+        } else {
+            container.style.display = 'none';
+            noJadwal.style.display = 'block';
+        }
+
+        // Tampilkan Offcanvas
+        document.getElementById('doctor-backdrop').classList.add('show');
+        document.getElementById('doctor-offcanvas').classList.add('show');
+        document.body.style.overflow = 'hidden';
+
+    } catch(err) {
+        console.error('Error opening offcanvas:', err);
+    }
+}
+
+// Tutup Offcanvas
+function closeDoctorOffcanvas() {
+    document.getElementById('doctor-backdrop').classList.remove('show');
+    document.getElementById('doctor-offcanvas').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// ESC key listener untuk tutup offcanvas
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDoctorOffcanvas();
     }
 });
 </script>
