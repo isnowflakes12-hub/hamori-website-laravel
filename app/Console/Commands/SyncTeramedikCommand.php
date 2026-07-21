@@ -43,6 +43,31 @@ class SyncTeramedikCommand extends Command
 
             DB::beginTransaction();
 
+            // CLEANUP: Hapus data dokter duplikat berdasarkan nama dan poli (terutama untuk server yang datanya masih kotor)
+            $duplicates = DB::table('dokters')
+                ->select('nama', 'poli_id', DB::raw('MIN(id) as keep_id'), DB::raw('COUNT(*) as count'))
+                ->groupBy('nama', 'poli_id')
+                ->having('count', '>', 1)
+                ->get();
+
+            foreach ($duplicates as $dup) {
+                $duplicateIds = DB::table('dokters')
+                    ->where('nama', $dup->nama)
+                    ->where('poli_id', $dup->poli_id)
+                    ->where('id', '!=', $dup->keep_id)
+                    ->pluck('id');
+
+                if ($duplicateIds->isNotEmpty()) {
+                    DB::table('jadwal_dokters')
+                        ->whereIn('dokter_id', $duplicateIds)
+                        ->update(['dokter_id' => $dup->keep_id]);
+
+                    DB::table('dokters')
+                        ->whereIn('id', $duplicateIds)
+                        ->delete();
+                }
+            }
+
             $totalPoli = 0;
             $totalDokter = 0;
             $totalJadwal = 0;
