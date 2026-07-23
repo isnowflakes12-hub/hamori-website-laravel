@@ -58,11 +58,20 @@
         </div>
 
         {{-- INFO STAT --}}
-        <div class="jadwal-stats">
-            <span><i class="bi bi-building-fill-check me-2 text-primary"></i>{{ $polis->count() }} Poli Aktif</span>
-            <span class="ms-4"><i class="bi bi-people-fill me-2 text-primary"></i>{{ $polis->sum(fn($p) => $p->dokters->count()) }} Dokter</span>
+        <div class="jadwal-stats-wrapper">
+            <div class="jadwal-stat-badge">
+                <i class="bi bi-building-fill-check"></i>
+                <span><strong>{{ $polis->count() }}</strong> Poli Aktif</span>
+            </div>
+            <div class="jadwal-stat-badge">
+                <i class="bi bi-people-fill"></i>
+                <span><strong>{{ $polis->sum(fn($p) => $p->dokters->count()) }}</strong> Dokter</span>
+            </div>
             @if(request()->hasAny(['nama','poli','hari']))
-            <span class="ms-4 badge-filter"><i class="bi bi-funnel-fill me-1"></i>Filter aktif</span>
+            <div class="jadwal-stat-badge badge-filter">
+                <i class="bi bi-funnel-fill"></i>
+                <span>Filter aktif</span>
+            </div>
             @endif
         </div>
 
@@ -275,7 +284,7 @@
 }
 
 .jadwal-search-btn {
-    background: var(--primary, #a91e41);
+    background: #1ba99e;
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -286,44 +295,75 @@
     white-space: nowrap;
     transition: background .2s, transform .15s;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
 }
 
 .jadwal-search-btn:hover {
-    background: #0a58ca;
+    background: #168f86;
     transform: translateY(-1px);
 }
 
 .jadwal-reset-btn {
-    color: #6c757d;
-    font-size: 13px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
     text-decoration: none;
-    padding: 11px 12px;
+    padding: 11px 20px;
     border-radius: 10px;
     white-space: nowrap;
-    transition: background .2s, color .2s;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
     flex-shrink: 0;
 }
 
 .jadwal-reset-btn:hover {
-    background: #f0f0f0;
-    color: #333;
+    background: #e2e8f0;
+    color: #334155;
+    border-color: #cbd5e1;
 }
 
 /* ── Stats ── */
-.jadwal-stats {
-    font-size: 14px;
-    color: #6c757d;
+.jadwal-stats-wrapper {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-bottom: 24px;
-    font-weight: 500;
 }
 
-.badge-filter {
-    background: #fff3cd;
-    color: #856404;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
+.jadwal-stat-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.jadwal-stat-badge i {
+    color: #1ba99e;
+    font-size: 15px;
+}
+
+.jadwal-stat-badge strong {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.jadwal-stat-badge.badge-filter {
+    background: #fff8e1;
+    border-color: #ffecb3;
+    color: #b07d0a;
+}
+.jadwal-stat-badge.badge-filter i {
+    color: #b07d0a;
 }
 
 /* ── Empty ── */
@@ -623,22 +663,53 @@
 
 .doctor-offcanvas {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    right: -400px; /* Hidden by default */
-    width: 100%;
-    max-width: 400px;
-    height: 100%;
     background: #fff;
     z-index: 1045;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
 }
 
-.doctor-offcanvas.show {
-    transform: translateX(-400px); /* Slide in */
+/* Mobile Offcanvas */
+@media (max-width: 991.98px) {
+    .doctor-offcanvas {
+        top: 0;
+        bottom: 0;
+        right: -400px; /* Hidden by default */
+        width: 100%;
+        max-width: 400px;
+        height: 100%;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .doctor-offcanvas.show {
+        transform: translateX(-400px); /* Slide in */
+    }
+}
+
+/* Desktop Centered Modal */
+@media (min-width: 992px) {
+    .doctor-offcanvas {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        max-height: 90vh;
+        border-radius: 20px;
+        box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .doctor-offcanvas.show {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+        visibility: visible;
+    }
+    .offcanvas-body {
+        border-radius: 20px; /* ensure scrollbars stay inside rounded corners */
+    }
 }
 
 .offcanvas-header {

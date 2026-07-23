@@ -166,13 +166,9 @@ $heroSlides = $banners->count() ? $banners : collect([
                 ] as $l)
                 <div class="lc">
                     <div class="lc-thumb">
-                        @if($l->logo)
-                            <img src="{{ asset('storage/'.$l->logo) }}" alt="{{ $l->nama }}">
-                        @else
-                            <div class="lc-ic">
-                                <i class="bi bi-hospital"></i>
-                            </div>
-                        @endif
+                        <div class="lc-ic">
+                            <i class="bi {{ $l[0] }}"></i>
+                        </div>
                     </div>
                     <div class="lc-body">
                         <h5 class="lc-name">{{ $l[1] }}</h5>

@@ -14,7 +14,7 @@ class DokterAdminController extends Controller
         $query = Dokter::with(['poli', 'jadwal'])->whereNotNull('teramedik_id');
 
         if ($request->filled('q')) {
-            $query->where('nama', 'like', '%' . $request->q . '%');
+            $query->where('nama', 'ilike', '%' . $request->q . '%');
         }
 
         if ($request->filled('poli_id')) {

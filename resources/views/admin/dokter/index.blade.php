@@ -19,19 +19,7 @@
     </div>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
 
-@if(session('error'))
-<div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-    <i class="bi bi-exclamation-circle-fill me-2"></i>{{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
 
 {{-- FILTER --}}
 <div class="card mb-4" style="border-radius:14px;border:1px solid #e5eaf0;">
@@ -58,7 +46,7 @@
                 </div>
                 <div class="col-md-2 d-flex gap-2">
                     <button type="submit" class="btn btn-primary btn-sm flex-fill">Cari</button>
-                    <a href="{{ route('admin.dokter.index') }}" class="btn btn-outline-secondary btn-sm">Reset</a>
+                    <a href="{{ route('admin.dokter.index') }}" class="btn btn-secondary btn-sm text-white">Reset</a>
                 </div>
             </div>
         </form>

@@ -47,9 +47,6 @@
                             <i class="bi bi-person-fill"></i>
                         </div>
                         @endif
-                        <div class="dokter-profile-badge">
-                            <i class="bi bi-check-circle-fill"></i> Tersedia
-                        </div>
                     </div>
                     
                     <div class="dokter-profile-info text-center mt-4">
@@ -214,21 +211,7 @@
     background: linear-gradient(135deg, #eef1f6, #e4e9f0);
 }
 
-.dokter-profile-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 5px;
-    background: #198754;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-    border: 2px solid #fff;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
+
 
 .dokter-profile-name {
     font-size: 20px;
@@ -245,7 +228,7 @@
 }
 
 .btn-buat-janji {
-    background: #a91e41; /* Warna merah Hamori */
+    background: #25D366; /* Warna WhatsApp */
     color: #fff;
     border: none;
     padding: 12px;
@@ -255,7 +238,7 @@
 }
 
 .btn-buat-janji:hover {
-    background: #8b1835;
+    background: #1da851;
     color: #fff;
 }
 

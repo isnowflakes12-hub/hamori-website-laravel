@@ -24,7 +24,7 @@ class DokterController extends Controller
             $q->whereNotNull('teramedik_id')->where('is_active', true);
             
             if ($request->filled('nama')) {
-                $q->where('nama', 'like', '%' . $request->nama . '%');
+                $q->where('nama', 'ilike', '%' . $request->nama . '%');
             }
             if ($request->filled('hari')) {
                 $q->whereHas('jadwal', fn($jq) => $jq->where('hari', $request->hari));
