@@ -13,6 +13,7 @@ class KontakController extends Controller
         return view('pages.kontak');
     }
 
+
     public function send(Request $request)
     {
         $request->validate([
@@ -21,6 +22,7 @@ class KontakController extends Controller
             'telepon' => 'required|string|max:20',
             'subjek'  => 'required|string|max:255',
             'pesan'   => 'required|string',
+            'g-recaptcha-response' => 'required',
         ], [
             'nama.required' => 'Nama harus diisi.',
             'nama.min' => 'Nama minimal 2 huruf.',
@@ -29,7 +31,14 @@ class KontakController extends Controller
             'telepon.required' => 'Nomor telepon harus diisi.',
             'subjek.required' => 'Subjek harus diisi.',
             'pesan.required' => 'Pesan harus diisi.',
+            'g-recaptcha-response.required' => 'Verifikasi reCAPTCHA wajib diisi.',
         ]);
+
+        $recaptcha = new \ReCaptcha\ReCaptcha(config('services.recaptcha.secret_key'));
+        $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
+        if (!$resp->isSuccess()) {
+            return back()->withErrors(['g-recaptcha-response' => 'Validasi reCAPTCHA gagal. Silakan coba lagi.'])->withInput();
+        }
 
         Kontak::create($request->only(['nama', 'email', 'telepon', 'subjek', 'pesan']));
 
@@ -62,6 +71,7 @@ class KontakController extends Controller
             'rating_radiologi'        => 'required|integer|min:1|max:5',
             'rating_fisioterapi'      => 'required|integer|min:1|max:5',
             'rating_farmasi'          => 'required|integer|min:1|max:5',
+            'g-recaptcha-response'    => 'required',
         ], [
             'nama.required' => 'Nama harus diisi.',
             'nama.min' => 'Nama minimal 2 huruf.',
@@ -81,7 +91,14 @@ class KontakController extends Controller
             'rating_radiologi.required'         => 'Penilaian Radiologi harus diisi.',
             'rating_fisioterapi.required'       => 'Penilaian Fisioterapi harus diisi.',
             'rating_farmasi.required'           => 'Penilaian Farmasi harus diisi.',
+            'g-recaptcha-response.required'     => 'Verifikasi reCAPTCHA wajib diisi.',
         ]);
+
+        $recaptcha = new \ReCaptcha\ReCaptcha(config('services.recaptcha.secret_key'));
+        $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
+        if (!$resp->isSuccess()) {
+            return back()->withErrors(['g-recaptcha-response' => 'Validasi reCAPTCHA gagal. Silakan coba lagi.'])->withInput();
+        }
 
         $data = $request->only([
             'nama', 'email', 'telepon', 'kategori', 'pesan', 'responden', 'nama_poliklinik',

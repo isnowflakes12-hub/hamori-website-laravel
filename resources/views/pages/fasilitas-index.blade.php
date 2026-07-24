@@ -3,32 +3,15 @@
 
 @section('content')
 
-<div class="pm-intro">
-    <div class="pm-intro-glow pm-intro-glow--left"></div>
-    <div class="pm-intro-glow pm-intro-glow--right"></div>
-
-    @php
-        $favicon = \App\Models\SiteSetting::get('favicon');
-    @endphp
-    <div class="pm-intro-watermark">
-        @if($favicon)
-            <img src="{{ asset('storage/' . $favicon) }}" alt="Logo Hamori Watermark">
-        @else
-            <img src="{{ asset('assets/images/favicon.png') }}" alt="Logo Hamori Watermark">
-        @endif
-    </div>
-
-    <div class="container position-relative">
-        <div class="pm-intro-inner">
-            <div class="pm-intro-text">
-                <span class="eyebrow">Pusat Layanan Medis</span>
-                <h2 class="sec-h2 mt-1">Layanan & Fasilitas Terbaik</h2>
-                <p class="sec-sub mt-2">
-                    RS Hamori menyediakan berbagai layanan dan fasilitas medis dengan standar pelayanan prima. Fasilitas kami dilengkapi dengan teknologi terkini dan ditangani oleh tenaga medis profesional.
-                </p>
-                <br>
-            </div>
-        </div>
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">Semua Fasilitas</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+                <li class="breadcrumb-item active">Fasilitas</li>
+            </ol>
+        </nav>
     </div>
 </div>
 

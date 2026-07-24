@@ -71,4 +71,13 @@ class KategoriFasilitasController extends Controller
         $kategori_fasilita->update(['is_active' => !$kategori_fasilita->is_active]);
         return back()->with('success', 'Status kategori berhasil diperbarui.');
     }
+
+    public function reorder(Request $request)
+    {
+        $request->validate(['order' => 'required|array', 'order.*' => 'integer|exists:kategori_fasilitas,id']);
+        foreach ($request->order as $position => $id) {
+            KategoriFasilitas::where('id', $id)->update(['urutan' => $position + 1]);
+        }
+        return response()->json(['success' => true]);
+    }
 }

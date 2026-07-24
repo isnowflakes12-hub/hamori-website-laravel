@@ -3,82 +3,60 @@
 
 @section('content')
 
-<div class="pm-intro pb-4">
-    <div class="pm-intro-glow pm-intro-glow--left"></div>
-    <div class="pm-intro-glow pm-intro-glow--right"></div>
-
-    @php
-        $favicon = \App\Models\SiteSetting::get('favicon');
-    @endphp
-    <div class="pm-intro-watermark">
-        @if($favicon)
-            <img src="{{ asset('storage/' . $favicon) }}" alt="Logo Hamori Watermark">
-        @else
-            <img src="{{ asset('assets/images/favicon.png') }}" alt="Logo Hamori Watermark">
-        @endif
-    </div>
-
-    <div class="container position-relative">
-        <div class="pm-intro-inner text-center">
-            <div class="pm-intro-text mx-auto" style="max-width: 900px;">
-                <span class="eyebrow" style="background: rgba(var(--primary-rgb),0.1); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 13px;">
-                    FASILITAS {{ strtoupper($fasilitas->kategori->nama ?? '') }}
-                </span>
-                <h1 class="sec-h2 mt-3 mb-2" style="font-family: 'Libre Baskerville', serif; font-size: clamp(2rem, 4vw, 3.5rem);">{{ $fasilitas->nama }}</h1>
-                
-                <nav aria-label="breadcrumb" class="mt-4">
-                    <ol class="breadcrumb justify-content-center m-0" style="font-size: 14px;">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none" style="color: var(--ink-2);">Beranda</a></li>
-                        @if($fasilitas->kategori)
-                            @if(strtolower($fasilitas->kategori->nama) === 'rawat inap')
-                                <li class="breadcrumb-item"><a href="{{ route('fasilitas.rawat-inap') }}" class="text-decoration-none" style="color: var(--ink-2);">{{ $fasilitas->kategori->nama }}</a></li>
-                            @else
-                                <li class="breadcrumb-item"><a href="{{ route('fasilitas.kategori', $fasilitas->kategori->slug) }}" class="text-decoration-none" style="color: var(--ink-2);">{{ $fasilitas->kategori->nama }}</a></li>
-                            @endif
-                        @endif
-                        <li class="breadcrumb-item active" style="color: var(--primary); font-weight: 500;" aria-current="page">{{ $fasilitas->nama }}</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">{{ $fasilitas->nama }}</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('fasilitas.index') }}">Fasilitas</a></li>
+                <li class="breadcrumb-item active">{{ $fasilitas->nama }}</li>
+            </ol>
+        </nav>
     </div>
 </div>
 
 <section class="fd-section sec bg-light py-5">
     <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-10 mx-auto">
-                
-                @if(!empty($fasilitas->galeri) && count($fasilitas->galeri) > 1)
-                    <div id="fasilitasCarousel" class="carousel slide fd-main-slider shadow-sm mb-5 rounded-4 overflow-hidden" data-bs-ride="carousel" style="border: 1px solid var(--border);">
-                        <div class="carousel-indicators">
-                            @foreach($fasilitas->galeri as $index => $img)
-                                <button type="button" data-bs-target="#fasilitasCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
-                            @endforeach
+        <div class="row g-5 align-items-start">
+            
+            <!-- Kolom Kiri: Gambar / Slider -->
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="sticky-top" style="top: 100px;">
+                    @if(!empty($fasilitas->galeri) && count($fasilitas->galeri) > 1)
+                        <div id="fasilitasCarousel" class="carousel slide fd-main-slider shadow-sm rounded-4 overflow-hidden" data-bs-ride="carousel" style="border: 1px solid var(--border); height: auto; aspect-ratio: 4/3;">
+                            <div class="carousel-indicators">
+                                @foreach($fasilitas->galeri as $index => $img)
+                                    <button type="button" data-bs-target="#fasilitasCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                                @endforeach
+                            </div>
+                            <div class="carousel-inner h-100">
+                                @foreach($fasilitas->galeri as $index => $img)
+                                    <div class="carousel-item h-100 {{ $index == 0 ? 'active' : '' }}">
+                                        <img src="{{ asset('storage/'.$img) }}" class="d-block w-100 h-100" alt="{{ $fasilitas->nama }} - Foto {{ $index + 1 }}" style="object-fit: cover;">
+                                    </div>
+                                @endforeach
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#fasilitasCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#fasilitasCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
-                        <div class="carousel-inner h-100">
-                            @foreach($fasilitas->galeri as $index => $img)
-                                <div class="carousel-item h-100 {{ $index == 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('storage/'.$img) }}" class="d-block w-100 h-100" alt="{{ $fasilitas->nama }} - Slide {{ $index + 1 }}" style="object-fit: cover;">
-                                </div>
-                            @endforeach
+                    @elseif($fasilitas->gambar)
+                        <div class="fd-main-img-wrap shadow-sm rounded-4 overflow-hidden" style="border: 1px solid var(--border); aspect-ratio: 4/3;">
+                            <img src="{{ asset('storage/'.$fasilitas->gambar) }}" alt="{{ $fasilitas->nama }}" class="w-100 h-100" style="object-fit: cover;">
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#fasilitasCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: rgba(0,0,0,0.5); border-radius: 50%; padding: 20px;"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#fasilitasCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: rgba(0,0,0,0.5); border-radius: 50%; padding: 20px;"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                @elseif($fasilitas->gambar)
-                    <div class="fd-main-img-wrap shadow-sm mb-5 rounded-4 overflow-hidden" style="border: 1px solid var(--border); max-height: 550px;">
-                        <img src="{{ asset('storage/'.$fasilitas->gambar) }}" alt="{{ $fasilitas->nama }}" class="w-100 h-100" style="object-fit: cover;">
-                    </div>
-                @endif
+                    @endif
+                </div>
+            </div>
 
-                <div class="fd-content bg-white p-4 p-md-5 rounded-4 shadow-sm position-relative" style="border: 1px solid var(--border); margin-top: -80px; z-index: 2;">
+            <!-- Kolom Kanan: Deskripsi & Konten -->
+            <div class="col-lg-7">
+                <div class="fd-content bg-white p-4 p-md-5 rounded-4 shadow-sm" style="border: 1px solid var(--border);">
                     
                     @if($fasilitas->deskripsi)
                     <div class="mb-5 pb-4" style="border-bottom: 1px dashed var(--border);">
@@ -104,7 +82,6 @@
                         @endif
                     @endif
                 </div>
-
             </div>
         </div>
     </div>

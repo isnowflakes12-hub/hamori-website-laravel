@@ -303,6 +303,15 @@
                             </div>
 
                             <div class="col-12">
+                                <div class="kt-field">
+                                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                                    @error('g-recaptcha-response')
+                                    <span class="kt-error-msg"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-12">
                                 <div class="kt-form-footer">
                                     <p class="kt-form-note">
                                         <i class="fas fa-lock"></i>
@@ -318,6 +327,7 @@
                         </div>
                     </form>
                 </div>
+
 
                 <div class="kt-info-cards">
                     <div class="kt-info-card">
@@ -349,7 +359,7 @@
     </div>
 </section>
 
-
-
-
+@push('scripts')
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 @endsection

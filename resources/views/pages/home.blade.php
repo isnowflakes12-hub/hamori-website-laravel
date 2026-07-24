@@ -43,7 +43,6 @@ $heroSlides = $banners->count() ? $banners : collect([
         <div class="hc-bar"><div id="hcFill"></div></div>
     </div>
 
-    <div class="hero-promo-panel">
     @php
         try {
             $p = \App\Models\Promo::getHomeFeatured();
@@ -52,15 +51,17 @@ $heroSlides = $banners->count() ? $banners : collect([
         }
     @endphp
 
+    <div class="hpp-blur-bg" @if($p && $p->gambar) style="background-image: url('{{ asset('storage/'.$p->gambar) }}')" @endif></div>
+    <div class="hero-promo-panel">
+
     @if($p)
         <div class="hpp-top">
             <span class="hpp-label">âš¡ Penawaran Terbatas</span>
             <h3 class="hpp-title">{{ $p->judul }}</h3>
         </div>
         @if($p->gambar)
-        <div style="border-radius:12px;overflow:hidden;margin-bottom:14px;max-height:100%">
-            <img src="{{ asset('storage/'.$p->gambar) }}" alt="{{ $p->judul }}"
-                style="width:100%;height:100%">
+        <div class="hpp-img-wrap">
+            <img src="{{ asset('storage/'.$p->gambar) }}" alt="{{ $p->judul }}">
         </div>
         @endif
         @if($p->benefit && count($p->benefit) > 0)
@@ -390,6 +391,312 @@ $heroSlides = $banners->count() ? $banners : collect([
         <div class="promo-float-badge">!</div>
     </button>
 
+
+
+<style>
+/* ──────────────────────────────────────────────────
+   CAROUSEL FULL WIDTH + FLOATING RIGHT PROMO CARD
+────────────────────────────────────────────────── */
+.hero-promo-wrap {
+    position: relative !important;
+    display: block !important;
+    height: 740px !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+}
+
+#hero {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1 !important;
+}
+
+.hero-promo-panel {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    bottom: 20px !important;
+    width: 380px !important;
+    max-width: calc(100% - 40px) !important;
+    z-index: 10 !important;
+    background: linear-gradient(160deg, var(--accent, #1d2b53) 0%, #3d3890 50%, var(--primary, #001f4d) 100%) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25) !important;
+    color: #ffffff !important;
+    padding: 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.hero-promo-panel::before,
+.hero-promo-panel::after {
+    display: block !important;
+}
+
+.hpp-label {
+    color: rgba(255, 255, 255, 0.85) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.hpp-title {
+    color: #ffffff !important;
+}
+
+.hpp-img-wrap {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 410px !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    margin-bottom: 14px !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+.hpp-img-wrap img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 410px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    border-radius: 16px !important;
+}
+
+.hpp-list li {
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.hpp-list li i {
+    color: #2ed5c7 !important;
+}
+
+.hpp-old {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hpp-new {
+    color: #ffffff !important;
+}
+
+.hpp-disc {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+.hpp-timer {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.hpp-footer {
+    color: rgba(255, 255, 255, 0.75) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    margin-top: auto !important;
+}
+
+.hpp-actions {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+.hpp-actions .hpp-btn-wa {
+    background: #25d366 !important;
+    color: #ffffff !important;
+}
+
+.hpp-actions .hpp-btn-wa:hover {
+    background: #1ead55 !important;
+}
+
+.hpp-actions .pca-detail {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.hpp-actions .pca-detail:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   📱 MOBILE & TABLET (< 1200px)
+   Tampilan kartu sama persis dengan desktop, hanya dipindah ke bawah carousel
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 1199.98px) {
+    .hero-promo-wrap {
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    #hero {
+        position: relative !important;
+        height: 380px !important;
+    }
+    
+    /* Cinematic Blur Background (Mobile & Tablet) */
+    .hpp-blur-bg {
+        display: block !important;
+        position: absolute !important;
+        top: 380px !important; /* Mulai setelah carousel */
+        left: -50px !important;
+        right: -50px !important;
+        bottom: -50px !important;
+        background-size: cover !important;
+        background-position: center !important;
+        filter: blur(45px) brightness(0.4) saturate(1.8) !important;
+        z-index: 0 !important;
+        opacity: 0.9 !important;
+        pointer-events: none !important;
+    }
+
+    /* Agar blur tidak tumpah dan area di bawah hero punya dasar gelap */
+    .hero-promo-wrap {
+        position: relative !important;
+        overflow: hidden !important;
+        background: #0a0e17 !important; /* Latar dasar gelap */
+    }
+
+    /* Reset absolute position agar kartu berada di bawah carousel, patenkan ukuran */
+    .hero-promo-panel {
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 380px !important; /* Ukuran paten persis desktop */
+        max-width: 95vw !important; /* Ubah ke vw agar presisi di layar HP sekecil apa pun */
+        height: auto !important; /* PAKSA height menyesuaikan konten (buang sisa gap) */
+        min-height: 0 !important;
+        margin: 24px auto 32px !important; /* Posisikan ke tengah layar dengan margin */
+        z-index: 10 !important; /* Pastikan di atas blur */
+        justify-content: flex-start !important;
+        align-items: stretch !important; /* Matikan align-items: center dari app.css */
+        gap: 0 !important; /* Matikan gap: 24px dari app.css yang bikin jarak antar elemen sangat jauh */
+        /* Sisanya OTOMATIS MEWARISI desktop */
+    }
+
+    /* MATIKAN flex bawaan app.css yang merusak layout vertikal! */
+    .hpp-top, .hpp-list, .hpp-price, .hpp-timer, .hpp-actions, .hpp-footer {
+        flex: 0 0 auto !important; 
+        margin-top: 14px !important;
+    }
+    .hpp-top { margin-top: 0 !important; margin-bottom: 14px !important; }
+
+    /* Pastikan tombol tidak menyusut (shrink) */
+    .hpp-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    .hpp-actions .hpp-btn-wa,
+    .hpp-actions .pca-detail {
+        flex: 1 1 50% !important; /* Wajib mengambil 50% ruang */
+        width: 100% !important; /* Paksa memenuhi flex */
+        min-width: 0 !important; 
+        padding: 12px 14px !important; /* Ukuran padding paten seperti desktop */
+        font-size: 13.5px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important; /* Teks tidak turun ke bawah */
+        border-radius: 12px !important;
+    }
+}
+
+/* HP kecil (< 576px) penyesuaian minor tinggi carousel */
+@media (max-width: 575.98px) {
+    #hero {
+        height: 260px !important;
+    }
+    .hpp-blur-bg {
+        top: 260px !important;
+    }
+}
+
+/* =========================================================
+   PERBAIKAN QBAR (QUICK ACTION BAR)
+   Desktop & Tablet -> Responsif merata, Mobile -> Slider
+   ========================================================= */
+
+/* Desktop & Tablet (>= 768px): Berbagi rata (Responsif) */
+@media (min-width: 768px) {
+    .qbar-inner {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: hidden !important; /* Jangan scroll */
+        justify-content: space-between !important;
+        padding: 0 24px !important;
+        gap: 0 !important; /* Hilangkan gap agar bisa rapat dan dipisah border */
+    }
+    .qbar-inner .qa {
+        flex: 1 !important; /* Semua tombol berbagi rata lebarnya */
+        min-width: 0 !important; /* Bebas mengecil mengikuti ukuran layar (Responsif) */
+        border-right: 1px solid var(--border-2) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        scroll-snap-align: none !important;
+        background: transparent !important;
+        padding: 14px 4px !important; /* Sedikit dikurangi padding kiri/kanannya untuk tablet */
+    }
+    .qbar-inner .qa:last-child {
+        border-right: none !important;
+    }
+}
+
+/* Mobile (< 768px): Slider Horizontal */
+@media (max-width: 767.98px) {
+    .qbar-inner {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scrollbar-width: none !important;
+        padding: 12px 16px !important;
+        gap: 12px !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+        justify-content: flex-start !important;
+    }
+    .qbar-inner::-webkit-scrollbar {
+        display: none !important;
+    }
+    .qbar-inner .qa {
+        flex: 0 0 auto !important; /* Jangan menyusut */
+        width: 105px !important; /* Lebar paten tiap item slider */
+        border-right: none !important;
+        border-radius: 14px !important;
+        scroll-snap-align: start !important;
+        box-shadow: 0 2px 12px rgba(41, 37, 98, .08) !important;
+        background: #fff !important;
+    }
+}
+
+/* =========================================================
+   CEGAH KARTU (CARD) MELEBAR (STRETCH) DI TABLET
+   Mempertahankan proporsi ukuran seperti Desktop / Mobile
+   ========================================================= */
+.lc, .ac, .pm-card-clean {
+    max-width: 380px !important; /* Patenkan batas maksimal lebar kartu */
+    margin-left: auto !important; /* Tengah kan kartu di dalam grid/kolom */
+    margin-right: auto !important;
+    width: 100% !important; 
+}
+</style>
 
 
 @include('pages.popup-promo-detail')

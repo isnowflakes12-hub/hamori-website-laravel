@@ -257,6 +257,15 @@
 
                             {{-- Submit --}}
                             <div class="col-12">
+                                <div class="ks-field">
+                                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                                    @error('g-recaptcha-response')
+                                    <span class="ks-error-msg"><i class="fas fa-triangle-exclamation"></i> {{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-12">
                                 <div class="ks-form-footer">
                                     <p class="ks-form-note">
                                         <i class="fas fa-lock"></i>
@@ -331,5 +340,9 @@
     });
 })();
 </script>
+
+@push('scripts')
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@endpush
 
 @endsection

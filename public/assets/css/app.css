@@ -69,7 +69,7 @@
 html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden; /* was: clip — clip breaks position:fixed (modal backdrop) */
+    /* overflow-x: hidden removed — breaks position:sticky navbar */
 }
 
 body {
@@ -1084,9 +1084,7 @@ button {
     background: #fff;
     border-bottom: 1px solid var(--border);
     box-shadow: 0 2px 12px rgba(41, 37, 98, .06);
-    position: sticky;
-    top: 68px;
-    z-index: 90;
+    position: static;
     overflow: hidden;
 }
 

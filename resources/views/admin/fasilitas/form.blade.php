@@ -67,6 +67,15 @@
                     <label class="form-check-label" for="isActive">Tampilkan fasilitas ini di website</label>
                 </div>
 
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" name="tampil_di_navbar" id="tampilDiNavbar" value="1" {{ old('tampil_di_navbar', $fasilitas->tampil_di_navbar ?? false) ? 'checked' : '' }}>
+                    <label class="form-check-label fw-semibold" for="tampilDiNavbar">
+                        <i class="bi bi-layout-text-sidebar-reverse me-1 text-primary"></i>
+                        Tampilkan di Navbar (Menu Navigasi)
+                    </label>
+                    <div class="form-text text-muted ms-1">Jika dicentang, fasilitas ini akan muncul di menu dropdown Fasilitas pada navigasi utama website sesuai kategorinya.</div>
+                </div>
+
                 <hr class="my-4">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>{{ $fasilitas ? 'Simpan Perubahan' : 'Tambah Fasilitas' }}</button>
             </form>
@@ -79,6 +88,7 @@
                 <li class="mb-2"><strong>Kategori:</strong> Tentukan kategori untuk pengelompokan di website. Contoh: Rawat Inap untuk daftar kelas-kelas kamar.</li>
                 <li class="mb-2"><strong>Deskripsi Singkat:</strong> Akan ditampilkan di kartu daftar fasilitas.</li>
                 <li class="mb-2"><strong>Konten Lengkap:</strong> Digunakan untuk halaman detail (misal: merinci daftar alat di dalam kamar).</li>
+                <li class="mb-2"><strong>Tampilkan di Navbar:</strong> Centang ini jika Anda ingin fasilitas muncul di menu dropdown navigasi. Fasilitas akan otomatis dikelompokkan berdasarkan <em>kategorinya</em> di dalam navbar.</li>
             </ul>
         </div>
     </div>

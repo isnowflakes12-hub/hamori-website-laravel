@@ -39,6 +39,7 @@ class FasilitasController extends Controller
         $data['slug'] = $count ? "{$slug}-{$count}" : $slug;
         
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['tampil_di_navbar'] = $request->boolean('tampil_di_navbar', false);
 
         if ($request->hasFile('gambar')) {
             $galeri = [];
@@ -82,6 +83,7 @@ class FasilitasController extends Controller
         }
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['tampil_di_navbar'] = $request->boolean('tampil_di_navbar');
 
         if ($request->hasFile('gambar')) {
             $galeri = [];
@@ -109,5 +111,20 @@ class FasilitasController extends Controller
         $fasilitas = Fasilitas::findOrFail($id);
         $fasilitas->update(['is_active' => !$fasilitas->is_active]);
         return back()->with('success', 'Status Fasilitas diperbarui.');
+    }
+
+    public function bulkNavbar(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:tampilkan,sembunyikan',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'integer|exists:fasilitass,id',
+        ]);
+
+        $value = $request->action === 'tampilkan';
+        $count = Fasilitas::whereIn('id', $request->ids)->update(['tampil_di_navbar' => $value]);
+
+        $label = $value ? 'ditampilkan di navbar' : 'disembunyikan dari navbar';
+        return back()->with('success', "{$count} fasilitas berhasil {$label}.");
     }
 }

@@ -162,8 +162,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('layanan/{layanan}/toggle', [LayananAdminController::class, 'toggleActive'])->name('layanan.toggle');
 
         // Marketing — Fasilitas
+        Route::post('fasilitas/bulk-navbar', [AdminFasilitasController::class, 'bulkNavbar'])->name('fasilitas.bulk-navbar');
         Route::resource('fasilitas', AdminFasilitasController::class)->except(['show']);
         Route::patch('fasilitas/{fasilitas}/toggle', [AdminFasilitasController::class, 'toggleActive'])->name('fasilitas.toggle');
+        Route::post('kategori-fasilitas/reorder', [\App\Http\Controllers\Admin\KategoriFasilitasController::class, 'reorder'])->name('kategori-fasilitas.reorder');
         Route::resource('kategori-fasilitas', \App\Http\Controllers\Admin\KategoriFasilitasController::class)->except(['show']);
         Route::patch('kategori-fasilitas/{kategori_fasilitas}/toggle', [\App\Http\Controllers\Admin\KategoriFasilitasController::class, 'toggleActive'])->name('kategori-fasilitas.toggle');
 

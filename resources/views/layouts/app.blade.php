@@ -111,30 +111,18 @@
                                 </a>
                             </li>
                             <li class="mega-menu-cols-row">
+                                @forelse($navbarKategoriFasilitas ?? [] as $kat)
                                 <div class="mega-menu-col">
-                                    <a href="{{ route('fasilitas.kategori', 'pelayanan-medis') }}" class="text-decoration-none"><h6 class="mega-menu-title hover-primary">Pelayanan Medis</h6></a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'IGD & Ambulans 24 jam') }}">IGD & Ambulans 24 Jam</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Rawat Jalan') }}">Rawat Jalan</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Rawat Intensive dan Isolasi') }}">Rawat Intensive & Isolasi</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Kamar Operasi') }}">Kamar Operasi</a>
+                                    <h6 class="mega-menu-title">{{ $kat->nama }}</h6>
+                                    @foreach($kat->fasilitas as $f)
+                                        <a class="dropdown-item" href="{{ route('fasilitas.show', $f->slug ?? $f->nama) }}">{{ $f->nama }}</a>
+                                    @endforeach
                                 </div>
+                                @empty
                                 <div class="mega-menu-col">
-                                    <a href="{{ route('fasilitas.kategori', 'penunjang-medis') }}" class="text-decoration-none"><h6 class="mega-menu-title hover-primary">Penunjang Medis</h6></a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Radiologi & CT-Scan') }}">Radiologi & CT-Scan</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Laboratorium') }}">Laboratorium</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Farmasi') }}">Farmasi</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Rehabilitasi Medik') }}">Rehabilitasi Medik</a>
+                                    <p class="text-muted small mb-0 ps-2">Belum ada fasilitas yang ditampilkan.</p>
                                 </div>
-                                <div class="mega-menu-col">
-                                    <a href="{{ route('fasilitas.rawat-inap') }}" class="text-decoration-none"><h6 class="mega-menu-title hover-primary">Rawat Inap</h6></a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'President Suite') }}">President Suite</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Suite Room') }}">Suite Room</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'VIP') }}">VIP</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Kelas Utama') }}">Kelas Utama</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Kelas 1') }}">Kelas 1</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Kelas 2') }}">Kelas 2</a>
-                                    <a class="dropdown-item" href="{{ route('fasilitas.show', 'Kelas 3') }}">Kelas 3</a>
-                                </div>
+                                @endforelse
                             </li>
                         </ul>
                     </li>
