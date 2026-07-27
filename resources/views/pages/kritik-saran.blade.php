@@ -138,14 +138,21 @@
                             <div class="col-md-12" id="poliWrap" style="display:none;">
                                 <div class="ks-field">
                                     <label class="ks-label">Nama Poliklinik</label>
-                                    <div class="ks-input-wrap {{ $errors->has('nama_poliklinik') ? 'ks-input-wrap--error' : '' }}">
+                                    <div class="ks-input-wrap {{ $errors->has('nama_poliklinik') ? 'ks-input-wrap--error' : '' }}" style="position: relative; overflow: visible !important;">
                                         <i class="fas fa-hospital ks-input-icon"></i>
-                                        <select name="nama_poliklinik" class="ks-input ks-select" id="poliSelect">
-                                            <option value="">Pilih Poliklinik...</option>
+                                        <input type="hidden" name="nama_poliklinik" id="poliSelect" value="{{ old('nama_poliklinik') }}">
+                                        
+                                        <div class="ks-input ks-select custom-dropdown-trigger" id="poliDropdownTrigger" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+                                            <span id="poliDropdownLabel">{{ old('nama_poliklinik') ?: 'Pilih Poliklinik...' }}</span>
+                                            <i class="fas fa-chevron-down" id="poliDropdownArrow" style="transition: transform 0.2s; color: #94a3b8; font-size: 14px;"></i>
+                                        </div>
+
+                                        <ul class="custom-dropdown-options" id="poliDropdownOptions" style="position: absolute; top: calc(100% + 5px); left: 0; width: 100%; max-height: 250px; overflow-y: auto; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; list-style: none; padding: 6px; margin: 0; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease;">
+                                            <li class="custom-dropdown-option {{ old('nama_poliklinik') == '' ? 'active' : '' }}" data-value="">Pilih Poliklinik...</li>
                                             @foreach($polis as $poli)
-                                                <option value="{{ $poli->nama }}" {{ old('nama_poliklinik') == $poli->nama ? 'selected' : '' }}>{{ $poli->nama }}</option>
+                                            <li class="custom-dropdown-option {{ old('nama_poliklinik') == $poli->nama ? 'active' : '' }}" data-value="{{ $poli->nama }}">{{ $poli->nama }}</li>
                                             @endforeach
-                                        </select>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -202,14 +209,18 @@
                                 <div class="ks-field">
                                     <label class="ks-label mb-3">Penilaian Layanan <span class="ks-required">*</span></label>
                                     <div class="row g-3">
+                                        @php $hasPenunjangHeader = false; @endphp
                                         @foreach($ratingFields as $field => $info)
+                                        @if($info['sub'] == 'Pelayanan Penunjang' && !$hasPenunjangHeader)
+                                        <div class="col-12 mt-4 mb-0">
+                                            <h6 class="fw-bold mb-0" style="color: var(--primary); border-bottom: 2px solid #eef1f6; padding-bottom: 10px;">Pelayanan Penunjang</h6>
+                                        </div>
+                                        @php $hasPenunjangHeader = true; @endphp
+                                        @endif
                                         <div class="col-md-6">
                                             <div class="p-3 rounded {{ $errors->has($field) ? 'border border-danger bg-danger bg-opacity-10' : 'border bg-light' }}">
                                                 <label class="d-block fw-semibold mb-1" style="font-size:14px">
                                                     {{ $info['label'] }}
-                                                    @if($info['sub'])
-                                                    <br><small class="text-muted fw-normal" style="font-size:11px">{{ $info['sub'] }}</small>
-                                                    @endif
                                                 </label>
                                                 <div class="ks-rating-wrap ks-multi-rating" data-field="{{ $field }}">
                                                     @for($i = 1; $i <= 5; $i++)
@@ -338,8 +349,73 @@
         const checked = [...inputs].findIndex(r => r.checked);
         if (checked >= 0) update(checked + 1);
     });
+
+    // Custom Dropdown Poliklinik
+    const poliTrigger = document.getElementById('poliDropdownTrigger');
+    const poliOptions = document.querySelectorAll('#poliDropdownOptions .custom-dropdown-option');
+    const poliLabel = document.getElementById('poliDropdownLabel');
+    const poliWrapDropdown = poliTrigger ? poliTrigger.closest('.ks-input-wrap') : null;
+
+    if (poliTrigger && poliWrapDropdown) {
+        poliTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            poliWrapDropdown.classList.toggle('open');
+        });
+
+        poliOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const val = this.getAttribute('data-value');
+                const text = this.textContent;
+                poliSelect.value = val;
+                poliLabel.textContent = text;
+                
+                // update active class
+                poliOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!poliWrapDropdown.contains(e.target)) {
+                poliWrapDropdown.classList.remove('open');
+            }
+        });
+    }
+
 })();
 </script>
+
+@push('styles')
+<style>
+/* Custom Dropdown Option Styles */
+.ks-input-wrap.open .custom-dropdown-options {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+.ks-input-wrap.open #poliDropdownArrow {
+    transform: rotate(180deg);
+}
+.custom-dropdown-option {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+}
+.custom-dropdown-option:hover {
+    background: #f1f5f9;
+}
+.custom-dropdown-option.active {
+    background: #eff6ff;
+    color: #0055a5;
+    font-weight: 600;
+}
+</style>
+@endpush
 
 @push('scripts')
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>

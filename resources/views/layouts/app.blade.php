@@ -137,7 +137,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('promo*') ? 'active' : '' }} nav-promo-link" href="{{ route('promo.index') }}">
-                            <i class="bi bi-gift-fill me-1" style="font-size:12px"></i>Promo
+                            <i class="bi bi-gift-fill me-1" style="font-size:12px"></i>Promo & Paket
                         </a>
                     </li>
                     <li class="nav-item">

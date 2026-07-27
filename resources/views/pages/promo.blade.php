@@ -36,23 +36,49 @@
 
 <div class="pm-search-section">
     <div class="container">
-        <form method="GET" action="{{ route('promo.index') }}" class="pm-search-wrap">
-            <i class="fas fa-search pm-search-icon"></i>
-            <input type="text" name="search" id="pmSearchInput" class="pm-search-input"
-                   placeholder="Cari promo... contoh: scaling, medical check up, vaksin"
-                   value="{{ $search }}">
-            <button type="submit" class="pm-search-btn"><i class="fas fa-arrow-right"></i></button>
-            @if($search)
-                <a href="{{ route('promo.index') }}" class="pm-search-clear" title="Hapus pencarian">
-                    <i class="fas fa-times"></i>
-                </a>
-            @endif
-            <span class="pm-search-count" id="pmSearchCount">
-                @if($search)
-                    {{ $promos->total() }} hasil
+        <form method="GET" action="{{ route('promo.index') }}" class="pm-search-wrap" id="pmSearchForm" style="display:flex; gap:10px; align-items:center;">
+            
+            <!-- Custom Dropdown Kategori -->
+            <div class="pm-custom-select-wrapper" style="flex: 0 0 160px; position: relative;">
+                <input type="hidden" name="kategori" id="kategoriInput" value="{{ request('kategori') }}">
+                
+                <div class="pm-custom-select-trigger" id="pmKategoriTrigger" style="display: flex; justify-content: space-between; align-items: center; width: 100%; border: none; background: transparent; font-family: inherit; font-size: 15px; font-weight: 500; color: var(--ink); padding: 8px 15px; outline: none; cursor: pointer; border-right: 1px solid #e2e8f0; user-select: none;">
+                    <span id="pmKategoriLabel">
+                        @if(request('kategori') == 'Promo') Promo
+                        @elseif(request('kategori') == 'Paket') Paket
+                        @else Semua Kategori
+                        @endif
+                    </span>
+                    <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--muted); transition: transform 0.2s;" id="pmKategoriArrow"></i>
+                </div>
+                
+                <ul class="pm-custom-select-options" id="pmKategoriOptions" style="position: absolute; top: 120%; left: 0; width: 100%; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #f1f5f9; list-style: none; padding: 6px; margin: 0; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease;">
+                    <li class="pm-custom-option {{ request('kategori') == '' ? 'active' : '' }}" data-value="">Semua Kategori</li>
+                    <li class="pm-custom-option {{ request('kategori') == 'Promo' ? 'active' : '' }}" data-value="Promo">Promo</li>
+                    <li class="pm-custom-option {{ request('kategori') == 'Paket' ? 'active' : '' }}" data-value="Paket">Paket</li>
+                </ul>
+            </div>
+
+            <div style="display:flex; flex:1; align-items:center; position:relative;">
+                <i class="fas fa-search pm-search-icon" style="position:static; padding: 0 15px;"></i>
+                <input type="text" name="search" id="pmSearchInput" class="pm-search-input"
+                       placeholder="Cari... contoh: scaling, medical check up"
+                       value="{{ request('search') }}" style="padding-left:0; flex:1;">
+                <button type="submit" class="pm-search-btn"><i class="fas fa-arrow-right"></i></button>
+                @if(request('search') || request('kategori'))
+                    <a href="{{ route('promo.index') }}" class="pm-search-clear" title="Hapus pencarian">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
+            </div>
+        </form>
+        <div style="text-align: center; margin-top: 10px;">
+            <span class="pm-search-count" id="pmSearchCount" style="position:static;">
+                @if(request('search') || request('kategori'))
+                    {{ $promos->total() }} hasil ditemukan
                 @endif
             </span>
-        </form>
+        </div>
     </div>
 </div>
 <section class="pm-section sec">
@@ -84,6 +110,11 @@
                         @endif
                     </div>
                     <div class="pm-card-clean-body">
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: {{ $p->kategori == 'Promo' ? '#eff6ff' : '#ecfdf5' }}; color: {{ $p->kategori == 'Promo' ? '#0055a5' : '#059669' }}; border: 1px solid {{ $p->kategori == 'Promo' ? '#bfdbfe' : '#a7f3d0' }}; display: inline-block;">
+                                {{ $p->kategori }}
+                            </span>
+                        </div>
                         <h5 class="pm-card-clean-title" data-promo-text>{{ $p->judul }}</h5>
                         
                         <div class="pm-card-clean-meta">
@@ -371,6 +402,33 @@ nav .d-sm-flex > div:last-child {
 .pagination .page-item.active .page-link {
     color: #ffffff !important;
 }
+/* Custom Dropdown Option Styles */
+.pm-custom-select-wrapper.open .pm-custom-select-options {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+.pm-custom-select-wrapper.open #pmKategoriArrow {
+    transform: rotate(180deg);
+}
+.pm-custom-option {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+}
+.pm-custom-option:hover {
+    background: #f1f5f9;
+}
+.pm-custom-option.active {
+    background: #eff6ff;
+    color: #0055a5;
+    font-weight: 600;
+}
 </style>
 @endpush
 
@@ -399,5 +457,41 @@ nav .d-sm-flex > div:last-child {
 
 
 
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const trigger = document.getElementById('pmKategoriTrigger');
+    const wrapper = document.querySelector('.pm-custom-select-wrapper');
+    const options = document.querySelectorAll('.pm-custom-option');
+    const hiddenInput = document.getElementById('kategoriInput');
+    const form = document.getElementById('pmSearchForm');
+
+    if(trigger && wrapper) {
+        // Toggle Dropdown
+        trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            wrapper.classList.toggle('open');
+        });
+
+        // Handle Option Click
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                hiddenInput.value = value;
+                form.submit();
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('open');
+            }
+        });
+    }
+});
+</script>
+@endpush
 
 @endsection

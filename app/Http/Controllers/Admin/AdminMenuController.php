@@ -16,7 +16,13 @@ class AdminMenuController extends Controller
     public function create()
     {
         $parents = AdminMenu::whereNull('parent_id')->orderBy('order')->get();
-        return view('admin.menus.form', compact('parents'));
+        $routes = collect(\Illuminate\Support\Facades\Route::getRoutes()->getRoutes())
+                    ->filter(function ($route) { return $route->getName() !== null && str_ends_with($route->getName(), '.index'); })
+                    ->map(function ($route) { return $route->getName(); })
+                    ->unique()
+                    ->sort()
+                    ->values();
+        return view('admin.menus.form', compact('parents', 'routes'));
     }
 
     public function store(Request $request)
@@ -43,7 +49,13 @@ class AdminMenuController extends Controller
     public function edit(AdminMenu $menu)
     {
         $parents = AdminMenu::whereNull('parent_id')->where('id', '!=', $menu->id)->orderBy('order')->get();
-        return view('admin.menus.form', compact('menu', 'parents'));
+        $routes = collect(\Illuminate\Support\Facades\Route::getRoutes()->getRoutes())
+                    ->filter(function ($route) { return $route->getName() !== null && str_ends_with($route->getName(), '.index'); })
+                    ->map(function ($route) { return $route->getName(); })
+                    ->unique()
+                    ->sort()
+                    ->values();
+        return view('admin.menus.form', compact('menu', 'parents', 'routes'));
     }
 
     public function update(Request $request, AdminMenu $menu)

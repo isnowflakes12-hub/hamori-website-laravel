@@ -17,6 +17,11 @@ class PromoPublicController extends Controller
             });
         }
 
+        $kategori = $request->get('kategori', '');
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+
         $promos = $query->orderBy('is_featured', 'desc')
                         ->orderBy('urutan', 'asc')
                         ->orderBy('created_at', 'desc')

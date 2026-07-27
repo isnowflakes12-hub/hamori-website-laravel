@@ -25,7 +25,7 @@ class PrivacyPoliciesTableSeeder extends Seeder
                 'judul' => 'Pengumpulan Informasi',
                 'konten' => 'Contoh',
                 'urutan' => 1,
-                'is_active' => 1,
+                'is_active' => true,
                 'created_at' => '2026-06-23 07:55:31',
                 'updated_at' => '2026-06-23 07:55:31',
             ),

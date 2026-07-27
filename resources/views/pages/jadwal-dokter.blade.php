@@ -36,14 +36,21 @@
                             placeholder="Cari nama dokter..." value="{{ request('nama') }}" autocomplete="off">
                     </div>
 
-                    <div class="jadwal-search-field">
+                    <div class="jadwal-search-field" style="position: relative;">
                         <i class="bi bi-calendar3 jadwal-search-icon"></i>
-                        <select name="hari" id="input-hari" class="jadwal-search-input jadwal-search-select">
-                            <option value="">Semua Hari</option>
+                        <input type="hidden" name="hari" id="input-hari" value="{{ request('hari') }}">
+                        
+                        <div class="jadwal-search-input jadwal-search-select custom-dropdown-trigger" id="hariDropdownTrigger" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+                            <span id="hariDropdownLabel">{{ request('hari') ?: 'Semua Hari' }}</span>
+                            <i class="bi bi-chevron-down ms-2" id="hariDropdownArrow" style="transition: transform 0.2s; color: #94a3b8; font-size: 14px;"></i>
+                        </div>
+
+                        <ul class="custom-dropdown-options" id="hariDropdownOptions" style="position: absolute; top: calc(100% + 5px); left: 0; width: 100%; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; list-style: none; padding: 6px; margin: 0; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease;">
+                            <li class="custom-dropdown-option {{ request('hari') == '' ? 'active' : '' }}" data-value="">Semua Hari</li>
                             @foreach($haris as $hari)
-                            <option value="{{ $hari }}" {{ request('hari') == $hari ? 'selected' : '' }}>{{ $hari }}</option>
+                            <li class="custom-dropdown-option {{ request('hari') == $hari ? 'active' : '' }}" data-value="{{ $hari }}">{{ $hari }}</li>
                             @endforeach
-                        </select>
+                        </ul>
                     </div>
                     <button type="submit" class="jadwal-search-btn">
                         <i class="bi bi-search me-2"></i>Cari Dokter
@@ -907,6 +914,49 @@
     z-index: 10;
 }
 
+.jadwal-search-select {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    outline: none;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+/* Custom Dropdown Styles */
+.jadwal-search-field.open .custom-dropdown-options {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+.jadwal-search-field.open #hariDropdownArrow {
+    transform: rotate(180deg);
+}
+.custom-dropdown-option {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+}
+.custom-dropdown-option:hover {
+    background: #f1f5f9;
+}
+.custom-dropdown-option.active {
+    background: #eff6ff;
+    color: #0055a5;
+    font-weight: 600;
+}
+
 .dokter-modal-close:hover { background: #e0e0e0; }
 
 .dokter-modal-inner {
@@ -1219,6 +1269,34 @@ function closeDoctorOffcanvas() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeDoctorOffcanvas();
+    }
+});
+
+// Custom Dropdown for Hari
+document.addEventListener('DOMContentLoaded', function() {
+    const trigger = document.getElementById('hariDropdownTrigger');
+    const wrapper = trigger ? trigger.closest('.jadwal-search-field') : null;
+    const options = document.querySelectorAll('.custom-dropdown-option');
+    const hiddenInput = document.getElementById('input-hari');
+    
+    if(trigger && wrapper) {
+        trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            wrapper.classList.toggle('open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                hiddenInput.value = this.getAttribute('data-value');
+                document.getElementById('search-form').submit();
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('open');
+            }
+        });
     }
 });
 </script>

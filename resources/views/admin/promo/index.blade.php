@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
-@section('title','Promo')
-@section('page-title','Manajemen Promo')
+@section('title','Promo & Paket')
+@section('page-title','Manajemen Promo & Paket')
 @section('content')
 
 <div class="page-hd">
     <div>
-        <h1 class="page-hd-title">Promo & Penawaran</h1>
+        <h1 class="page-hd-title">Promo & Paket</h1>
         <p class="page-hd-sub">Maksimal <strong>3 promo unggulan</strong> yang ditampilkan di website</p>
     </div>
     <a href="{{ route('admin.promo.create') }}" class="btn btn-primary">
@@ -55,13 +55,20 @@
 </div>
 
 <div class="d-flex justify-content-end mb-3">
-    <form method="GET" action="{{ route('admin.promo.index') }}" class="d-flex w-25 min-w-300">
-        <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari promo..." value="{{ request('search') }}">
-        <button type="submit" class="btn btn-sm btn-primary ms-2">
-            <i class="bi bi-search"></i>
-        </button>
-        @if(request('search'))
-            <a href="{{ route('admin.promo.index') }}" class="btn btn-sm btn-secondary ms-2">
+    <form method="GET" action="{{ route('admin.promo.index') }}" class="d-flex align-items-center gap-2">
+        <select name="kategori" class="form-select form-select-sm" style="width:130px" onchange="this.form.submit()">
+            <option value="">Semua Kategori</option>
+            <option value="Promo" {{ request('kategori') == 'Promo' ? 'selected' : '' }}>Promo</option>
+            <option value="Paket" {{ request('kategori') == 'Paket' ? 'selected' : '' }}>Paket</option>
+        </select>
+        <div class="input-group input-group-sm w-auto">
+            <input type="text" name="search" class="form-control" placeholder="Cari promo..." value="{{ request('search') }}" style="width:200px">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        @if(request('search') || request('kategori'))
+            <a href="{{ route('admin.promo.index') }}" class="btn btn-sm btn-secondary">
                 <i class="bi bi-x-lg"></i>
             </a>
         @endif
@@ -91,6 +98,9 @@
                     {{ $p->is_featured ? 'checked disabled' : '' }}>
             </td>
             <td>
+                <span class="badge {{ $p->kategori == 'Promo' ? 'bg-primary' : 'bg-success' }} mb-1" style="font-size: 10px; padding: 3px 6px;">
+                    {{ $p->kategori }}
+                </span>
                 <div class="fw-semibold" style="font-size:14px">{{ $p->judul }}</div>
                 @if($p->deskripsi)
                 <div style="font-size:12px;color:#94a3b8;margin-top:2px">{{ Str::limit($p->deskripsi,60) }}</div>

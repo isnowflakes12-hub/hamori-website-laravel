@@ -57,10 +57,10 @@ class DatabaseSeeder extends Seeder
             PrivacyPoliciesTableSeeder::class,
 
             // Info Tempat Tidur
-            BedAvailabilitySeeder::class,
+            BedAvailabilitiesTableSeeder::class,
 
             // Admin Menu (Navbar Dinamis)
-            AdminMenuSeeder::class,
+            AdminMenusTableSeeder::class,
         ]);
 
         // Re-enable foreign key checks

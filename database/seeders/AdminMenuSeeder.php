@@ -26,7 +26,7 @@ class AdminMenuSeeder extends Seeder
         AdminMenu::create(['parent_id' => $marketing->id, 'name' => 'Kritik & Saran', 'route_name' => 'admin.kritik-saran.index', 'icon' => 'bi-envelope-paper-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 1]);
         AdminMenu::create(['parent_id' => $marketing->id, 'name' => 'Pesan Masuk', 'route_name' => 'admin.kontak.index', 'icon' => 'bi-chat-text-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 2]);
         AdminMenu::create(['parent_id' => $marketing->id, 'name' => 'Banner', 'route_name' => 'admin.banner.index', 'icon' => 'bi-image-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 3]);
-        AdminMenu::create(['parent_id' => $marketing->id, 'name' => 'Promo & Penawaran', 'route_name' => 'admin.promo.index', 'icon' => 'bi-gift-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 4]);
+        AdminMenu::create(['parent_id' => $marketing->id, 'name' => 'Promo & Paket', 'route_name' => 'admin.promo.index', 'icon' => 'bi-gift-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 4]);
         AdminMenu::create(['parent_id' => $marketing->id, 'name' => 'Layanan Unggulan', 'route_name' => 'admin.layanan.index', 'icon' => 'bi-award-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 5]);
 
         // 2. Dokter & Jadwal

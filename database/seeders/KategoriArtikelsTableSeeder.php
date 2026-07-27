@@ -29,7 +29,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             1 => 
             array (
@@ -41,7 +41,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             2 => 
             array (
@@ -53,7 +53,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             3 => 
             array (
@@ -65,7 +65,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             4 => 
             array (
@@ -77,7 +77,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             5 => 
             array (
@@ -89,7 +89,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             6 => 
             array (
@@ -101,7 +101,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             7 => 
             array (
@@ -113,7 +113,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
             8 => 
             array (
@@ -125,7 +125,7 @@ class KategoriArtikelsTableSeeder extends Seeder
                 'deskripsi' => NULL,
                 'warna' => '#0055a5',
                 'urutan' => 0,
-                'is_active' => 1,
+                'is_active' => true,
             ),
         ));
         

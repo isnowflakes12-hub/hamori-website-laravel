@@ -33,8 +33,8 @@ class KarirsTableSeeder extends Seeder
 - Pengalaman minimal 1 tahun di IGD
 - Memiliki sertifikat BTCLS/ACLS
 - Mampu bekerja dalam tim dan tekanan tinggi',
-                'batas_lamaran' => '2026-07-21 02:57:20',
-                'is_active' => 1,
+                'batas_lamaran' => '2026-07-21',
+                'is_active' => true,
                 'created_at' => '2026-06-21 02:57:20',
                 'updated_at' => '2026-06-21 02:57:20',
             ),
@@ -51,8 +51,8 @@ class KarirsTableSeeder extends Seeder
                 'persyaratan' => '- D3/S1 Keperawatan, STR aktif
 - Berpengalaman minimal 1 tahun rawat inap
 - Komunikatif dan sabar dalam melayani pasien',
-                'batas_lamaran' => '2026-07-12 02:57:20',
-                'is_active' => 1,
+                'batas_lamaran' => '2026-07-12',
+                'is_active' => true,
                 'created_at' => '2026-06-21 02:57:20',
                 'updated_at' => '2026-06-21 02:57:20',
             ),
@@ -69,8 +69,8 @@ class KarirsTableSeeder extends Seeder
                 'persyaratan' => '- S1 Keperawatan, STR aktif
 - Pengalaman ICU minimal 2 tahun
 - Sertifikat CCRN atau ICU Basic diutamakan',
-                'batas_lamaran' => '2026-07-05 02:57:20',
-                'is_active' => 1,
+                'batas_lamaran' => '2026-07-05',
+                'is_active' => true,
                 'created_at' => '2026-06-21 02:57:20',
                 'updated_at' => '2026-06-21 02:57:20',
             ),
@@ -87,8 +87,8 @@ class KarirsTableSeeder extends Seeder
                 'persyaratan' => '- D3/D4 Analis Kesehatan / Teknologi Laboratorium Medis
 - STR aktif
 - Teliti, terorganisir, dan bertanggung jawab',
-                'batas_lamaran' => '2026-07-19 02:57:20',
-                'is_active' => 1,
+                'batas_lamaran' => '2026-07-19',
+                'is_active' => true,
                 'created_at' => '2026-06-21 02:57:20',
                 'updated_at' => '2026-06-21 02:57:20',
             ),
@@ -105,8 +105,8 @@ class KarirsTableSeeder extends Seeder
                 'persyaratan' => '- D3/D4 Radiologi, memiliki SIB dan STR aktif
 - Memahami proteksi radiasi
 - Teliti dan bertanggung jawab',
-                'batas_lamaran' => '2026-07-26 02:57:20',
-                'is_active' => 1,
+                'batas_lamaran' => '2026-07-26',
+                'is_active' => true,
                 'created_at' => '2026-06-21 02:57:20',
                 'updated_at' => '2026-06-21 02:57:20',
             ),
@@ -123,8 +123,8 @@ class KarirsTableSeeder extends Seeder
             'persyaratan' => '- S1 Farmasi / Apoteker (STRA aktif) atau D3 Farmasi (STRTTK aktif)
 - Teliti dan jujur
 - Mampu bekerja shift',
-            'batas_lamaran' => '2026-07-11 02:57:20',
-            'is_active' => 1,
+            'batas_lamaran' => '2026-07-11',
+            'is_active' => true,
             'created_at' => '2026-06-21 02:57:20',
             'updated_at' => '2026-06-21 02:57:20',
         ),
@@ -141,8 +141,8 @@ class KarirsTableSeeder extends Seeder
             'persyaratan' => '- D3/D4/S1 Fisioterapi, STR aktif
 - Pengalaman minimal 1 tahun
 - Sabar dan empatik',
-            'batas_lamaran' => '2026-07-16 02:57:20',
-            'is_active' => 1,
+            'batas_lamaran' => '2026-07-16',
+            'is_active' => true,
             'created_at' => '2026-06-21 02:57:20',
             'updated_at' => '2026-06-21 02:57:20',
         ),
@@ -159,8 +159,8 @@ class KarirsTableSeeder extends Seeder
             'persyaratan' => '- Dokter Umum, SIP aktif
 - Bersedia bekerja shift termasuk malam dan akhir pekan
 - Berkomitmen terhadap mutu pelayanan',
-            'batas_lamaran' => '2026-07-31 02:57:20',
-            'is_active' => 1,
+            'batas_lamaran' => '2026-07-31',
+            'is_active' => true,
             'created_at' => '2026-06-21 02:57:20',
             'updated_at' => '2026-06-21 02:57:20',
         ),
@@ -177,8 +177,8 @@ class KarirsTableSeeder extends Seeder
         'persyaratan' => '- Dokter Spesialis Penyakit Dalam (Sp.PD)
 - SIP aktif dan bersedia praktik di Subang
 - Pengalaman minimal 2 tahun',
-        'batas_lamaran' => '2026-08-05 02:57:20',
-        'is_active' => 1,
+        'batas_lamaran' => '2026-08-05',
+        'is_active' => true,
         'created_at' => '2026-06-21 02:57:20',
         'updated_at' => '2026-06-21 02:57:20',
     ),
@@ -195,8 +195,8 @@ class KarirsTableSeeder extends Seeder
         'persyaratan' => '- D3/D4/S1 Kebidanan, STR aktif
 - Pengalaman minimal 1 tahun
 - Empati tinggi dan komunikatif',
-        'batas_lamaran' => '2026-07-09 02:57:20',
-        'is_active' => 1,
+        'batas_lamaran' => '2026-07-09',
+        'is_active' => true,
         'created_at' => '2026-06-21 02:57:20',
         'updated_at' => '2026-06-21 02:57:20',
     ),
@@ -213,8 +213,8 @@ class KarirsTableSeeder extends Seeder
     'persyaratan' => '- D3/S1 semua jurusan (diutamakan Rekam Medis/Manajemen)
 - Ramah, komunikatif, dan sabar
 - Mampu mengoperasikan komputer',
-    'batas_lamaran' => '2026-07-13 02:57:20',
-    'is_active' => 1,
+    'batas_lamaran' => '2026-07-13',
+    'is_active' => true,
     'created_at' => '2026-06-21 02:57:20',
     'updated_at' => '2026-06-21 02:57:20',
 ),
@@ -231,8 +231,8 @@ array (
     'persyaratan' => '- S1 Akuntansi / Keuangan
 - Memahami akuntansi dasar
 - Teliti, jujur, dan bertanggung jawab',
-    'batas_lamaran' => '2026-07-21 02:57:20',
-    'is_active' => 1,
+    'batas_lamaran' => '2026-07-21',
+    'is_active' => true,
     'created_at' => '2026-06-21 02:57:20',
     'updated_at' => '2026-06-21 02:57:20',
 ),
@@ -249,8 +249,8 @@ array (
     'persyaratan' => '- D3/S1 Teknik Informatika / Sistem Informasi
 - Menguasai jaringan, hardware, dan troubleshooting
 - Berpengalaman dengan SIMRS diutamakan',
-    'batas_lamaran' => '2026-07-29 02:57:20',
-    'is_active' => 1,
+    'batas_lamaran' => '2026-07-29',
+    'is_active' => true,
     'created_at' => '2026-06-21 02:57:20',
     'updated_at' => '2026-06-21 02:57:20',
 ),

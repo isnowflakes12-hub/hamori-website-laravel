@@ -28,6 +28,7 @@ class MilestonesTableSeeder extends Seeder
                 'gambar' => NULL,
                 'created_at' => '2026-06-23 14:57:31',
                 'updated_at' => '2026-06-23 14:57:31',
+                'galeri' => NULL,
             ),
             1 => 
             array (
@@ -38,6 +39,7 @@ class MilestonesTableSeeder extends Seeder
                 'gambar' => NULL,
                 'created_at' => '2026-06-23 14:57:31',
                 'updated_at' => '2026-06-23 14:57:31',
+                'galeri' => NULL,
             ),
             2 => 
             array (
@@ -48,6 +50,7 @@ class MilestonesTableSeeder extends Seeder
                 'gambar' => NULL,
                 'created_at' => '2026-06-23 14:57:31',
                 'updated_at' => '2026-06-23 14:57:31',
+                'galeri' => NULL,
             ),
         ));
         

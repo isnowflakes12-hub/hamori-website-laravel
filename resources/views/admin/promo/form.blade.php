@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
-@section('title', $promo ? 'Edit Promo' : 'Tambah Promo')
-@section('page-title', $promo ? 'Edit Promo' : 'Tambah Promo Baru')
+@section('title', $promo ? 'Edit Promo & Paket' : 'Tambah Promo & Paket')
+@section('page-title', $promo ? 'Edit Promo & Paket' : 'Tambah Promo & Paket Baru')
 
 @section('content')
 <div class="page-hd">
     <div>
-        <h1 class="page-hd-title">{{ $promo ? 'Edit Promo' : 'Tambah Promo Baru' }}</h1>
+        <h1 class="page-hd-title">{{ $promo ? 'Edit Promo & Paket' : 'Tambah Promo & Paket Baru' }}</h1>
     </div>
     <a href="{{ route('admin.promo.index') }}" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left me-1"></i>Kembali
@@ -37,16 +37,26 @@
                     <i class="bi bi-info-circle me-2 text-primary"></i>Informasi Promo
                 </h6>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Judul Promo <span class="text-danger">*</span></label>
-                    <input type="text" name="judul" class="form-control @error('judul') is-invalid @enderror"
-                           value="{{ old('judul', $promo->judul ?? '') }}"
-                           maxlength="150" required
-                           placeholder="Contoh: Paket Medical Check Up Lengkap">
-                    @error('judul') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Kategori <span class="text-danger">*</span></label>
+                        <select name="kategori" class="form-select @error('kategori') is-invalid @enderror" required>
+                            <option value="Promo" {{ old('kategori', $promo->kategori ?? '') == 'Promo' ? 'selected' : '' }}>Promo</option>
+                            <option value="Paket" {{ old('kategori', $promo->kategori ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
+                        </select>
+                        @error('kategori')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label fw-semibold">Judul Promo <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" class="form-control @error('judul') is-invalid @enderror"
+                               value="{{ old('judul', $promo->judul ?? '') }}"
+                               maxlength="150" required
+                               placeholder="Contoh: Paket Medical Check Up Lengkap">
+                        @error('judul')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-4">
                     <label class="form-label fw-semibold">Deskripsi Singkat
                         <span class="text-muted fw-normal float-end" id="descCount" style="font-size:12px"></span>
                     </label>
@@ -187,7 +197,7 @@
 
             <button type="submit" class="btn btn-primary w-100 py-3" style="font-size:15px;font-weight:600;border-radius:12px">
                 <i class="bi bi-save me-2"></i>
-                {{ $promo ? 'Simpan Perubahan' : 'Tambah Promo' }}
+                {{ $promo ? 'Simpan Perubahan' : 'Tambah Promo & Paket' }}
             </button>
         </div>
 

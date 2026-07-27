@@ -16,8 +16,14 @@ class PromoController extends Controller
         $query = Promo::query();
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('judul', 'like', "%{$search}%")
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
                   ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($request->has('kategori') && $request->kategori != '') {
+            $query->where('kategori', $request->kategori);
         }
         $promos   = $query->orderBy('is_featured', 'desc')->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         $featured = Promo::where('is_featured', true)->get();
@@ -35,6 +41,7 @@ class PromoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kategori'         => 'required|in:Promo,Paket',
             'judul'            => 'required|string|max:150',
             'gambar'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'deskripsi'        => 'nullable|string|max:300',
@@ -46,7 +53,7 @@ class PromoController extends Controller
         ]);
 
         try {
-            $data = $request->only('judul', 'deskripsi', 'detail', 'syarat_ketentuan', 'berlaku_mulai', 'berlaku_sampai', 'link_cta');
+            $data = $request->only('kategori', 'judul', 'deskripsi', 'detail', 'syarat_ketentuan', 'berlaku_mulai', 'berlaku_sampai', 'link_cta');
             $data['terima_bpjs'] = $request->boolean('terima_bpjs');
             $data['is_home_featured'] = $request->boolean('is_home_featured');
 
@@ -108,6 +115,7 @@ class PromoController extends Controller
     public function update(Request $request, Promo $promo)
     {
         $request->validate([
+            'kategori'         => 'required|in:Promo,Paket',
             'judul'            => 'required|string|max:150',
             'gambar'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'deskripsi'        => 'nullable|string|max:300',
@@ -120,7 +128,7 @@ class PromoController extends Controller
 
         try {
             $data = $request->only(
-                'judul', 'deskripsi', 'detail', 'syarat_ketentuan',
+                'kategori', 'judul', 'deskripsi', 'detail', 'syarat_ketentuan',
                 'berlaku_mulai', 'berlaku_sampai', 'link_cta'
             );
 

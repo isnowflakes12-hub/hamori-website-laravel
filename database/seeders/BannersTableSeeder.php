@@ -21,27 +21,27 @@ class BannersTableSeeder extends Seeder
         \DB::table('banners')->insert(array (
             0 => 
             array (
-                'id' => 1,
+                'id' => 3,
                 'judul' => NULL,
-                'gambar' => 'placeholder.png',
-                'gambar_mobile' => NULL,
+                'gambar' => 'banners/6dXnwjuVEWi5smIfg1rXpU0qjuGjymJAj8lj8u16.webp',
+                'gambar_mobile' => 'banners/nho2KeLwbBpII519V6ryfYxMg1bQZSrBLXLFedBt.webp',
                 'link' => NULL,
                 'urutan' => 0,
-                'is_active' => 1,
-                'created_at' => '2026-06-22 07:59:43',
-                'updated_at' => '2026-06-22 07:59:43',
+                'is_active' => true,
+                'created_at' => '2026-07-23 12:53:12',
+                'updated_at' => '2026-07-23 12:53:12',
             ),
             1 => 
             array (
-                'id' => 2,
+                'id' => 4,
                 'judul' => NULL,
-                'gambar' => 'placeholder.png',
-                'gambar_mobile' => NULL,
+                'gambar' => 'banners/kZ5sg0v8hC1gkXMuLtY9fRHHxxl5wtEkSvjETaam.webp',
+                'gambar_mobile' => 'banners/3mO8PKoNaNcOFctJSnNLDh24LccQb9RuC2WPvegt.webp',
                 'link' => NULL,
-                'urutan' => 0,
-                'is_active' => 1,
-                'created_at' => '2026-06-22 07:59:52',
-                'updated_at' => '2026-06-22 07:59:52',
+                'urutan' => 2,
+                'is_active' => true,
+                'created_at' => '2026-07-23 13:08:15',
+                'updated_at' => '2026-07-23 13:08:15',
             ),
         ));
         
