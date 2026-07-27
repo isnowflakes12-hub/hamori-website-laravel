@@ -12,10 +12,12 @@ use App\Http\Controllers\KontakController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PromoPublicController;
+use App\Http\Controllers\BedAvailabilityPublicController;
 
 // ─── Admin namespace shortcut ───
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\BedAvailabilityController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BannerController;
@@ -79,6 +81,8 @@ Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('p
 Route::post('/appointment', [AppointmentController::class, 'store'])->name('appointment.store');
 
 Route::get('/paket-kesehatan', [HomeController::class, 'paketKesehatan'])->name('paket-kesehatan');
+
+Route::get('/info-tempat-tidur', [BedAvailabilityPublicController::class, 'index'])->name('info-tempat-tidur');
 
 Route::get('/comming-soon', fn() => view('pages.coming-soon'))->name('coming-soon');
 
@@ -150,6 +154,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/lamaran/{lamaran}',    [LamaranController::class, 'show'])->name('lamaran.show');
         Route::patch('/lamaran/{lamaran}/status', [LamaranController::class, 'updateStatus'])->name('lamaran.status');
         Route::delete('/lamaran/{lamaran}', [LamaranController::class, 'destroy'])->name('lamaran.destroy');
+
+        // Manajemen Kamar / Tempat Tidur
+        Route::resource('bed-availability', BedAvailabilityController::class)->except(['show']);
+        Route::post('bed-availability/reorder', [BedAvailabilityController::class, 'reorder'])->name('bed-availability.reorder');
 
         // Marketing — Promo
         Route::resource('promo', PromoController::class)->except(['show']);

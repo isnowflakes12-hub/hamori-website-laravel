@@ -130,7 +130,7 @@
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Informasi</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('dokter.index') }}">Jadwal Dokter</a></li>
-                            <li><a class="dropdown-item" href="{{ route('tempat-tidur') }}">Info Tempat Tidur</a></li>
+                            <li><a class="dropdown-item" href="{{ route('info-tempat-tidur') }}">Info Tempat Tidur</a></li>
                             <li><a class="dropdown-item" href="{{ route('karir.index') }}">Karir</a></li>
                             <li><a class="dropdown-item" href="{{ route('partner') }}">Partner</a></li>
                         </ul>
@@ -195,7 +195,7 @@
                         <ul class="footer-links">
                             <li><a href="{{ route('dokter.index') }}">Jadwal Dokter</a></li>
                             <li><a href="{{ route('appointment') }}" target="_blank">Buat Appointment</a></li>
-                            <li><a href="{{ route('tempat-tidur') }}">Info Tempat Tidur</a></li>
+                            <li><a href="{{ route('info-tempat-tidur') }}">Info Tempat Tidur</a></li>
                             <li><a href="{{ route('layanan.index') }}">Layanan Unggulan</a></li>
                             <li><a href="{{ route('partner') }}">Partner</a></li>
                         </ul>

@@ -70,6 +70,7 @@ class AdminMenuSeeder extends Seeder
         ]);
         AdminMenu::create(['parent_id' => $fasilitas->id, 'name' => 'Fasilitas', 'route_name' => 'admin.fasilitas.index', 'icon' => 'bi-building', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 1]);
         AdminMenu::create(['parent_id' => $fasilitas->id, 'name' => 'Kategori Fasilitas', 'route_name' => 'admin.kategori-fasilitas.index', 'icon' => 'bi-folder-fill', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 2]);
+        AdminMenu::create(['parent_id' => $fasilitas->id, 'name' => 'Info Tempat Tidur', 'route_name' => 'admin.bed-availability.index', 'icon' => 'bi-hospital', 'roles' => ['super_admin', 'admin_marketing'], 'order' => 3]);
 
         // 6. Profile Rumah Sakit
         $profil = AdminMenu::create([
