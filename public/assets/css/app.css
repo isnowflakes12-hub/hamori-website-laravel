@@ -10549,6 +10549,11 @@ button {
     color: var(--amber);
 }
 
+.pr-val-ic--blue {
+    background: #eff6ff;
+    color: #0055a5;
+}
+
 .pr-val-card:hover .pr-val-ic {
     transform: scale(1.1) rotate(-4deg);
     background: var(--primary);
@@ -10565,6 +10570,10 @@ button {
 
 .pr-val-card:hover .pr-val-ic--amber {
     background: var(--amber);
+}
+
+.pr-val-card:hover .pr-val-ic--blue {
+    background: #0055a5;
 }
 
 .pr-val-title {
@@ -12679,6 +12688,11 @@ button {
     color: var(--amber);
 }
 
+.pr-val-ic--blue {
+    background: #eff6ff;
+    color: #0055a5;
+}
+
 .pr-val-card:hover .pr-val-ic {
     transform: scale(1.1) rotate(-4deg);
     background: var(--primary);
@@ -12695,6 +12709,10 @@ button {
 
 .pr-val-card:hover .pr-val-ic--amber {
     background: var(--amber);
+}
+
+.pr-val-card:hover .pr-val-ic--blue {
+    background: #0055a5;
 }
 
 .pr-val-title {

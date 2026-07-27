@@ -303,37 +303,44 @@ document.addEventListener('keydown', function(e) {
     <div class="container">
 
         <div class="text-center mb-5">
-            <span class="eyebrow">Komitmen Kami</span>
-            <h2 class="sec-h2 mt-1">Nilai-Nilai yang Kami Junjung</h2>
+            <span class="eyebrow">KOMITMEN KAMI</span>
+            <h2 class="sec-h2 mt-1">Komitmen yang Menjadi Dasar Setiap Pelayanan</h2>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-3 col-6">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 col-6">
                 <div class="pr-val-card">
-                    <div class="pr-val-ic"><i class="fas fa-heart-pulse"></i></div>
+                    <div class="pr-val-ic">01</div>
                     <h6 class="pr-val-title">Keselamatan Pasien</h6>
-                    <p class="pr-val-desc">Prioritas utama dalam setiap tindakan medis.</p>
+                    <p class="pr-val-desc">Keselamatan pasien selalu menjadi prioritas utama dalam setiap pelayanan yang kami berikan.</p>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
                 <div class="pr-val-card">
-                    <div class="pr-val-ic pr-val-ic--accent"><i class="fas fa-hand-holding-medical"></i></div>
-                    <h6 class="pr-val-title">Pelayanan Prima</h6>
-                    <p class="pr-val-desc">Standar layanan tertinggi untuk setiap pasien.</p>
+                    <div class="pr-val-ic pr-val-ic--accent">02</div>
+                    <h6 class="pr-val-title">Kepedulian</h6>
+                    <p class="pr-val-desc">Kami melayani dengan empati, menghargai setiap pasien sebagai individu yang unik.</p>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
                 <div class="pr-val-card">
-                    <div class="pr-val-ic pr-val-ic--green"><i class="fas fa-leaf"></i></div>
-                    <h6 class="pr-val-title">Ramah Lingkungan</h6>
-                    <p class="pr-val-desc">Operasional berkelanjutan demi lingkungan sehat.</p>
+                    <div class="pr-val-ic pr-val-ic--green">03</div>
+                    <h6 class="pr-val-title">Profesionalisme</h6>
+                    <p class="pr-val-desc">Kami menghadirkan pelayanan berkualitas melalui kompetensi, kolaborasi, dan pembelajaran berkelanjutan.</p>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
                 <div class="pr-val-card">
-                    <div class="pr-val-ic pr-val-ic--amber"><i class="fas fa-shield-halved"></i></div>
+                    <div class="pr-val-ic pr-val-ic--amber">04</div>
                     <h6 class="pr-val-title">Integritas</h6>
-                    <p class="pr-val-desc">Profesional, jujur, dan dapat dipercaya.</p>
+                    <p class="pr-val-desc">Kami menjunjung tinggi kejujuran, etika, dan tanggung jawab dalam setiap tindakan.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="pr-val-card">
+                    <div class="pr-val-ic pr-val-ic--blue">05</div>
+                    <h6 class="pr-val-title">Inovasi & Keberlanjutan</h6>
+                    <p class="pr-val-desc">Kami terus berinovasi untuk menghadirkan pelayanan kesehatan yang lebih baik serta mendukung lingkungan yang sehat dan berkelanjutan.</p>
                 </div>
             </div>
         </div>
