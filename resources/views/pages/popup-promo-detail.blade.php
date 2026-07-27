@@ -4,7 +4,7 @@
         <button class="promo-close" id="promoClose" aria-label="Tutup">
             <i class="bi bi-x-lg"></i>
         </button>
-        <div class="promo-popup-inner" style="display:block; padding:0; overflow:hidden;">
+        <div class="promo-popup-inner">
     @php
         try {
             $popupPromo = \App\Models\Promo::where('is_home_featured', true)
@@ -19,15 +19,16 @@
         @if($popupPromo->gambar)
             <img src="{{ asset('storage/'.$popupPromo->gambar) }}" 
                  alt="{{ $popupPromo->judul }}" 
-                 style="width:100%; height:100%; object-fit:cover; display:block;">
+                 class="img-fluid">
         @else
             <img src="{{ asset('images/default-mcu.jpg') }}" 
                  alt="Promo" 
-                 style="width:100%; height:100%; object-fit:cover; display:block;">
+                 class="img-fluid">
         @endif
     @else
         <img src="{{ asset('images/default-mcu.jpg') }}" 
              alt="Medical Check Up" 
-             style="width:100%; height:100%; object-fit:cover; display:block;">
+             class="img-fluid">
     @endif
+</div>
 </div>

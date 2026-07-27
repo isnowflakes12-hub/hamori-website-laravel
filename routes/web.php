@@ -192,6 +192,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Super Admin — Users
         Route::resource('users', UserController::class)->except(['show']);
         Route::patch('users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
+
+        // Super Admin — Admin Menus
+        Route::middleware('admin.auth:super_admin')->group(function () {
+            Route::post('menus/reorder', [\App\Http\Controllers\Admin\AdminMenuController::class, 'reorder'])->name('menus.reorder');
+            Route::resource('menus', \App\Http\Controllers\Admin\AdminMenuController::class)->except(['show']);
+        });
     });
 });
 

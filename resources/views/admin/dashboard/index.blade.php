@@ -5,7 +5,76 @@
 @section('content')
 @php $user = auth()->user(); @endphp
 
+{{-- ════════════════════════════════════════
+     GREETING BANNER — adaptif per-role
+     ════════════════════════════════════════ --}}
+@php
+    $greeting = match(true) {
+        now()->hour < 11  => 'Selamat Pagi',
+        now()->hour < 15  => 'Selamat Siang',
+        now()->hour < 18  => 'Selamat Sore',
+        default           => 'Selamat Malam',
+    };
+    $roleTheme = match($user->role) {
+        'super_admin'     => ['bg' => 'linear-gradient(135deg,#0055a5 0%,#003d7a 100%)', 'icon' => 'bi-shield-fill-check', 'badge' => 'Super Admin'],
+        'admin_marketing' => ['bg' => 'linear-gradient(135deg,#0ea5e9 0%,#0055a5 100%)', 'icon' => 'bi-megaphone-fill',     'badge' => 'Admin Marketing'],
+        'admin_sdm'       => ['bg' => 'linear-gradient(135deg,#059669 0%,#047857 100%)', 'icon' => 'bi-people-fill',        'badge' => 'Admin SDM'],
+        default           => ['bg' => 'linear-gradient(135deg,#6366f1 0%,#4f46e5 100%)', 'icon' => 'bi-person-fill',        'badge' => 'Admin'],
+    };
+@endphp
+
+<div class="mb-4 p-4 rounded-4 text-white position-relative overflow-hidden"
+     style="background:{{ $roleTheme['bg'] }};min-height:120px;">
+    <div class="position-absolute top-0 end-0 opacity-10" style="font-size:130px;line-height:1;margin-top:-10px;margin-right:-10px;">
+        <i class="bi {{ $roleTheme['icon'] }}"></i>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+             style="width:54px;height:54px;background:rgba(255,255,255,.18);font-size:24px;">
+            <i class="bi {{ $roleTheme['icon'] }}"></i>
+        </div>
+        <div>
+            <div style="font-size:20px;font-weight:800;">{{ $greeting }}, {{ Str::ucfirst(Str::before($user->name, ' ')) }}! 👋</div>
+            <div style="font-size:13.5px;opacity:.8;margin-top:2px;">
+                Anda masuk sebagai
+                <span class="badge text-dark ms-1" style="background:rgba(255,255,255,.25);font-size:11px;">{{ $roleTheme['badge'] }}</span>
+                &nbsp;·&nbsp; {{ now()->isoFormat('dddd, D MMMM Y') }}
+            </div>
+        </div>
+    </div>
+
+    {{-- Quick Actions per role --}}
+    <div class="mt-3 d-flex flex-wrap gap-2">
+        @if($user->isSuperAdmin() || $user->isAdminMarketing())
+            <a href="{{ route('admin.artikel.create') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-plus-circle me-1"></i>Tulis Artikel</a>
+            <a href="{{ route('admin.promo.create') }}"   class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-gift me-1"></i>Tambah Promo</a>
+            <a href="{{ route('admin.kritik-saran.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);">
+                <i class="bi bi-envelope-paper me-1"></i>Kritik & Saran
+                @if(isset($stats['kritiks']) && $stats['kritiks'] > 0)<span class="badge bg-warning text-dark ms-1">{{ $stats['kritiks'] }}</span>@endif
+            </a>
+        @endif
+        @if($user->isSuperAdmin())
+            <a href="{{ route('admin.kontak.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);">
+                <i class="bi bi-chat-text me-1"></i>Pesan Masuk
+                @if(isset($stats['kontaks']) && $stats['kontaks'] > 0)<span class="badge bg-warning text-dark ms-1">{{ $stats['kontaks'] }}</span>@endif
+            </a>
+            <a href="{{ route('admin.users.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-people me-1"></i>Kelola Admin</a>
+        @endif
+        @if($user->isAdminSdm() || $user->isSuperAdmin())
+            <a href="{{ route('admin.karir.create') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-briefcase me-1"></i>Buka Lowongan</a>
+            <a href="{{ route('admin.lamaran.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);">
+                <i class="bi bi-person-lines-fill me-1"></i>Lamaran Masuk
+                @if(isset($stats['lamarans']) && $stats['lamarans'] > 0)<span class="badge bg-warning text-dark ms-1">{{ $stats['lamarans'] }}</span>@endif
+            </a>
+        @endif
+    </div>
+</div>
+
+{{-- ════════════════════
+     STATS CARDS
+     ════════════════════ --}}
 <div class="row g-4 mb-4">
+
     @if(isset($stats['banners']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.banner.index') }}" class="stat-card">
@@ -14,6 +83,8 @@
             <div class="stat-label">Total Banner</div>
         </a>
     </div>
+    @endif
+
     @if(isset($stats['promos']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.promo.index') }}" class="stat-card">
@@ -23,6 +94,8 @@
         </a>
     </div>
     @endif
+
+    @if(isset($stats['artikels']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.artikel.index') }}" class="stat-card">
             <div class="stat-icon" style="background:#f0fdf4;color:#00a859"><i class="bi bi-newspaper"></i></div>
@@ -30,21 +103,29 @@
             <div class="stat-label">Total Artikel</div>
         </a>
     </div>
+    @endif
+
+    @if(isset($stats['layanans']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.layanan.index') }}" class="stat-card">
             <div class="stat-icon" style="background:#e0f2fe;color:#0ea5e9"><i class="bi bi-award-fill"></i></div>
-            <div class="stat-num">{{ $stats['layanans'] ?? 0 }}</div>
+            <div class="stat-num">{{ $stats['layanans'] }}</div>
             <div class="stat-label">Layanan Unggulan</div>
         </a>
     </div>
+    @endif
+
+    @if(isset($stats['kritiks']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.kritik-saran.index') }}" class="stat-card">
             <div class="stat-icon" style="background:#fef3c7;color:#d97706"><i class="bi bi-envelope-paper-fill"></i></div>
-            <div class="stat-num">{{ $stats['kritiks'] ?? 0 }}</div>
+            <div class="stat-num">{{ $stats['kritiks'] }}</div>
             <div class="stat-label">Kritik & Saran Pending</div>
         </a>
     </div>
-    @if($user->isSuperAdmin())
+    @endif
+
+    @if(isset($stats['dokters']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.dokter.index') }}" class="stat-card">
             <div class="stat-icon" style="background:#faf5ff;color:#7c3aed"><i class="bi bi-person-badge-fill"></i></div>
@@ -52,22 +133,28 @@
             <div class="stat-label">Total Dokter</div>
         </a>
     </div>
+    @endif
+
+    @if(isset($stats['fasilitas']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.fasilitas.index') }}" class="stat-card">
             <div class="stat-icon" style="background:#f3e8ff;color:#a855f7"><i class="bi bi-building"></i></div>
-            <div class="stat-num">{{ $stats['fasilitas'] ?? 0 }}</div>
+            <div class="stat-num">{{ $stats['fasilitas'] }}</div>
             <div class="stat-label">Total Fasilitas</div>
         </a>
     </div>
+    @endif
+
+    @if(isset($stats['kontaks']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.kontak.index') }}" class="stat-card">
             <div class="stat-icon" style="background:#fff1f2;color:#e8333c"><i class="bi bi-chat-text-fill"></i></div>
-            <div class="stat-num">{{ $stats['kontaks'] ?? 0 }}</div>
+            <div class="stat-num">{{ $stats['kontaks'] }}</div>
             <div class="stat-label">Pesan Masuk Baru</div>
         </a>
     </div>
     @endif
-    @endif
+
     @if(isset($stats['karirs']))
     <div class="col-6 col-md-3">
         <a href="{{ route('admin.karir.index') }}" class="stat-card">
@@ -247,6 +334,71 @@
                 <h6 class="fw-bold text-secondary mb-3" style="font-size:13px;text-transform:uppercase;letter-spacing:.5px">Tren Jumlah Masukan (12 Bulan)</h6>
                 <div style="position:relative;height:260px">
                     <canvas id="chartTrenBulan"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- ════════════════════════════════════════
+     PANEL KHUSUS ADMIN SDM
+     Tampil hanya untuk admin_sdm
+     ════════════════════════════════════════ --}}
+@if($user->isAdminSdm() && !$user->isSuperAdmin())
+<div class="mt-4">
+    <h5 class="fw-bold mb-3">📋 Rekap SDM</h5>
+    <div class="row g-4">
+        <div class="col-lg-6">
+            @if($recentLamarans->count())
+            <div class="admin-table">
+                <div class="d-flex align-items-center justify-content-between p-4 pb-0">
+                    <h6 class="fw-bold mb-0" style="font-size:15px">Lamaran Terbaru</h6>
+                    <a href="{{ route('admin.lamaran.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                </div>
+                <div class="p-3">
+                    <table class="table table-hover">
+                        <thead><tr><th>Nama</th><th>Posisi</th><th>Status</th><th>Tanggal</th></tr></thead>
+                        <tbody>
+                        @foreach($recentLamarans as $l)
+                        <tr>
+                            <td class="fw-semibold">{{ $l->nama }}</td>
+                            <td style="font-size:12px;color:#64748b">{{ $l->karir->posisi ?? '-' }}</td>
+                            <td><span class="badge bg-{{ $l->status_color }}">{{ $l->status_label }}</span></td>
+                            <td style="font-size:12px;color:#64748b">{{ $l->created_at->format('d M Y') }}</td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @else
+            <div class="admin-table p-4 text-center text-muted">
+                <i class="bi bi-person-lines-fill fs-1 d-block mb-2 opacity-50"></i>
+                Belum ada lamaran yang masuk.
+            </div>
+            @endif
+        </div>
+        <div class="col-lg-6">
+            <div class="admin-table p-4">
+                <h6 class="fw-bold mb-3">Lowongan Aktif</h6>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="stat-icon" style="background:#d1fae5;color:#059669;width:48px;height:48px;font-size:22px;"><i class="bi bi-briefcase-fill"></i></div>
+                    <div>
+                        <div style="font-size:28px;font-weight:800;">{{ $stats['karirs'] ?? 0 }}</div>
+                        <div class="text-muted small">Posisi dibuka</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background:#fef3c7;color:#d97706;width:48px;height:48px;font-size:22px;"><i class="bi bi-person-lines-fill"></i></div>
+                    <div>
+                        <div style="font-size:28px;font-weight:800;">{{ $stats['lamarans'] ?? 0 }}</div>
+                        <div class="text-muted small">Lamaran pending</div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-top">
+                    <a href="{{ route('admin.karir.create') }}" class="btn btn-primary btn-sm me-2"><i class="bi bi-plus me-1"></i>Buka Lowongan</a>
+                    <a href="{{ route('admin.lamaran.index') }}" class="btn btn-outline-primary btn-sm">Semua Lamaran</a>
                 </div>
             </div>
         </div>

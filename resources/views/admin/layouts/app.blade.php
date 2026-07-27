@@ -82,85 +82,94 @@ textarea.form-control{min-height:140px;resize:vertical}
         <div class="sidebar-brand-icon"><i class="bi bi-hospital"></i></div>
         <div><div class="sidebar-brand-text">RS Hamori</div><div class="sidebar-brand-sub">Admin Panel</div></div>
     </a>
-    <nav class="sidebar-nav">
-        <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+    <nav class="sidebar-nav">        <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2-fill"></i> Dashboard
         </a>
-        @if(auth()->user()->canAccess('banner'))
-        <div class="nav-section-label">Marketing</div>
-        <a href="{{ route('admin.banner.index') }}" class="nav-item {{ request()->routeIs('admin.banner.*') ? 'active' : '' }}">
-            <i class="bi bi-image-fill"></i> Banner
-        </a>
-        <a href="{{ route('admin.promo.index') }}" class="nav-item {{ request()->routeIs('admin.promo.*') ? 'active' : '' }}">
-            <i class="bi bi-gift-fill"></i> Promo & Penawaran
-        </a>
-        <a href="{{ route('admin.kritik-saran.index') }}" class="nav-item {{ request()->routeIs('admin.kritik-saran.*') ? 'active' : '' }}">
-            <i class="bi bi-envelope-paper-fill"></i> Kritik & Saran
-            @php $ksp = \App\Models\KritikSaran::pending()->count(); @endphp
-            @if($ksp > 0)<span class="nav-badge">{{ $ksp }}</span>@endif
-        </a>
-        <a href="{{ route('admin.artikel.index') }}" class="nav-item {{ request()->routeIs('admin.artikel.*') ? 'active' : '' }}">
-            <i class="bi bi-newspaper"></i> Artikel
-        </a>
-        <a href="{{ route('admin.kategori-artikel.index') }}" class="nav-item {{ request()->routeIs('admin.kategori-artikel.*') ? 'active' : '' }}">
-            <i class="bi bi-folder-fill"></i> Kategori Artikel
-        </a>
-        <a href="{{ route('admin.layanan.index') }}" class="nav-item {{ request()->routeIs('admin.layanan.*') ? 'active' : '' }}">
-            <i class="bi bi-award-fill"></i> Layanan Unggulan
-        </a>
-        @endif
+
+        @php
+            try {
+                $adminMenus = \App\Models\AdminMenu::whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->with(['children' => function($q) {
+                        $q->where('is_active', true)->orderBy('order');
+                    }])
+                    ->orderBy('order')
+                    ->get();
+            } catch (\Exception $e) {
+                $adminMenus = collect(); // Fallback if table doesn't exist yet
+            }
+        @endphp
+
+        @foreach($adminMenus as $menu)
+            @if(in_array(auth()->user()->role, $menu->roles))
+                @if($menu->route_name)
+                    {{-- Single Menu Item --}}
+                    <a href="{{ route($menu->route_name) }}" class="nav-item {{ request()->routeIs(Str::before($menu->route_name, '.index') . '.*') ? 'active' : '' }}">
+                        @if($menu->icon) <i class="bi {{ $menu->icon }}"></i> @endif
+                        {{ $menu->name }}
+                        @if($menu->route_name === 'admin.kritik-saran.index')
+                            @php $ksp = \App\Models\KritikSaran::pending()->count(); @endphp
+                            @if($ksp > 0)<span class="nav-badge">{{ $ksp }}</span>@endif
+                        @elseif($menu->route_name === 'admin.kontak.index')
+                            @php $unreadKontak = \App\Models\Kontak::where('is_read', false)->count(); @endphp
+                            @if($unreadKontak > 0)<span class="nav-badge">{{ $unreadKontak }}</span>@endif
+                        @elseif($menu->route_name === 'admin.lamaran.index')
+                            @php $pc = \App\Models\LamaranKarir::where('status','pending')->count(); @endphp
+                            @if($pc > 0)<span class="nav-badge">{{ $pc }}</span>@endif
+                        @endif
+                    </a>
+                @else
+                    {{-- Dropdown / Category Menu --}}
+                    @php
+                        // Check if any child route is active to keep dropdown open
+                        $isActiveGroup = false;
+                        foreach($menu->children as $child) {
+                            if($child->route_name && request()->routeIs(Str::before($child->route_name, '.index') . '.*')) {
+                                $isActiveGroup = true;
+                                break;
+                            }
+                        }
+                    @endphp
+                    <a data-bs-toggle="collapse" href="#menu-{{ $menu->id }}" role="button" aria-expanded="{{ $isActiveGroup ? 'true' : 'false' }}" class="nav-item d-flex justify-content-between align-items-center mt-2 {{ $isActiveGroup ? 'text-white' : '' }}">
+                        <span>@if($menu->icon) <i class="bi {{ $menu->icon }}"></i> @endif {{ $menu->name }}</span>
+                        <i class="bi bi-chevron-down" style="font-size: 11px; width: auto; transition: transform 0.2s;"></i>
+                    </a>
+                    <div class="collapse {{ $isActiveGroup ? 'show' : '' }}" id="menu-{{ $menu->id }}">
+                        <div class="ps-3 border-start border-secondary ms-3 mt-1 mb-2">
+                            @foreach($menu->children as $child)
+                                @if(in_array(auth()->user()->role, $child->roles))
+                                    <a href="{{ $child->route_name ? route($child->route_name) : ($child->url ?? '#') }}" class="nav-item {{ $child->route_name && request()->routeIs(Str::before($child->route_name, '.index') . '.*') ? 'active' : '' }}" style="font-size: 12.5px; padding: 7px 14px;">
+                                        @if($child->icon) <i class="bi {{ $child->icon }}"></i> @endif
+                                        {{ $child->name }}
+                                        @if($child->route_name === 'admin.kritik-saran.index')
+                                            @php $ksp = \App\Models\KritikSaran::pending()->count(); @endphp
+                                            @if($ksp > 0)<span class="nav-badge">{{ $ksp }}</span>@endif
+                                        @elseif($child->route_name === 'admin.kontak.index')
+                                            @php $unreadKontak = \App\Models\Kontak::where('is_read', false)->count(); @endphp
+                                            @if($unreadKontak > 0)<span class="nav-badge">{{ $unreadKontak }}</span>@endif
+                                        @elseif($child->route_name === 'admin.lamaran.index')
+                                            @php $pc = \App\Models\LamaranKarir::where('status','pending')->count(); @endphp
+                                            @if($pc > 0)<span class="nav-badge">{{ $pc }}</span>@endif
+                                        @endif
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            @endif
+        @endforeach
+
         @if(auth()->user()->isSuperAdmin())
-        <a href="{{ route('admin.kontak.index') }}" class="nav-item {{ request()->routeIs('admin.kontak.*') ? 'active' : '' }}">
-            <i class="bi bi-chat-text-fill"></i> Pesan Masuk
-            @php $unreadKontak = \App\Models\Kontak::where('is_read', false)->count(); @endphp
-            @if($unreadKontak > 0)<span class="nav-badge">{{ $unreadKontak }}</span>@endif
+        <div class="nav-section-label mt-4 border-top border-secondary pt-3">Sistem & Pengaturan</div>
+        <a href="{{ route('admin.menus.index') }}" class="nav-item {{ request()->routeIs('admin.menus.*') ? 'active' : '' }}">
+            <i class="bi bi-list-nested"></i> Susunan Navbar
         </a>
-        <a href="{{ route('admin.fasilitas.index') }}" class="nav-item {{ request()->routeIs('admin.fasilitas.*') ? 'active' : '' }}">
-            <i class="bi bi-building"></i> Fasilitas
-        </a>
-        <a href="{{ route('admin.kategori-fasilitas.index') }}" class="nav-item {{ request()->routeIs('admin.kategori-fasilitas.*') ? 'active' : '' }}">
-            <i class="bi bi-folder-fill"></i> Kategori Fasilitas
-        </a>
-        <a href="{{ route('admin.dokter.index') }}" class="nav-item {{ request()->routeIs('admin.dokter.*') ? 'active' : '' }}">
-            <i class="bi bi-person-badge-fill"></i> Dokter & Jadwal
-        </a>
-        <a href="{{ route('admin.partner.index') }}" class="nav-item {{ request()->routeIs('admin.partner.*') ? 'active' : '' }}">
-            <i class="bi bi-building-fill-add"></i> Partner & Mitra
-        </a>
-        @endif
-        @if(auth()->user()->canAccess('karir'))
-        <div class="nav-section-label">SDM & Rekrutmen</div>
-        <a href="{{ route('admin.karir.index') }}" class="nav-item {{ request()->routeIs('admin.karir.*') ? 'active' : '' }}">
-            <i class="bi bi-briefcase-fill"></i> Lowongan Kerja
-        </a>
-        <a href="{{ route('admin.lamaran.index') }}" class="nav-item {{ request()->routeIs('admin.lamaran.*') ? 'active' : '' }}">
-            <i class="bi bi-person-lines-fill"></i> Lamaran Masuk
-            @php $pc = \App\Models\LamaranKarir::where('status','pending')->count(); @endphp
-            @if($pc > 0)<span class="nav-badge">{{ $pc }}</span>@endif
-        </a>
-        @endif
-        @if(auth()->user()->canAccess('banner'))
-        <div class="nav-section-label">Konten</div>
-        <a href="{{ route('admin.faq.index') }}" class="nav-item {{ request()->routeIs('admin.faq.*') ? 'active' : '' }}">
-            <i class="bi bi-question-circle-fill"></i> FAQ
-        </a>
-        <a href="{{ route('admin.privacy-policy.index') }}" class="nav-item {{ request()->routeIs('admin.privacy-policy.*') ? 'active' : '' }}">
-            <i class="bi bi-shield-lock-fill"></i> Kebijakan Privasi
-        </a>
-        @endif
-        @if(auth()->user()->isSuperAdmin())
-        <div class="nav-section-label">Super Admin</div>
         <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-            <i class="bi bi-people-fill"></i> Manajemen User
+            <i class="bi bi-people-fill"></i> Manajemen Admin
         </a>
         <a href="{{ route('admin.settings.edit') }}" class="nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-            <i class="bi bi-gear-fill"></i> Pengaturan Umum
-        </a>
-        <a href="{{ route('admin.profil-rs.edit') }}" class="nav-item {{ request()->routeIs('admin.profil-rs.*') ? 'active' : '' }}">
-            <i class="bi bi-hospital-fill"></i> Profil RS
-        </a>
-        <a href="{{ route('admin.milestone.index') }}" class="nav-item {{ request()->routeIs('admin.milestone.*') ? 'active' : '' }}">
-            <i class="bi bi-flag-fill"></i> Milestone
+            <i class="bi bi-gear-fill"></i> Pengaturan Web
         </a>
         @endif
         <div class="nav-section-label">Akun</div>

@@ -13,6 +13,7 @@ use App\Models\Promo;
 use App\Models\LayananUnggulan;
 use App\Models\Fasilitas;
 use App\Models\User;
+use App\Models\AdminMenu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -23,41 +24,59 @@ class DashboardController extends Controller
         $user  = Auth::user();
         $stats = [];
 
-        if ($user->isSuperAdmin() || $user->isAdminMarketing()) {
-            $stats['banners']  = Banner::count();
-            $stats['promos']   = Promo::count();
-            $stats['artikels'] = Artikel::count();
-            $stats['layanans'] = LayananUnggulan::count();
-            $stats['kritiks']  = KritikSaran::where('status', 'pending')->count();
-        }
-        if ($user->isSuperAdmin()) {
-            $stats['dokters']   = Dokter::count();
-            $stats['fasilitas'] = Fasilitas::count();
-            $stats['kontaks']   = Kontak::where('is_read', false)->count();
-        }
-        if ($user->isSuperAdmin() || $user->isAdminSdm()) {
-            $stats['karirs']   = Karir::where('is_active', true)->count();
-            $stats['lamarans'] = LamaranKarir::whereNull('status')->orWhere('status', 'pending')->count();
-        }
-        if ($user->isSuperAdmin()) {
-            $stats['users'] = User::count();
+        // ── Ambil semua route_name yang bisa diakses user ini dari admin_menus ──
+        // Ini mencakup menu induk maupun sub-menu (children)
+        try {
+            $accessibleRoutes = AdminMenu::where('is_active', true)
+                ->where(function ($q) use ($user) {
+                    $q->whereJsonContains('roles', $user->role);
+                })
+                ->whereNotNull('route_name')
+                ->pluck('route_name')
+                ->toArray();
+        } catch (\Exception $e) {
+            // Fallback jika tabel belum ada
+            $accessibleRoutes = [];
         }
 
-        $recentLamarans = ($user->isSuperAdmin() || $user->isAdminSdm())
+        // Helper: apakah user punya akses ke route tertentu?
+        $can = fn(string $route) => in_array($route, $accessibleRoutes) || $user->isSuperAdmin();
+
+        // ── Stats Marketing ──
+        if ($can('admin.banner.index'))          $stats['banners']  = Banner::count();
+        if ($can('admin.promo.index'))           $stats['promos']   = Promo::count();
+        if ($can('admin.artikel.index'))         $stats['artikels'] = Artikel::count();
+        if ($can('admin.layanan.index'))         $stats['layanans'] = LayananUnggulan::count();
+        if ($can('admin.kritik-saran.index'))    $stats['kritiks']  = KritikSaran::where('status', 'pending')->count();
+
+        // ── Stats yang mungkin diserahkan ke marketing via admin_menus ──
+        if ($can('admin.dokter.index'))          $stats['dokters']   = Dokter::count();
+        if ($can('admin.fasilitas.index'))       $stats['fasilitas'] = Fasilitas::count();
+        if ($can('admin.kontak.index'))          $stats['kontaks']   = Kontak::where('is_read', false)->count();
+
+        // ── Stats SDM ──
+        if ($can('admin.karir.index'))           $stats['karirs']   = Karir::where('is_active', true)->count();
+        if ($can('admin.lamaran.index'))         $stats['lamarans'] = LamaranKarir::whereNull('status')->orWhere('status', 'pending')->count();
+
+        // ── Stats Super Admin Only ──
+        if ($user->isSuperAdmin())               $stats['users'] = User::count();
+
+        // ── Tabel Recent ──
+        $recentLamarans = $can('admin.lamaran.index')
             ? LamaranKarir::with('karir')->latest()->take(5)->get()
             : collect();
 
-        $recentKontaks = $user->isSuperAdmin()
+        $recentKontaks = $can('admin.kontak.index')
             ? Kontak::latest()->take(5)->get()
             : collect();
 
-        $recentKritikSarans = ($user->isSuperAdmin() || $user->isAdminMarketing())
+        $recentKritikSarans = $can('admin.kritik-saran.index')
             ? KritikSaran::latest()->take(5)->get()
             : collect();
 
-        // ── Rating Analytics (untuk Super Admin & Marketing) ──
+        // ── Rating Analytics (berdasarkan akses Kritik & Saran) ──
         $ratingAnalytics = null;
-        if ($user->isSuperAdmin() || $user->isAdminMarketing()) {
+        if ($can('admin.kritik-saran.index')) {
 
             $driver = DB::getDriverName();
 

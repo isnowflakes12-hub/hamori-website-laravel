@@ -158,11 +158,11 @@
         </div>
     </nav>
 
-    <main>
+    <main style="overflow-x: hidden; width: 100%;">
         @yield('content')
     </main>
 
-    <footer class="footer">
+    <footer class="footer" style="overflow-x: hidden; width: 100%;">
         <div class="footer-top">
             <div class="container">
                 <div class="row g-5">
