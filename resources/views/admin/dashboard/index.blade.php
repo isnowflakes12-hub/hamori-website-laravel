@@ -25,8 +25,8 @@
 
 <div class="mb-4 p-4 rounded-4 text-white position-relative overflow-hidden"
      style="background:{{ $roleTheme['bg'] }};min-height:120px;">
-    <div class="position-absolute top-0 end-0 opacity-10" style="font-size:130px;line-height:1;margin-top:-10px;margin-right:-10px;">
-        <i class="bi {{ $roleTheme['icon'] }}"></i>
+    <div class="position-absolute top-0 end-0" style="margin-top:-30px;margin-right:-20px;opacity:0.15;">
+        <img src="{{ asset('assets/images/logoputih.png') }}" alt="Hamori Logo" style="height:180px;width:auto;">
     </div>
     <div class="d-flex align-items-center gap-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"

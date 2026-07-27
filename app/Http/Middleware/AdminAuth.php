@@ -9,7 +9,7 @@ class AdminAuth
     public function handle(Request $request, Closure $next, ...$roles)
     {
         if (!Auth::check()) {
-            return redirect()->route('admin.login');
+            abort(404);
         }
         $user = Auth::user();
         if (!$user->is_active) {

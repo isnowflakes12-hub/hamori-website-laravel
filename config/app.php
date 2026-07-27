@@ -56,6 +56,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Secure Login Path
+    |--------------------------------------------------------------------------
+    |
+    | Custom secret URL for admin login to prevent public access.
+    | Set this via ADMIN_LOGIN_PATH in .env
+    |
+    */
+    'admin_login_path' => env('ADMIN_LOGIN_PATH', 'masuk_portal_website'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
