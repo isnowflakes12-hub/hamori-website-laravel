@@ -86,12 +86,10 @@ Route::get('/comming-soon', fn() => view('pages.coming-soon'))->name('coming-soo
    ADMIN ROUTES & AUTH
    ====================================================== */
 
-// Auth (guest only) - Custom Secret Login URL
-Route::middleware('guest')->group(function () {
-    $loginPath = config('app.admin_login_path', 'masuk_portal_website');
-    Route::get('/' . $loginPath,  [AuthController::class, 'showLogin'])->name('admin.login');
-    Route::post('/' . $loginPath, [AuthController::class, 'login'])->name('admin.login.post');
-});
+// Auth - Custom Secret Login URL (Guest check is handled in AuthController)
+$loginPath = config('app.admin_login_path', 'masuk_portal_website');
+Route::get('/' . $loginPath,  [AuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/' . $loginPath, [AuthController::class, 'login'])->name('admin.login.post');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     
