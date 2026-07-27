@@ -55,6 +55,12 @@ class DatabaseSeeder extends Seeder
             // Konten Statis
             FaqsTableSeeder::class,
             PrivacyPoliciesTableSeeder::class,
+
+            // Info Tempat Tidur
+            BedAvailabilitySeeder::class,
+
+            // Admin Menu (Navbar Dinamis)
+            AdminMenuSeeder::class,
         ]);
 
         // Re-enable foreign key checks
