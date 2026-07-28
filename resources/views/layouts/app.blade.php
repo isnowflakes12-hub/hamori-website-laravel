@@ -41,9 +41,6 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}?v={{ time() }}">
 
-    <!-- AOS Animation CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     
     @stack('styles')
 </head>
@@ -104,7 +101,7 @@
                         href="#"
                         data-bs-toggle="dropdown"
                         data-bs-auto-close="true">
-                        Fasilitas
+                        Fasilitas <i class="bi bi-chevron-down ms-1" style="font-size:11px; stroke-width:1px;"></i>
                         </a>
                         <ul class="dropdown-menu mega-menu">
                             <li class="mega-menu-header">
@@ -130,7 +127,7 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Informasi</a>
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Informasi <i class="bi bi-chevron-down ms-1" style="font-size:11px; stroke-width:1px;"></i></a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('dokter.index') }}">Jadwal Dokter</a></li>
                             <li><a class="dropdown-item" href="{{ route('info-tempat-tidur') }}">Info Tempat Tidur</a></li>
@@ -253,26 +250,12 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-    <!-- AOS Animation JS -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Initialize AOS
-            AOS.init({
-                duration: 400, // Reduced from 800 for faster animation
-                once: true, // whether animation should happen only once - while scrolling down
-                offset: 0, // 0 means it starts exactly when the element enters the bottom of the viewport
-            });
-
             const lightbox = GLightbox({
                 selector: '.glightbox'
             });
-        });
-
-        // Recalculate AOS trigger points after all images/assets load
-        window.addEventListener('load', function() {
-            AOS.refresh();
         });
     </script>
     @stack('scripts')

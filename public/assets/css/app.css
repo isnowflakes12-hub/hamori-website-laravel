@@ -327,6 +327,17 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
 }
 
 /* Dropdown */
+.dropdown-toggle::after {
+    display: none !important; /* Sembunyikan caret bawaan bootstrap */
+}
+.dropdown-toggle i.bi-chevron-down {
+    display: inline-block;
+    transition: transform 0.1s; /* Sangat cepat agar tidak terkesan berputar berlebihan */
+}
+.dropdown-toggle.show i.bi-chevron-down {
+    transform: rotate(180deg);
+}
+
 .dropdown-menu {
     border: 1px solid rgba(41, 37, 98, .08) !important;
     border-radius: var(--radius-md) !important;
