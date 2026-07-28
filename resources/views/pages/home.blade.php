@@ -415,10 +415,10 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 .hero-promo-panel {
     position: absolute !important;
-    top: 20px !important;
+    top: 75px !important; /* Pushed down to clear the 70px fixed navbar, moved slightly up per user request */
     right: 20px !important;
-    bottom: 20px !important;
-    width: 380px !important;
+    bottom: 45px !important; /* Increased bottom margin per user request */
+    width: 340px !important; /* Slightly smaller width */
     max-width: calc(100% - 40px) !important;
     z-index: 10 !important;
     background: linear-gradient(160deg, var(--accent, #1d2b53) 0%, #3d3890 50%, var(--primary, #001f4d) 100%) !important;
@@ -428,7 +428,7 @@ $heroSlides = $banners->count() ? $banners : collect([
     border-radius: 20px !important;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25) !important;
     color: #ffffff !important;
-    padding: 24px !important;
+    padding: 20px !important; /* Reduced padding */
     display: flex !important;
     flex-direction: column !important;
 }
@@ -451,8 +451,8 @@ $heroSlides = $banners->count() ? $banners : collect([
 .hpp-img-wrap {
     width: 100% !important;
     height: auto !important;
-    max-height: 410px !important;
-    border-radius: 16px !important;
+    max-height: 320px !important; /* Smaller image to fit in smaller card */
+    border-radius: 12px !important;
     overflow: hidden !important;
     margin-bottom: 14px !important;
     position: relative !important;
@@ -467,7 +467,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 .hpp-img-wrap img {
     width: 100% !important;
     height: auto !important;
-    max-height: 410px !important;
+    max-height: 320px !important;
     object-fit: cover !important;
     object-position: center !important;
     display: block !important;

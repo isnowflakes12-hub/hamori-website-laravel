@@ -169,6 +169,10 @@ button {
 /* ================================================================
    NAVBAR (DESKTOP & REWRITE BASE)
    ================================================================ */
+html {
+    scroll-padding-top: 80px; /* Offset for fixed navbar */
+}
+
 .main-navbar {
     background: rgba(255, 255, 255, .97) !important;
     backdrop-filter: blur(20px);
@@ -177,11 +181,66 @@ button {
     transition: all .3s var(--ease);
     position: sticky !important;
     top: 0;
-    z-index: 1000;
+    z-index: 1030;
 }
 
 .main-navbar.scrolled {
     box-shadow: 0 2px 20px rgba(41, 37, 98, .1);
+}
+
+/* Navbar Homepage Transparent Effect */
+body.is-home .main-navbar {
+    background: rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed !important; /* using fixed so it sits above hero and stays on scroll */
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+body.is-home .main-navbar.scrolled {
+    background: rgba(255, 255, 255, .97) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(41, 37, 98, .08);
+}
+
+body.is-home .main-navbar:not(.scrolled) .nav-link {
+    color: #ffffff !important;
+}
+
+body.is-home .main-navbar:not(.scrolled) .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.is-home .main-navbar:not(.scrolled) .logo-color {
+    display: none !important;
+}
+
+body.is-home .main-navbar:not(.scrolled) .logo-white {
+    display: block !important;
+}
+
+body.is-home .main-navbar:not(.scrolled) .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
+
+body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
+    background-color: transparent !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+@media (max-width: 991.98px) {
+    /* Ensure mobile menu has solid background when opened over transparent navbar */
+    body.is-home .main-navbar:not(.scrolled) .navbar-collapse.show,
+    body.is-home .main-navbar:not(.scrolled) .navbar-collapse.collapsing {
+        background: rgba(0, 31, 77, 0.95);
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
 }
 
 /* Menggunakan container bawaan bootstrap untuk fleksibilitas */

@@ -44,7 +44,7 @@
     
     @stack('styles')
 </head>
-<body>
+<body class="{{ request()->is('/') ? 'is-home' : '' }}">
 
     {{-- <div class="topbar d-none d-lg-block">
         <div class="container-fluid px-4">
@@ -74,8 +74,8 @@
         <div class="container-fluid px-0">
             <div class="navbar-inner-wrap w-100 px-4">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ $logoUtamaUrl }}" alt="Rumah Sakit Hamori" height="44">
-                
+                <img src="{{ $logoUtamaUrl }}" alt="Rumah Sakit Hamori" height="44" class="logo-color">
+                <img src="{{ $logoPutihUrl }}" alt="Rumah Sakit Hamori" height="44" class="logo-white d-none">
             </a>
 
             <button class="navbar-toggler border-0 ms-auto me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
@@ -259,6 +259,26 @@
         });
     </script>
     @stack('scripts')
+    
+    <script>
+        // Navbar Scroll Effect
+        document.addEventListener("DOMContentLoaded", function() {
+            const navbar = document.getElementById('mainNavbar');
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                });
+                // Trigger once on load
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                }
+            }
+        });
+    </script>
 
     <script>
     // Floating Promo Button
