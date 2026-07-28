@@ -13,7 +13,13 @@
         @forelse($banners as $b)
         <tr>
             <td>{{ $loop->iteration }}</td>
-            <td><img src="{{ asset('storage/'.$b->gambar) }}" style="width:80px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e5eaf0"></td>
+            <td>
+                @if(Str::endsWith($b->gambar, ['.mp4', '.webm', '.mov']))
+                    <video src="{{ asset('storage/'.$b->gambar) }}" style="width:80px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e5eaf0" muted></video>
+                @else
+                    <img src="{{ asset('storage/'.$b->gambar) }}" style="width:80px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e5eaf0">
+                @endif
+            </td>
             <td class="fw-semibold">{{ $b->judul ?? '(tanpa judul)' }}</td>
             <td style="font-size:12px;color:#64748b">{{ $b->link ? Str::limit($b->link,35) : '—' }}</td>
             <td>{{ $b->urutan }}</td>

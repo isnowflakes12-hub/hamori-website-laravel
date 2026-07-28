@@ -18,19 +18,14 @@ $heroSlides = $banners->count() ? $banners : collect([
         @foreach($heroSlides as $i => $slide)
         <div class="hs{{ $i===0?' on':'' }}">
             @if(!empty($slide->gambar))
-                <img src="{{ asset('storage/'.$slide->gambar) }}" alt="{{ $slide->judul ?? '' }}" loading="{{ $i===0?'eager':'lazy' }}">
+                @if(Str::endsWith($slide->gambar, ['.mp4', '.webm', '.mov']))
+                    <video src="{{ asset('storage/'.$slide->gambar) }}" class="hero-video" autoplay loop muted playsinline {{ $i===0?'':'preload="none"' }}></video>
+                @else
+                    <img src="{{ asset('storage/'.$slide->gambar) }}" alt="{{ $slide->judul ?? '' }}" loading="{{ $i===0?'eager':'lazy' }}">
+                @endif
             @else
                 <div class="hs-grad" style="background:{{ $slide->color ?? 'linear-gradient(135deg,#001f4d,#0055a5)' }}"></div>
             @endif
-            <div class="hs-ov"></div>
-            <div class="hs-body">
-                <div class="hs-body-inner">
-                    @if(!empty($slide->judul))
-                    <h1 class="hs-title">{{ $slide->judul }}</h1>
-                    @endif
-                    
-                </div>
-            </div>
         </div>
         @endforeach
         <button class="hc-arr" id="hcPrev"><i class="bi bi-chevron-left"></i></button>
@@ -472,6 +467,15 @@ $heroSlides = $banners->count() ? $banners : collect([
     object-position: center !important;
     display: block !important;
     border-radius: 16px !important;
+}
+
+#hero .hs img,
+#hero .hs .hero-video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
 }
 
 .hpp-list li {

@@ -16,29 +16,20 @@
                     <input type="text" name="judul" class="form-control" value="{{ old('judul', $banner->judul ?? '') }}" placeholder="Judul banner (opsional)">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Gambar Desktop <span class="text-danger">*</span></label>
+                    <label class="form-label">Gambar atau Video <span class="text-danger">*</span></label>
                     @if($banner && $banner->gambar)
-                    <div class="mb-2"><img src="{{ asset('storage/'.$banner->gambar) }}" class="img-prev"></div>
+                        @if(Str::endsWith($banner->gambar, ['.mp4', '.webm', '.mov']))
+                            <div class="mb-2"><video src="{{ asset('storage/'.$banner->gambar) }}" class="img-prev" controls style="max-height:150px;"></video></div>
+                        @else
+                            <div class="mb-2"><img src="{{ asset('storage/'.$banner->gambar) }}" class="img-prev"></div>
+                        @endif
                     @endif
-                    <input type="file" name="gambar" class="form-control" {{ !$banner ? 'required' : '' }} accept="image/*" onchange="previewImg(this,'prevDesktop')">
-                    <div class="form-text">Format: JPG, PNG, WebP. Maks 5MB. Ukuran ideal: 1920×600px</div>
+                    <input type="file" name="gambar" class="form-control" {{ !$banner ? 'required' : '' }} accept="image/*,video/mp4,video/webm" onchange="previewImg(this,'prevDesktop')">
+                    <div class="form-text">Format: JPG, PNG, WebP, MP4, WebM. Maks 50MB.</div>
                     <img id="prevDesktop" class="img-prev mt-2" style="display:none">
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Gambar Mobile <span class="text-muted">(opsional)</span></label>
-                    @if($banner && $banner->gambar_mobile)
-                    <div class="mb-2"><img src="{{ asset('storage/'.$banner->gambar_mobile) }}" class="img-prev"></div>
-                    @endif
-                    <input type="file" name="gambar_mobile" class="form-control" accept="image/*" onchange="previewImg(this,'prevMobile')">
-                    <div class="form-text">Ukuran ideal: 768×500px</div>
-                    <img id="prevMobile" class="img-prev mt-2" style="display:none">
-                </div>
                 <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label">Link URL <span class="text-muted">(opsional)</span></label>
-                        <input type="url" name="link" class="form-control" value="{{ old('link', $banner->link ?? '') }}" placeholder="https://...">
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label">Urutan</label>
                         <input type="number" name="urutan" class="form-control" value="{{ old('urutan', $banner->urutan ?? 0) }}" min="0">
                     </div>
@@ -56,11 +47,11 @@
         <div class="form-card">
             <h6 class="fw-bold mb-3">Panduan Gambar</h6>
             <ul style="font-size:13px;color:#64748b;padding-left:16px">
-                <li class="mb-2">Desktop: <strong>1920×600px</strong></li>
-                <li class="mb-2">Mobile: <strong>768×500px</strong></li>
-                <li class="mb-2">Format: JPG, PNG, atau WebP</li>
-                <li class="mb-2">Maksimal ukuran file: <strong>5MB</strong></li>
-                <li>Gunakan gambar berkualitas tinggi</li>
+                <li class="mb-2">Gambar: <strong>1920×600px</strong></li>
+                <li class="mb-2">Format Gambar: JPG, PNG, WebP</li>
+                <li class="mb-2">Format Video: MP4, WebM</li>
+                <li class="mb-2">Maksimal ukuran file: <strong>50MB</strong></li>
+                <li>Video akan diputar otomatis tanpa suara</li>
             </ul>
         </div>
     </div>

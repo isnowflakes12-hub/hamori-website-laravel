@@ -22,18 +22,13 @@ class BannerController extends Controller
     {
         $request->validate([
             'judul'         => 'nullable|string|max:255',
-            'gambar'        => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'gambar_mobile' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
-            'link'          => 'nullable|url',
+            'gambar'        => 'required|mimes:jpg,jpeg,png,webp,mp4,webm|max:51200',
             'urutan'        => 'nullable|integer|min:0',
         ]);
 
-        $data = $request->only('judul', 'link', 'urutan');
+        $data = $request->only('judul', 'urutan');
         $data['is_active'] = $request->boolean('is_active', true);
         $data['gambar']    = $request->file('gambar')->storeCompressed('banners', 'public');
-        if ($request->hasFile('gambar_mobile')) {
-            $data['gambar_mobile'] = $request->file('gambar_mobile')->storeCompressed('banners', 'public');
-        }
 
         Banner::create($data);
         return redirect()->route('admin.banner.index')->with('success', 'Banner berhasil ditambahkan.');
@@ -48,20 +43,15 @@ class BannerController extends Controller
     {
         $request->validate([
             'judul'         => 'nullable|string|max:255',
-            'gambar'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'gambar_mobile' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
-            'link'          => 'nullable|url',
+            'gambar'        => 'nullable|mimes:jpg,jpeg,png,webp,mp4,webm|max:51200',
             'urutan'        => 'nullable|integer|min:0',
         ]);
 
-        $data = $request->only('judul', 'link', 'urutan');
+        $data = $request->only('judul', 'urutan');
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->storeCompressed('banners', 'public');
-        }
-        if ($request->hasFile('gambar_mobile')) {
-            $data['gambar_mobile'] = $request->file('gambar_mobile')->storeCompressed('banners', 'public');
         }
 
         $banner->update($data);
