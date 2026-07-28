@@ -41,6 +41,9 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}?v={{ time() }}">
 
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     
     @stack('styles')
 </head>
@@ -250,12 +253,26 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Initialize AOS
+            AOS.init({
+                duration: 400, // Reduced from 800 for faster animation
+                once: true, // whether animation should happen only once - while scrolling down
+                offset: 0, // 0 means it starts exactly when the element enters the bottom of the viewport
+            });
+
             const lightbox = GLightbox({
                 selector: '.glightbox'
             });
+        });
+
+        // Recalculate AOS trigger points after all images/assets load
+        window.addEventListener('load', function() {
+            AOS.refresh();
         });
     </script>
     @stack('scripts')

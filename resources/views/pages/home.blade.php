@@ -106,7 +106,7 @@ $heroSlides = $banners->count() ? $banners : collect([
     </div>
 </div>
 
-<div class="qbar">
+<div class="qbar" data-aos="fade-up">
     <div class="qbar-inner">
         <a href="{{ route('dokter.index') }}" class="qa"><div class="qa-ic"><i class="bi bi-person-badge-fill"></i></div><span>Cari Dokter</span></a>
         <a href="{{ route('appointment') }}" class="qa"><div class="qa-ic"><i class="bi bi-calendar2-check-fill"></i></div><span>Appointment</span></a>
@@ -118,7 +118,7 @@ $heroSlides = $banners->count() ? $banners : collect([
     </div>
 </div>
 
-<section class="sec" style="background:#fff">
+<section class="sec" style="background:#fff" data-aos="fade-up">
     <div class="sec-cont">
         <div class="sec-head">
             <div>
@@ -164,7 +164,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                     ['bi-lungs',            'Paru',             'Diagnosis & terapi penyakit paru'],
                     ['bi-capsule',          'Onkologi',         'Penanganan kanker multidisiplin'],
                     ['bi-clipboard2-pulse', 'Medical Check Up', 'Deteksi dini paket pemeriksaan lengkap'],
-                ] as $l)
+                ] as $idx => $l)
                 <div class="lc">
                     <div class="lc-thumb">
                         <div class="lc-ic">
@@ -190,7 +190,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-<div class="stats-sec">
+<div class="stats-sec" data-aos="fade-up">
     <div class="stats-grid">
         <div class="st"><span class="st-n">32<sup>+</sup></span><span class="st-l">Dokter Spesialis</span></div>
         <div class="st"><span class="st-n">100<sup>+</sup></span><span class="st-l">Tempat Tidur</span></div>
@@ -201,7 +201,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 @if(isset($promoAktif) && $promoAktif->count())
-<section class="sec" style="background:#f8fafc">
+<section class="sec" style="background:#f8fafc" data-aos="fade-up">
     <div class="sec-cont">
         <div class="sec-head">
             <div>
@@ -252,7 +252,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 </section>
 @endif
 
-<section class="sec" style="background:#f8fafc">
+<section class="sec" style="background:#f8fafc" data-aos="fade-up">
     <div class="sec-cont"> 
         <div class="sec-head">
             <div>
@@ -306,7 +306,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 @if(isset($kritikSaranFeatured) && $kritikSaranFeatured->count())
-<section class="sec ks-section" style="background:#f8fafc; padding: 80px 0;">
+<section class="sec ks-section" style="background:#f8fafc; padding: 80px 0;" data-aos="fade-up">
     <div class="sec-cont">
         <div class="sec-head">
             <div>
@@ -363,7 +363,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-<div class="app-sec">
+<div class="app-sec" data-aos="fade-up">
     <div class="app-card">
         <div class="app-inner">
             <div class="app-txt">
