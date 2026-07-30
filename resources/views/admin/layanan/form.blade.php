@@ -68,7 +68,11 @@
                 @endif
                 <input type="file" name="logo" class="form-control" accept="image/*"
                        onchange="previewImg(this,'logoPreview')">
-                <div class="form-text mt-1">PNG/SVG transparan. Maks 2MB. Ideal 200×200px</div>
+                <div class="form-text mt-1">
+                    Ukuran : 1350 &times; 650 px<br>
+                    Ratio : 2:1<br>
+                    Maksimal Ukuran : 2MB
+                </div>
             </div>
 
             <div class="form-card mb-4">

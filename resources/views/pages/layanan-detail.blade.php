@@ -54,6 +54,14 @@
 
             <div class="col-lg-8">
 
+                @if($layanan->logo)
+                    <div class="mb-4 rounded-4 overflow-hidden shadow-sm" style="background: #f8fafc;">
+                        <img src="{{ asset('storage/'.$layanan->logo) }}" 
+                             alt="{{ $layanan->nama }}" 
+                             class="w-100" style="height: auto; max-height: 400px; object-fit: cover; display: block;">
+                    </div>
+                @endif
+
                 <div class="ld-card">
                     <div class="ld-card-header">
                         <span class="ld-card-icon"><i class="fas fa-info-circle"></i></span>
