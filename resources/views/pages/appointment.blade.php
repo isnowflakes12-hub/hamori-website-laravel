@@ -28,7 +28,7 @@
                 <div class="appt-store-btns">
                     <a href="https://play.google.com/store" target="_blank" class="appt-store-btn appt-store-btn--android">
                         <i class="bi bi-google-play"></i>
-                        <div><small>Tersedia di</small><strong>Google Play</strong></div>
+                        <div><small>Tersedia di</small><strong>Playstore</strong></div>
                     </a>
                     <a href="https://apps.apple.com" target="_blank" class="appt-store-btn appt-store-btn--ios">
                         <i class="bi bi-apple"></i>

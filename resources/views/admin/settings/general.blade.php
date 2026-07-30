@@ -64,7 +64,7 @@
                 </h6>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label"><i class="bi bi-google-play me-1" style="color:#414141"></i> Google Play</label>
+                        <label class="form-label"><i class="bi bi-google-play me-1" style="color:#414141"></i> Playstore</label>
                         <input type="url" name="link_google_play" class="form-control"
                                value="{{ old('link_google_play', $settings['link_google_play'] ?? '') }}"
                                placeholder="https://play.google.com/store/apps/details?id=...">
