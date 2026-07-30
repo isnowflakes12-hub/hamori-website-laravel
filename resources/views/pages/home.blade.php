@@ -129,13 +129,13 @@ $heroSlides = $banners->count() ? $banners : collect([
                 @foreach($layananUnggulan->take(6) as $l)
                 <div class="lc">
                     <div class="lc-thumb">
-                        <div class="lc-ic">
-                            @if($l->logo)
-                                <img src="{{ asset('storage/'.$l->logo) }}" alt="{{ $l->nama }}">
-                            @else
+                        @if($l->logo)
+                            <img src="{{ asset('storage/'.$l->logo) }}" alt="{{ $l->nama }}">
+                        @else
+                            <div class="lc-ic">
                                 <i class="bi bi-hospital"></i>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="lc-body">
                         <h5 class="lc-name">{{ $l->nama }}</h5>

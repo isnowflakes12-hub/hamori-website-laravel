@@ -1330,7 +1330,7 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
     margin-bottom: 48px;
 }
 
-/* â”€â”€ Layanan Grid â”€â”€ */
+/* — Layanan Grid — */
 .lay-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1357,11 +1357,10 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
     border-color: #a8e4e0;
 }
 
-/* Area ikon â€” mengikuti pola au-thumb */
+/* Area ikon — mengikuti pola au-thumb */
 .lc-thumb {
     width: 100%;
-    height: 140px;
-    /* tinggi konsisten */
+    height: 160px;
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
@@ -1417,7 +1416,7 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
     filter: none;
 }
 
-/* Body â€” mengikuti au-body */
+/* Body — mengikuti au-body */
 .lc-body {
     padding: 16px 20px 18px;
     display: flex;
@@ -1442,7 +1441,7 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
     flex: 1;
 }
 
-/* Footer â€” mengikuti au-footer */
+/* Footer — mengikuti au-footer */
 .lc-footer {
     display: flex;
     align-items: center;
@@ -1487,7 +1486,7 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
     transform: translateX(3px);
 }
 
-/* Badge â€” mengikuti au-badge */
+/* Badge — mengikuti au-badge */
 .lc-badge {
     position: absolute;
     top: 12px;
@@ -9950,7 +9949,7 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
 /* Media â€” tinggi & lebar logo KONSISTEN */
 .li-card-media {
     width: 100%;
-    height: 140px;
+    height: 160px;
     background: var(--primary-light);
     display: flex;
     align-items: center;
@@ -9968,9 +9967,9 @@ body.is-home .main-navbar:not(.scrolled) .navbar-toggler {
 .li-card-logo {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
-    padding: 24px 32px;
+    padding: 0;
     display: block;
     transition: transform .3s var(--ease);
 }

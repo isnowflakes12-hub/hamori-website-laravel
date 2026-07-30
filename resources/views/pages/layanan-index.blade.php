@@ -4,31 +4,19 @@
 @section('content')
 
 <div class="page-header">
-    <div class="container">
-        <h1 class="page-title">Layanan Unggulan</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-                <li class="breadcrumb-item active">Layanan Unggulan</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<div class="li-intro">
-    <div class="li-intro-glow li-intro-glow--left"></div>
-    <div class="li-intro-glow li-intro-glow--right"></div>
-    <div class="container position-relative">
-        <div class="li-intro-inner">
-            <div class="li-intro-text">
-                <span class="eyebrow">Pusat Layanan Terpadu</span>
-                <h2 class="sec-h2">Layanan Unggulan<br>RS Hamori</h2>
-                <p class="sec-sub mt-2">
-                    RS Hamori menghadirkan pusat layanan terpadu dengan dokter spesialis berpengalaman
-                    dan peralatan medis berstandar internasional untuk memenuhi kebutuhan kesehatan Anda.
-                </p>
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+            <div>
+                <h1 class="page-title mb-2">Layanan Unggulan</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+                        <li class="breadcrumb-item active">Layanan Unggulan</li>
+                    </ol>
+                </nav>
             </div>
-            <div class="li-intro-stats">
+
+            <div class="li-intro-stats bg-white shadow-sm" style="border: none; padding: 16px 28px;">
                 <div class="li-stat">
                     <span class="li-stat-n">32+</span>
                     <span class="li-stat-l">Dokter Spesialis</span>
