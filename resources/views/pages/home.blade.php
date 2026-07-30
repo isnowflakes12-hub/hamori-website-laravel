@@ -368,7 +368,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                 <p class="app-d">Download aplikasi sekarang! dan nikmati kemudahan layanan dalam satu aplikasi</p>
                 <div class="app-btns">
                     <a href="#" class="app-btn"><i class="bi bi-apple"></i><div><small>Download di</small><strong>App Store</strong></div></a>
-                    <a href="https://play.google.com/store/apps/details?id=com.terakorp.hamori&hl=id" class="app-btn"><i class="bi bi-google-play"></i><div><small>Download di</small><strong>Google Play</strong></div></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.terakorp.hamori&hl=id" class="app-btn"><i class="bi bi-google-play"></i><div><small>Download di</small><strong>Play Store</strong></div></a>
                 </div>
             </div>
             <div class="app-ph"><img src="{{ asset('assets/images/qr.png') }}" alt="RS Hamori" class="app-logo"></div>

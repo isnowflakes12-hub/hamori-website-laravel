@@ -329,29 +329,7 @@
                 </div>
 
 
-                <div class="kt-info-cards">
-                    <div class="kt-info-card">
-                        <div class="kt-info-card-ic"><i class="fas fa-clock"></i></div>
-                        <div>
-                            <h6 class="kt-info-card-title">Waktu Respons</h6>
-                            <p class="kt-info-card-desc">Kami merespons dalam 1×24 jam kerja.</p>
-                        </div>
-                    </div>
-                    <div class="kt-info-card">
-                        <div class="kt-info-card-ic kt-info-card-ic--accent"><i class="fas fa-shield-halved"></i></div>
-                        <div>
-                            <h6 class="kt-info-card-title">Data Aman</h6>
-                            <p class="kt-info-card-desc">Privasi Anda terlindungi penuh.</p>
-                        </div>
-                    </div>
-                    <div class="kt-info-card">
-                        <div class="kt-info-card-ic kt-info-card-ic--green"><i class="fas fa-headset"></i></div>
-                        <div>
-                            <h6 class="kt-info-card-title">Dukungan Penuh</h6>
-                            <p class="kt-info-card-desc">Tim kami siap membantu Anda.</p>
-                        </div>
-                    </div>
-                </div>
+                
 
             </div>
 

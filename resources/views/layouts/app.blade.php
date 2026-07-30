@@ -204,7 +204,7 @@
                         <h6 class="footer-heading">Download Aplikasi</h6>
                         <p class="text-white-50 small">Nikmati kemudahan layanan RS Hamori dari genggaman Anda.</p>
                         <a href="https://play.google.com/store/apps/details?id=com.terakorp.hamori&hl=id" target="_blank" class="btn btn-outline-light btn-sm mb-2 d-inline-flex align-items-center gap-2">
-                            <i class="bi bi-google-play"></i> Google Play
+                            <i class="bi bi-google-play"></i> Playstore
                         </a>
                         <br>
                         <a href="{{ route('coming-soon') }}" class="btn btn-outline-light btn-sm d-inline-flex align-items-center gap-2">
