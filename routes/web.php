@@ -126,6 +126,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/profile',  [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile',  [ProfileController::class, 'update'])->name('profile.update');
 
+        // Activity Log
+        Route::get('/activity-log', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-log.index');
+        Route::get('/activity-log/{log}', [\App\Http\Controllers\Admin\ActivityLogController::class, 'show'])->name('activity-log.show');
+
         // Marketing — Banner
         Route::resource('banner', BannerController::class)->except(['show']);
         Route::patch('banner/{banner}/toggle', [BannerController::class, 'toggleActive'])->name('banner.toggle');

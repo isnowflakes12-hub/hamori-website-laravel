@@ -1,8 +1,11 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Promo extends Model {
+    use LogsActivity;
     protected $fillable = [
         'kategori',
         'judul',
@@ -29,6 +32,14 @@ class Promo extends Model {
         'berlaku_mulai'    => 'date',
         'berlaku_sampai'   => 'date',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function isExpired(): bool {
         return $this->berlaku_sampai && $this->berlaku_sampai->isPast();

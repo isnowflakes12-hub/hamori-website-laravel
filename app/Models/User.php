@@ -3,14 +3,24 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, LogsActivity;
 
     protected $fillable = ['name', 'email', 'password', 'role', 'is_active', 'avatar', 'last_login_at'];
     protected $hidden   = ['password', 'remember_token'];
     protected $casts    = ['is_active' => 'boolean', 'last_login_at' => 'datetime'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function isSuperAdmin(): bool    { return $this->role === 'super_admin'; }
     public function isAdminMarketing(): bool { return $this->role === 'admin_marketing'; }

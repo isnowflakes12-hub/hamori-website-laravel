@@ -1,0 +1,1 @@
+\ = new \App\Models\AdminMenu(); \->name = 'Log Aktivitas'; \->route_name = 'admin.activity-log.index'; \->icon = 'bi-clock-history'; \->roles = ['super_admin']; \->is_active = 1; \->order = 99; \->save();
