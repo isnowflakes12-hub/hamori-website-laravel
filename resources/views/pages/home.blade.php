@@ -713,7 +713,8 @@ $heroSlides = $banners->count() ? $banners : collect([
     var slides = document.querySelectorAll('.hs');
     var dots   = document.querySelectorAll('.hc-dot');
     var fill   = document.getElementById('hcFill');
-    var DUR    = 6000;
+    var DEFAULT_DUR = 6000;
+    var currentDur  = DEFAULT_DUR;
     var cur    = 0;
     var timer  = null;
     var paused = false;
@@ -721,33 +722,82 @@ $heroSlides = $banners->count() ? $banners : collect([
 
     function show(n){
         n = ((n % slides.length) + slides.length) % slides.length;
+        
+        // Pause and reset previous video
+        var oldVid = slides[cur].querySelector('video');
+        if(oldVid) { oldVid.pause(); oldVid.currentTime = 0; }
+
         slides[cur].classList.remove('on');
         dots[cur].classList.remove('on');
         cur = n;
         slides[cur].classList.add('on');
         dots[cur].classList.add('on');
-        resetBar();
+        
+        var newVid = slides[cur].querySelector('video');
+        if (newVid) {
+            newVid.currentTime = 0;
+            var playPromise = newVid.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(function(e){});
+            }
+            if (newVid.readyState >= 1) {
+                setupDur(newVid.duration * 1000);
+            } else {
+                // If not loaded, set default, then update once metadata is loaded
+                setupDur(DEFAULT_DUR);
+                newVid.onloadedmetadata = function() {
+                    setupDur(newVid.duration * 1000);
+                };
+            }
+        } else {
+            setupDur(DEFAULT_DUR);
+        }
     }
+
+    function setupDur(dur) {
+        if (!dur || isNaN(dur) || dur === Infinity) dur = DEFAULT_DUR;
+        currentDur = dur;
+        resetBar();
+        startAuto();
+    }
+
     function resetBar(){
         if(!fill) return;
         fill.style.transition = 'none';
         fill.style.width = '0%';
-        setTimeout(function(){ fill.style.transition='width '+DUR+'ms linear'; fill.style.width='100%'; }, 30);
+        setTimeout(function(){ fill.style.transition='width '+currentDur+'ms linear'; fill.style.width='100%'; }, 30);
     }
-    function startAuto(){ clearInterval(timer); timer=setInterval(function(){ if(!paused) show(cur+1); }, DUR); }
+    
+    function startAuto(){ 
+        clearInterval(timer); 
+        timer=setInterval(function(){ if(!paused) show(cur+1); }, currentDur); 
+    }
 
-    document.getElementById('hcPrev').onclick = function(){ show(cur-1); startAuto(); };
-    document.getElementById('hcNext').onclick = function(){ show(cur+1); startAuto(); };
-    dots.forEach(function(d,i){ d.onclick=function(){ show(i); startAuto(); }; });
+    document.getElementById('hcPrev').onclick = function(){ show(cur-1); };
+    document.getElementById('hcNext').onclick = function(){ show(cur+1); };
+    dots.forEach(function(d,i){ d.onclick=function(){ show(i); }; });
 
     var hero = document.getElementById('hero');
     hero.onmouseenter = function(){ paused=true; };
     hero.onmouseleave = function(){ paused=false; };
     var tx=0;
     hero.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
-    hero.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50){show(cur+(dx<0?1:-1));startAuto();} });
+    hero.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50){show(cur+(dx<0?1:-1));} });
 
-    resetBar(); startAuto();
+    // Initial setup
+    var initVid = slides[cur].querySelector('video');
+    if (initVid) {
+        if (initVid.readyState >= 1) {
+            setupDur(initVid.duration * 1000);
+        } else {
+            setupDur(DEFAULT_DUR);
+            initVid.onloadedmetadata = function() {
+                setupDur(initVid.duration * 1000);
+            };
+        }
+    } else {
+        setupDur(DEFAULT_DUR);
+    }
 })();
 </script>
 

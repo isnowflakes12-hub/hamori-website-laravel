@@ -189,16 +189,16 @@
     </div>
 </section>
 
-<div id="msLightboxModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
-    <div style="position:absolute; top:20px; right:20px;">
+<div id="msLightboxModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.88); z-index:99999; align-items:center; justify-content:center; flex-direction:column; overflow:hidden;">
+    <div style="position:absolute; top:20px; right:20px; z-index:2;">
         <button onclick="closeMsGallery()" style="background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:44px; height:44px; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
             <i class="fas fa-times"></i>
         </button>
     </div>
-    <div style="text-align:center; color:#fff; margin-bottom:16px; padding:0 20px;">
+    <div style="text-align:center; color:#fff; margin-bottom:16px; padding:0 20px; z-index:2;">
         <h5 id="msLightboxTitle" style="margin:0; font-size:16px; opacity:.8;"></h5>
     </div>
-    <div style="position:relative; display:flex; align-items:center; justify-content:center; width:100%; max-width:900px; padding:0 60px;">
+    <div style="position:relative; display:flex; align-items:center; justify-content:center; width:100%; max-width:900px; padding:0 60px; z-index:2;">
         <button onclick="msPrevSlide()" style="position:absolute; left:10px; background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:44px; height:44px; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
             <i class="fas fa-chevron-left"></i>
         </button>
@@ -207,11 +207,25 @@
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
-    <div id="msLightboxCounter" style="color:rgba(255,255,255,0.6); margin-top:14px; font-size:14px;"></div>
-    <div id="msLightboxDots" style="display:flex; gap:8px; margin-top:12px;"></div>
+    <div id="msLightboxCounter" style="color:rgba(255,255,255,0.6); margin-top:14px; font-size:14px; z-index:2;"></div>
+    <div id="msLightboxDots" style="display:flex; gap:8px; margin-top:12px; z-index:2;"></div>
 </div>
 
 <style>
+#msLightboxModal {
+    /* Ensure it covers full viewport regardless of parent context */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 99999 !important;
+}
+body.lightbox-open {
+    overflow: hidden;
+}
 .ms-gallery-btn {
     display: inline-flex;
     align-items: center;

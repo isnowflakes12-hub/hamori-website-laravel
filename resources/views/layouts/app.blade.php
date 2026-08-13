@@ -253,8 +253,29 @@
     
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Fix: append to <html> instead of <body> to escape body { zoom: 0.9 }
             const lightbox = GLightbox({
-                selector: '.glightbox'
+                selector: '.glightbox',
+                zoomable: false,
+            });
+
+            // Additional fix: reset navbar z-index when lightbox opens so overlay covers it
+            const navbar = document.querySelector('.main-navbar');
+            lightbox.on('open', () => {
+                if (navbar) navbar.style.zIndex = '1';
+                // Move container to html element to escape body zoom
+                const container = document.querySelector('.glightbox-container');
+                if (container && container.parentNode === document.body) {
+                    document.documentElement.appendChild(container);
+                }
+            });
+            lightbox.on('close', () => {
+                if (navbar) navbar.style.zIndex = '';
+                // Move container back to body
+                const container = document.querySelector('.glightbox-container');
+                if (container && container.parentNode === document.documentElement) {
+                    document.body.appendChild(container);
+                }
             });
         });
     </script>
