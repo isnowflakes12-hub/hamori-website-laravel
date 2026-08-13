@@ -410,11 +410,12 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 .hero-promo-panel {
     position: absolute !important;
-    top: 75px !important; /* Pushed down to clear the 70px fixed navbar, moved slightly up per user request */
-    right: 20px !important;
-    bottom: 45px !important; /* Increased bottom margin per user request */
+    top: 95px !important;
+    left: auto !important;
+    right: 200px !important;
+    bottom: 15px !important;
     width: 340px !important; /* Slightly smaller width */
-    max-width: calc(100% - 40px) !important;
+    max-width: calc(100% - 80px) !important;
     z-index: 10 !important;
     background: linear-gradient(160deg, var(--accent, #1d2b53) 0%, #3d3890 50%, var(--primary, #001f4d) 100%) !important;
     backdrop-filter: blur(16px) !important;
@@ -857,3 +858,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 @endpush
+
+<style>
+@media (min-width: 992px) {
+    .hero-promo-wrap {
+        zoom: 0.9 !important;
+        width: 111.1111% !important;
+    }
+}
+</style>
+

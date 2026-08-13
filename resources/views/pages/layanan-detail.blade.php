@@ -4,49 +4,18 @@
 @section('content')
 
 
-<section class="ld-hero">
-    <div class="ld-hero-bg-pattern"></div>
-    <div class="ld-hero-glow"></div>
-        
-    <div class="container position-relative">
-    
-        <div class="ld-hero-inner">
-
-            <div class="ld-hero-text">
-                <span class="ld-hero-badge">
-                    <i class="fas fa-star-of-life"></i>
-                    Layanan Unggulan
-                </span>
-                <nav aria-label="breadcrumb">
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">Layanan Unggulan</h1>
+        <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('layanan.index') }}">Layanan Unggulan</a></li>
                 <li class="breadcrumb-item active">{{ $layanan->nama }}</li>
             </ol>
         </nav>
-        <h1></h1>
-                <h1 class="ld-hero-title">{{ $layanan->nama }}</h1>
-            </div>
-
-            <div class="ld-hero-media">
-                <div class="ld-hero-media-ring ld-hero-media-ring--outer"></div>
-                <div class="ld-hero-media-ring ld-hero-media-ring--inner"></div>
-                {{--  <div class="ld-hero-media-card">
-                    @if($layanan->logo)
-                        <img src="{{ asset('storage/'.$layanan->logo) }}"
-                             alt="{{ $layanan->nama }}"
-                             class="ld-hero-img">
-                    @else
-                        <div class="ld-hero-placeholder">
-                            <i class="fas fa-stethoscope"></i>
-                        </div>
-                    @endif
-                </div>--}}
-            </div>
-
-        </div>
     </div>
-</section>
+</div>
 
 <section class="ld-body sec">
     <div class="container">

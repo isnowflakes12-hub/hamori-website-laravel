@@ -84,7 +84,7 @@ body {
 /* Simulasi zoom 90% untuk layar Desktop agar proporsional */
 @media (min-width: 992px) {
     body {
-        zoom: 0.9;
+        /* zoom: 0.9; removed per user request so all content is 100% */
     }
 }
 
