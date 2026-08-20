@@ -369,6 +369,34 @@ class AdminMenusTableSeeder extends Seeder
                 'created_at' => '2026-07-27 13:48:50',
                 'updated_at' => '2026-07-27 17:29:59',
             ),
+            25 => 
+            array (
+                'id' => 26,
+                'parent_id' => 19,
+                'name' => 'Kategori Pekerjaan',
+                'route_name' => 'admin.karir-kategori.index',
+                'url' => NULL,
+                'icon' => 'bi-tags-fill',
+                'roles' => '["super_admin","admin_sdm"]',
+                'order' => 2,
+                'is_active' => true,
+                'created_at' => '2026-08-20 10:00:00',
+                'updated_at' => '2026-08-20 10:00:00',
+            ),
+            26 => 
+            array (
+                'id' => 27,
+                'parent_id' => 19,
+                'name' => 'Tipe Pekerjaan',
+                'route_name' => 'admin.karir-tipe.index',
+                'url' => NULL,
+                'icon' => 'bi-funnel-fill',
+                'roles' => '["super_admin","admin_sdm"]',
+                'order' => 3,
+                'is_active' => true,
+                'created_at' => '2026-08-20 10:00:00',
+                'updated_at' => '2026-08-20 10:00:00',
+            ),
         ));
         
         
