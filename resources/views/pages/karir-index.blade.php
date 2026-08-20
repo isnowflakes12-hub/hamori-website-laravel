@@ -160,6 +160,56 @@
     pointer-events: none;
 }
 
+/* ===== Expired Job Card Overlay ===== */
+.karir-card.is-expired {
+    position: relative;
+}
+.karir-card.is-expired .karir-card-body,
+.karir-card.is-expired .karir-card-top {
+    opacity: 0.65;
+    transition: opacity 0.3s ease;
+}
+.karir-card.is-expired:hover .karir-card-body,
+.karir-card.is-expired:hover .karir-card-top {
+    opacity: 0.3;
+}
+.karir-expired-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(3px);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    text-align: center;
+    pointer-events: none; /* Let the card still handle hover */
+}
+.karir-card.is-expired:hover .karir-expired-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+.karir-expired-overlay i {
+    font-size: 2.5rem;
+    color: #e11d48;
+    margin-bottom: 8px;
+}
+.karir-expired-overlay h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.karir-expired-overlay p {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0;
+}
+
 /* ===== Karir Tabs: Responsive Pill Cards ===== */
 .karir-tabs-wrap {
     background: #fff;
@@ -330,14 +380,41 @@
     }
 }
 
-/* Drag cursor feedback */
-.karir-tabs-inner.is-dragging {
-    cursor: grabbing;
-    user-select: none;
-    scroll-behavior: auto; /* disable smooth during drag */
+/* Arrow Buttons for Scrolling */
+.karir-tab-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    color: #64748b;
 }
-.karir-tabs-inner.is-dragging .karir-tab {
-    pointer-events: none; /* prevent accidental click during drag */
+.karir-tab-arrow:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+.karir-tab-arrow.prev { left: 8px; }
+.karir-tab-arrow.next { right: 8px; }
+
+.karir-tabs-scroll-wrap.show-left .karir-tab-arrow.prev {
+    opacity: 1;
+    visibility: visible;
+}
+.karir-tabs-scroll-wrap.show-right .karir-tab-arrow.next {
+    opacity: 1;
+    visibility: visible;
 }
 
 /* Mobile: scrollable single row */
@@ -397,54 +474,26 @@
         window.addEventListener('resize', updateShadows);
         updateShadows();
 
-        // ======= Mouse Drag-to-Scroll (Desktop) =======
-        let isDragging = false;
-        let startX = 0;
-        let scrollStart = 0;
-        let dragDistance = 0;
-        const DRAG_THRESHOLD = 5; // px before we consider it a drag
+        // ======= Arrow Buttons Click Handlers =======
+        const prevBtn = document.getElementById('karirTabPrev');
+        const nextBtn = document.getElementById('karirTabNext');
 
-        inner.addEventListener('mousedown', function(e) {
-            if (e.button !== 0) return; // left click only
-            isDragging = true;
-            startX = e.pageX;
-            scrollStart = inner.scrollLeft;
-            dragDistance = 0;
-            inner.style.cursor = 'grabbing';
-            inner.classList.add('is-dragging');
-            e.preventDefault();
-        });
-
-        document.addEventListener('mousemove', function(e) {
-            if (!isDragging) return;
-            const dx = e.pageX - startX;
-            dragDistance = Math.abs(dx);
-            inner.scrollLeft = scrollStart - dx;
-            updateShadows();
-        });
-
-        document.addEventListener('mouseup', function(e) {
-            if (!isDragging) return;
-            isDragging = false;
-            inner.style.cursor = '';
-            // Remove is-dragging after a tick so click isn't fired on drag-release
-            setTimeout(() => inner.classList.remove('is-dragging'), 10);
-        });
-
-        // Cancel drag if mouse leaves the window
-        document.addEventListener('mouseleave', function() {
-            if (isDragging) {
-                isDragging = false;
-                inner.style.cursor = '';
-                inner.classList.remove('is-dragging');
-            }
-        });
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                inner.scrollBy({ left: -200, behavior: 'smooth' });
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                inner.scrollBy({ left: 200, behavior: 'smooth' });
+            });
+        }
 
         // Arrow key scroll support
         inner.setAttribute('tabindex', '0');
         inner.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowRight') { inner.scrollLeft += 120; e.preventDefault(); }
-            if (e.key === 'ArrowLeft')  { inner.scrollLeft -= 120; e.preventDefault(); }
+            if (e.key === 'ArrowRight') { inner.scrollBy({ left: 150, behavior: 'smooth' }); e.preventDefault(); }
+            if (e.key === 'ArrowLeft')  { inner.scrollBy({ left: -150, behavior: 'smooth' }); e.preventDefault(); }
         });
 
         // Hover lift for non-active tabs (CSS transition handles the rest)
@@ -493,8 +542,13 @@
 </div>
 
 <div class="karir-tabs-wrap">
-    <div class="container px-0">
+    <div class="container px-0 position-relative">
         <div class="karir-tabs-scroll-wrap" id="karirScrollWrap">
+            <!-- Tombol Panah Kiri -->
+            <button type="button" class="karir-tab-arrow prev" id="karirTabPrev">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
             <div class="karir-tabs-inner" id="karirTabsInner">
                 @foreach($tabMeta as $kat => $meta)
                 @php
@@ -520,6 +574,12 @@
                 </a>
                 @endforeach
             </div>
+
+            <!-- Tombol Panah Kanan -->
+            <button type="button" class="karir-tab-arrow next" id="karirTabNext">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+
             <div class="karir-tab-indicator" id="tabIndicator"></div>
         </div>
     </div>
@@ -610,9 +670,18 @@
             @php
                 $km2 = $tabMeta[$karir->kategori] ?? $tabMeta['Semua'];
                 $isDeadlineSoon = $karir->batas_lamaran && $karir->batas_lamaran->isFuture() && $karir->batas_lamaran->diffInDays(now()) <= 7;
+                $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
             @endphp
             <div class="col-md-6 col-xl-4">
-                <div class="karir-card">
+                <div class="karir-card {{ $isExpired ? 'is-expired' : '' }}">
+                    @if($isExpired)
+                    <div class="karir-expired-overlay">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <h5>Lamaran Ditutup</h5>
+                        <p>Telah melewati batas waktu</p>
+                    </div>
+                    @endif
+                    
                     <div class="karir-card-colorbar" style="background:{{ $km2['color'] }}"></div>
                     <div class="karir-card-top">
                         <div class="karir-badges">
@@ -621,12 +690,16 @@
                                 $tc = $tipeObj->warna ?? '#1ba99d';
                                 $tn = $tipeObj->nama ?? ucfirst(str_replace('-',' ',$karir->tipe));
                             @endphp
-                            <span class="badge-tipe" style="color: {{ $tc }}; background: {{ $tc }}15; border-color: {{ $tc }}33;">{{ $tn }}</span>
+                            {{-- Badge Kategori --}}
+                            <span class="badge-tipe"
+                                  style="color:{{ $km2['color'] }};background:{{ $km2['color'] }}18;border-color:{{ $km2['color'] }}30;">
+                                <i class="bi {{ $km2['icon'] }}" style="font-size:10px;"></i>
+                                {{ $karir->kategori }}
+                            </span>
+                            {{-- Badge Tipe --}}
+                            <span class="badge-tipe" style="color:{{ $tc }};background:{{ $tc }}18;border-color:{{ $tc }}30;">{{ $tn }}</span>
                             @if($isDeadlineSoon)<span class="badge-soon">⚡ Segera Tutup</span>@endif
                         </div>
-                        <span style="font-size:11px;color:{{ $km2['color'] }};font-weight:600;white-space:nowrap">
-                            <i class="bi {{ $km2['icon'] }} me-1"></i>{{ $karir->kategori }}
-                        </span>
                     </div>
                     <div class="karir-card-body">
                         <h5 class="karir-posisi">{{ $karir->posisi }}</h5>
@@ -639,7 +712,7 @@
                             @if(!empty($karir->kuota))
                             <span class="karir-meta-item"><i class="bi bi-people"></i> {{ $karir->kuota }} orang</span>
                             @endif
-                            <span class="karir-meta-item"><i class="bi bi-briefcase"></i> {{ ucfirst(str_replace('-',' ',$karir->tipe)) }}</span>
+                            <span class="karir-meta-item"><i class="bi bi-briefcase"></i> {{ $tn }}</span>
                         </div>
                         @if($karir->batas_lamaran)
                         <div class="karir-dl {{ $isDeadlineSoon ? 'soon' : 'normal' }}">
@@ -649,12 +722,21 @@
                         @endif
                     </div>
                     <div class="karir-card-footer">
-                        <a href="{{ route('karir.show', $karir->id) }}" class="btn-detail">
-                            <i class="bi bi-eye"></i> Lihat Detail
-                        </a>
-                        <a href="{{ route('karir.show', $karir->id) }}#form-lamar" class="btn-lamar">
-                            <i class="bi bi-send"></i> Lamar
-                        </a>
+                        @if($isExpired)
+                            <button class="btn-detail" disabled style="background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; cursor:not-allowed;">
+                                <i class="bi bi-eye"></i> Lihat Detail
+                            </button>
+                            <button class="btn-lamar" disabled style="background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; cursor:not-allowed;">
+                                <i class="bi bi-send"></i> Lamar
+                            </button>
+                        @else
+                            <a href="{{ route('karir.show', $karir->id) }}" class="btn-detail">
+                                <i class="bi bi-eye"></i> Lihat Detail
+                            </a>
+                            <a href="{{ route('karir.show', $karir->id) }}#form-lamar" class="btn-lamar">
+                                <i class="bi bi-send"></i> Lamar
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
