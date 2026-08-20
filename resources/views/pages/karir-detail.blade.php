@@ -286,7 +286,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                         </div>
                         <div class="apply-info-row">
                             <i class="bi bi-building"></i>
-                            <span class="apply-info-label">Unit</span>
+                            <span class="apply-info-label">Departemen</span>
                             <span class="apply-info-value">{{ $karir->departemen }}</span>
                         </div>
                         @if($karir->lokasi)
