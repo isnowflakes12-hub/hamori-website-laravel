@@ -294,17 +294,15 @@
 /* Remove old sliding indicator line (replaced by pill style) */
 .karir-tab-indicator { display: none; }
 
-/* RESPONSIVE: tablet (md) - tabs can be 2 rows if overflowing */
+/* RESPONSIVE: tablet & desktop — still single row, scrollable */
 @media (min-width: 768px) {
     .karir-tabs-inner {
         padding: 14px 20px;
         gap: 12px;
-        justify-content: center;
-        flex-wrap: wrap;
-        overflow-x: visible;
+        justify-content: flex-start; /* allow scroll, not wrap */
+        flex-wrap: nowrap;
+        overflow-x: auto;
     }
-    .karir-tabs-scroll-wrap::before,
-    .karir-tabs-scroll-wrap::after { display: none; }
     .karir-tab {
         padding: 10px 20px;
         font-size: 14px;
@@ -314,20 +312,32 @@
         height: 30px;
         font-size: 14px;
     }
+    /* Show shadows on desktop too when overflowing */
+    .karir-tabs-scroll-wrap::before,
+    .karir-tabs-scroll-wrap::after { display: block; }
 }
 
-/* RESPONSIVE: desktop - compact single row centered */
 @media (min-width: 1200px) {
     .karir-tabs-inner {
-        padding: 16px 24px;
-        gap: 10px;
+        padding: 16px 28px;
+        gap: 12px;
         flex-wrap: nowrap;
-        justify-content: center;
+        justify-content: flex-start;
     }
     .karir-tab {
         flex: 0 0 auto;
         padding: 11px 24px;
     }
+}
+
+/* Drag cursor feedback */
+.karir-tabs-inner.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+    scroll-behavior: auto; /* disable smooth during drag */
+}
+.karir-tabs-inner.is-dragging .karir-tab {
+    pointer-events: none; /* prevent accidental click during drag */
 }
 
 /* Mobile: scrollable single row */
@@ -373,20 +383,71 @@
             activeTab.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
         }
 
-        // Manage fade-shadow hints on scroll (mobile only)
+        // Manage fade-shadow hints on scroll
         function updateShadows() {
             if (!wrap) return;
             const atLeft  = inner.scrollLeft <= 4;
             const atRight = inner.scrollLeft >= inner.scrollWidth - inner.clientWidth - 4;
-            wrap.classList.toggle('show-left',  !atLeft);
-            wrap.classList.toggle('show-right', !atRight && inner.scrollWidth > inner.clientWidth);
+            const canScroll = inner.scrollWidth > inner.clientWidth + 8;
+            wrap.classList.toggle('show-left',  !atLeft && canScroll);
+            wrap.classList.toggle('show-right', !atRight && canScroll);
         }
 
         inner.addEventListener('scroll', updateShadows, { passive: true });
         window.addEventListener('resize', updateShadows);
         updateShadows();
 
-        // Smooth hover lift on active: pulse icon slightly
+        // ======= Mouse Drag-to-Scroll (Desktop) =======
+        let isDragging = false;
+        let startX = 0;
+        let scrollStart = 0;
+        let dragDistance = 0;
+        const DRAG_THRESHOLD = 5; // px before we consider it a drag
+
+        inner.addEventListener('mousedown', function(e) {
+            if (e.button !== 0) return; // left click only
+            isDragging = true;
+            startX = e.pageX;
+            scrollStart = inner.scrollLeft;
+            dragDistance = 0;
+            inner.style.cursor = 'grabbing';
+            inner.classList.add('is-dragging');
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            const dx = e.pageX - startX;
+            dragDistance = Math.abs(dx);
+            inner.scrollLeft = scrollStart - dx;
+            updateShadows();
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            inner.style.cursor = '';
+            // Remove is-dragging after a tick so click isn't fired on drag-release
+            setTimeout(() => inner.classList.remove('is-dragging'), 10);
+        });
+
+        // Cancel drag if mouse leaves the window
+        document.addEventListener('mouseleave', function() {
+            if (isDragging) {
+                isDragging = false;
+                inner.style.cursor = '';
+                inner.classList.remove('is-dragging');
+            }
+        });
+
+        // Arrow key scroll support
+        inner.setAttribute('tabindex', '0');
+        inner.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') { inner.scrollLeft += 120; e.preventDefault(); }
+            if (e.key === 'ArrowLeft')  { inner.scrollLeft -= 120; e.preventDefault(); }
+        });
+
+        // Hover lift for non-active tabs (CSS transition handles the rest)
         inner.querySelectorAll('.karir-tab').forEach(tab => {
             tab.addEventListener('mouseenter', function() {
                 if (!this.classList.contains('active')) {
