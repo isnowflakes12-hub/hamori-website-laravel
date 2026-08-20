@@ -6,68 +6,68 @@
 @endpush
 
 @php
-$katMeta = [
-    'Perawat'         => ['color'=>'#0055a5','bg'=>'#eff6ff','icon'=>'bi-heart-pulse'],
-    'Penunjang Medis' => ['color'=>'#00a859','bg'=>'#f0fdf4','icon'=>'bi-capsule'],
-    'Pelayanan Medis' => ['color'=>'#6c3fc5','bg'=>'#faf5ff','icon'=>'bi-hospital'],
-    'Non Perawat'     => ['color'=>'#e8333c','bg'=>'#fff1f2','icon'=>'bi-person-gear'],
-];
-$km = $katMeta[$karir->kategori] ?? $katMeta['Non Perawat'];
+$katMeta = [];
+foreach($kategoris as $k) {
+    $katMeta[$k->nama] = ['color'=>$k->warna, 'bg'=>$k->warna_bg, 'icon'=>$k->icon];
+}
+$km = $katMeta[$karir->kategori] ?? ['color'=>'#1ba99d', 'bg'=>'#e8f8f7', 'icon'=>'bi-briefcase'];
 $isDeadlineSoon = $karir->batas_lamaran && $karir->batas_lamaran->isFuture() && $karir->batas_lamaran->diffInDays(now()) <= 7;
 $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 @endphp
 
 @section('content')
 
-<div class="karir-detail-hero">
-    <div class="container" style="position:relative;z-index:2">
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb" style="--bs-breadcrumb-divider-color:rgba(255,255,255,0.3)">
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title mb-3">{{ $karir->posisi }}</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('karir.index') }}">Karir</a></li>
                 <li class="breadcrumb-item active">{{ $karir->posisi }}</li>
             </ol>
         </nav>
 
-        <div class="kat-badge" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.25)">
-            <i class="bi {{ $km['icon'] }}"></i>
-            {{ $karir->kategori }}
+        <div class="d-flex flex-wrap gap-3 align-items-center mt-4">
+            <div class="badge border border-light text-white rounded-pill px-3 py-2" style="background:rgba(255,255,255,0.15); font-weight:normal;">
+                <i class="bi {{ $km['icon'] }} me-1"></i>
+                {{ $karir->kategori }}
+            </div>
+            
+            <div class="text-white" style="font-size:15px; opacity:0.9;">
+                <i class="bi bi-building me-1"></i> {{ $karir->departemen }}
+            </div>
         </div>
 
-        <h1 class="hero-posisi">{{ $karir->posisi }}</h1>
-        <p class="hero-dept">
-            <i class="bi bi-building me-1"></i> {{ $karir->departemen }}
-        </p>
-
-        <div class="hero-meta-row">
-            <div class="hero-meta-item">
-                <i class="bi bi-briefcase"></i>
-                {{ ucfirst(str_replace('-',' ', $karir->tipe)) }}
+        <div class="d-flex flex-wrap gap-4 text-white mt-3" style="font-size:14px; opacity:0.85;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-briefcase me-2 fs-5"></i>
+                {{ $tipes->where('slug', $karir->tipe)->first()->nama ?? ucfirst(str_replace('-',' ', $karir->tipe)) }}
             </div>
             @if($karir->lokasi)
-            <div class="hero-meta-item">
-                <i class="bi bi-geo-alt"></i> {{ $karir->lokasi }}
+            <div class="d-flex align-items-center">
+                <i class="bi bi-geo-alt me-2 fs-5"></i> {{ $karir->lokasi }}
             </div>
             @endif
             @if($karir->kuota)
-            <div class="hero-meta-item">
-                <i class="bi bi-people"></i> {{ $karir->kuota }} orang dibutuhkan
+            <div class="d-flex align-items-center">
+                <i class="bi bi-people me-2 fs-5"></i> {{ $karir->kuota }} orang dibutuhkan
             </div>
             @endif
             @if($karir->batas_lamaran)
-            <div>
+            <div class="d-flex align-items-center">
                 @if($isExpired)
-                <span class="deadline-chip" style="background:#fee2e2;color:#dc2626">
-                    <i class="bi bi-x-circle"></i> Lamaran Ditutup
+                <span class="badge bg-danger rounded-pill px-3 py-2" style="font-weight:normal">
+                    <i class="bi bi-x-circle me-1"></i> Lamaran Ditutup
                 </span>
                 @elseif($isDeadlineSoon)
-                <span class="deadline-chip soon">
-                    <i class="bi bi-exclamation-circle"></i>
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-2" style="font-weight:normal">
+                    <i class="bi bi-exclamation-circle me-1"></i>
                     Segera Tutup — {{ $karir->batas_lamaran->translatedFormat('d F Y') }}
                 </span>
                 @else
-                <span class="deadline-chip normal">
-                    <i class="bi bi-calendar-check"></i>
+                <span class="badge bg-light text-dark rounded-pill px-3 py-2" style="font-weight:normal">
+                    <i class="bi bi-calendar-check me-1"></i>
                     Deadline: {{ $karir->batas_lamaran->translatedFormat('d F Y') }}
                 </span>
                 @endif
@@ -282,7 +282,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                         <div class="apply-info-row">
                             <i class="bi bi-briefcase"></i>
                             <span class="apply-info-label">Tipe</span>
-                            <span class="apply-info-value">{{ ucfirst(str_replace('-',' ',$karir->tipe)) }}</span>
+                            <span class="apply-info-value">{{ $tipes->where('slug', $karir->tipe)->first()->nama ?? ucfirst(str_replace('-',' ',$karir->tipe)) }}</span>
                         </div>
                         <div class="apply-info-row">
                             <i class="bi bi-building"></i>
@@ -322,32 +322,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     @endif
                 </div>
 
-                <div class="apply-sidebar mb-4">
-                    <div class="apply-sidebar-header">
-                        <h5><i class="bi bi-share me-2" style="color:#0055a5"></i>Bagikan Lowongan</h5>
-                    </div>
-                    <div class="apply-sidebar-body">
-                        <div class="d-flex gap-2">
-                            <a href="https://wa.me/?text={{ urlencode('Lowongan: '.$karir->posisi.' di RS Hamori — '.url()->current()) }}"
-                               target="_blank"
-                               class="btn btn-sm flex-fill fw-600"
-                               style="background:#25d366;color:#fff;border-radius:10px;padding:9px;font-size:13px">
-                                <i class="bi bi-whatsapp me-1"></i>WhatsApp
-                            </a>
-                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(url()->current()) }}"
-                               target="_blank"
-                               class="btn btn-sm flex-fill fw-600"
-                               style="background:#0077b5;color:#fff;border-radius:10px;padding:9px;font-size:13px">
-                                <i class="bi bi-linkedin me-1"></i>LinkedIn
-                            </a>
-                            <button onclick="navigator.clipboard.writeText('{{ url()->current() }}');this.innerHTML='<i class=\'bi bi-check-lg\'></i>'"
-                                    class="btn btn-sm fw-600"
-                                    style="background:#f3f4f6;color:#374151;border-radius:10px;padding:9px;font-size:13px">
-                                <i class="bi bi-link-45deg"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
                 @if($related->count())
                 <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden">
@@ -356,7 +330,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     </div>
                     <div style="padding:14px 12px;display:flex;flex-direction:column;gap:8px">
                         @foreach($related as $r)
-                        @php $rm = $katMeta[$r->kategori] ?? $katMeta['Non Perawat']; @endphp
+                        @php $rm = $katMeta[$r->kategori] ?? ['color'=>'#1ba99d', 'bg'=>'#e8f8f7', 'icon'=>'bi-briefcase']; @endphp
                         <a href="{{ route('karir.show', $r->id) }}" class="related-card">
                             <div class="related-card-icon" style="background:{{ $rm['bg'] }};color:{{ $rm['color'] }}">
                                 <i class="bi {{ $rm['icon'] }}"></i>

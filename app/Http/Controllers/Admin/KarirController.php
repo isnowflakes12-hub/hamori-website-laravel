@@ -5,9 +5,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Karir;
 use Illuminate\Http\Request;
 
+use App\Models\KarirKategori;
+use App\Models\KarirTipe;
+
 class KarirController extends Controller
 {
-    private array $kategoriList = ['Perawat', 'Penunjang Medis', 'Pelayanan Medis', 'Non Perawat'];
 
     public function index(Request $request)
     {
@@ -16,21 +18,28 @@ class KarirController extends Controller
         if ($request->filled('kategori')) $q->where('kategori', $request->kategori);
         if ($request->filled('status'))   $q->where('is_active', $request->status === 'aktif');
         $karirs = $q->latest()->paginate(15)->withQueryString();
-        return view('admin.karir.index', compact('karirs'), ['kategoriList' => $this->kategoriList]);
+        
+        $kategoriList = KarirKategori::where('is_active', true)->orderBy('urutan')->pluck('nama')->toArray();
+        return view('admin.karir.index', compact('karirs', 'kategoriList'));
     }
 
     public function create()
     {
-        return view('admin.karir.form', ['karir' => null, 'kategoriList' => $this->kategoriList]);
+        $kategoris = KarirKategori::where('is_active', true)->orderBy('urutan')->get();
+        $tipes = KarirTipe::where('is_active', true)->orderBy('nama')->get();
+        return view('admin.karir.form', ['karir' => null, 'kategoris' => $kategoris, 'tipes' => $tipes]);
     }
 
     public function store(Request $request)
     {
+        $validKategoris = KarirKategori::pluck('nama')->toArray();
+        $validTipes = KarirTipe::pluck('slug')->toArray();
+
         $request->validate([
             'posisi'       => 'required|string|max:255',
             'departemen'   => 'required|string|max:255',
-            'kategori'     => 'required|in:' . implode(',', $this->kategoriList),
-            'tipe'         => 'required|in:full-time,part-time,kontrak,magang',
+            'kategori'     => 'required|in:' . implode(',', $validKategoris),
+            'tipe'         => 'required|in:' . implode(',', $validTipes),
             'deskripsi'    => 'required|string',
             'persyaratan'  => 'required|string',
             'kuota'        => 'required|integer|min:1',
@@ -47,16 +56,21 @@ class KarirController extends Controller
 
     public function edit(Karir $karir)
     {
-        return view('admin.karir.form', compact('karir'), ['kategoriList' => $this->kategoriList]);
+        $kategoris = KarirKategori::where('is_active', true)->orderBy('urutan')->get();
+        $tipes = KarirTipe::where('is_active', true)->orderBy('nama')->get();
+        return view('admin.karir.form', compact('karir', 'kategoris', 'tipes'));
     }
 
     public function update(Request $request, Karir $karir)
     {
+        $validKategoris = KarirKategori::pluck('nama')->toArray();
+        $validTipes = KarirTipe::pluck('slug')->toArray();
+
         $request->validate([
             'posisi'       => 'required|string|max:255',
             'departemen'   => 'required|string|max:255',
-            'kategori'     => 'required|in:' . implode(',', $this->kategoriList),
-            'tipe'         => 'required|in:full-time,part-time,kontrak,magang',
+            'kategori'     => 'required|in:' . implode(',', $validKategoris),
+            'tipe'         => 'required|in:' . implode(',', $validTipes),
             'deskripsi'    => 'required|string',
             'persyaratan'  => 'required|string',
             'kuota'        => 'required|integer|min:1',
@@ -81,5 +95,20 @@ class KarirController extends Controller
     {
         $karir->update(['is_active' => !$karir->is_active]);
         return back()->with('success', 'Status lowongan diperbarui.');
+    }
+
+    public function bulkToggle(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:karirs,id',
+            'action' => 'required|in:aktif,nonaktif'
+        ]);
+
+        $isActive = $request->action === 'aktif';
+        
+        Karir::whereIn('id', $request->ids)->update(['is_active' => $isActive]);
+
+        return back()->with('success', count($request->ids) . ' lowongan berhasil di' . $request->action . 'kan.');
     }
 }

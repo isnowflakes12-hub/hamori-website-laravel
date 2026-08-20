@@ -3,19 +3,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Karir;
+use App\Models\KarirKategori;
+use App\Models\KarirTipe;
 
 class KarirController extends Controller
 {
     public function index(Request $request)
     {
-        $kategoriList = ['Perawat', 'Penunjang Medis', 'Pelayanan Medis', 'Non Perawat'];
+        $kategoris = KarirKategori::where('is_active', true)->orderBy('urutan')->get();
+        $tipes = KarirTipe::where('is_active', true)->orderBy('nama')->get();
+
         $aktifKategori = $request->get('kategori', 'Semua');
 
         // Hitung per kategori
         $counts = [];
         $counts['Semua'] = Karir::where('is_active', true)->count();
-        foreach ($kategoriList as $kat) {
-            $counts[$kat] = Karir::where('is_active', true)->where('kategori', $kat)->count();
+        foreach ($kategoris as $kat) {
+            $counts[$kat->nama] = Karir::where('is_active', true)->where('kategori', $kat->nama)->count();
         }
 
         $query = Karir::where('is_active', true);
@@ -31,7 +35,7 @@ class KarirController extends Controller
 
         $karirs = $query->latest()->paginate(9)->withQueryString();
 
-        return view('pages.karir-index', compact('karirs', 'aktifKategori', 'counts'));
+        return view('pages.karir-index', compact('karirs', 'aktifKategori', 'counts', 'kategoris', 'tipes'));
     }
 
     public function show($id)
@@ -41,7 +45,9 @@ class KarirController extends Controller
                         ->where('kategori', $karir->kategori)
                         ->where('id', '!=', $karir->id)
                         ->take(3)->get();
-        return view('pages.karir-detail', compact('karir', 'related'));
+        $kategoris = KarirKategori::where('is_active', true)->get();
+        $tipes = KarirTipe::where('is_active', true)->get();
+        return view('pages.karir-detail', compact('karir', 'related', 'kategoris', 'tipes'));
     }
 
     public function apply(Request $request, $id)

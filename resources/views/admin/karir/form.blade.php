@@ -35,14 +35,16 @@
                 <div class="col-md-6">
                     <label class="form-label">Kategori <span class="text-danger">*</span></label>
                     <select name="kategori" class="form-select" required>
-                        @foreach($kategoriList as $kat)<option value="{{ $kat }}" {{ old('kategori', $karir->kategori ?? '') == $kat ? 'selected' : '' }}>{{ $kat }}</option>@endforeach
+                        @foreach($kategoris as $kat)
+                            <option value="{{ $kat->nama }}" {{ old('kategori', $karir->kategori ?? '') == $kat->nama ? 'selected' : '' }}>{{ $kat->nama }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Tipe Pekerjaan <span class="text-danger">*</span></label>
                     <select name="tipe" class="form-select" required>
-                        @foreach(['full-time'=>'Full Time','part-time'=>'Part Time','kontrak'=>'Kontrak','magang'=>'Magang'] as $v=>$l)
-                        <option value="{{ $v }}" {{ old('tipe', $karir->tipe ?? '') == $v ? 'selected' : '' }}>{{ $l }}</option>
+                        @foreach($tipes as $t)
+                            <option value="{{ $t->slug }}" {{ old('tipe', $karir->tipe ?? '') == $t->slug ? 'selected' : '' }}>{{ $t->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -64,10 +66,35 @@
                 <label class="form-label">Batas Lamaran</label>
                 <input type="date" name="batas_lamaran" class="form-control" value="{{ old('batas_lamaran', optional($karir->batas_lamaran ?? null)->format('Y-m-d')) }}">
             </div>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" name="is_active" id="isActive" value="1" {{ old('is_active', $karir->is_active ?? true) ? 'checked' : '' }}>
-                <label class="form-check-label fw-semibold" for="isActive">Lowongan aktif</label>
+            {{-- Toggle Slider Status --}}
+            @php $isActiveVal = old('is_active', $karir->is_active ?? true); @endphp
+            <div class="mb-3">
+                <label class="form-label fw-semibold d-block mb-2">Status Lowongan</label>
+                <input type="hidden" name="is_active" id="isActiveHidden" value="{{ $isActiveVal ? '1' : '0' }}">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="toggle-switch" id="toggleSwitch" onclick="toggleStatus()" style="cursor:pointer; position:relative; width:56px; height:28px; border-radius:14px; background:{{ $isActiveVal ? '#1ba99d' : '#cbd5e1' }}; transition:background 0.3s ease; flex-shrink:0;">
+                        <div id="toggleKnob" style="position:absolute; top:3px; left:{{ $isActiveVal ? '31px' : '3px' }}; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.18); transition:left 0.3s ease;"></div>
+                    </div>
+                    <span id="toggleLabel" class="fw-semibold" style="font-size:14px; color:{{ $isActiveVal ? '#1ba99d' : '#94a3b8' }};">
+                        {{ $isActiveVal ? 'Aktif' : 'Nonaktif' }}
+                    </span>
+                </div>
+                <p class="text-muted mt-1 mb-0" style="font-size:12px;">Aktifkan agar lowongan tampil di halaman karir publik.</p>
             </div>
+            <script>
+            function toggleStatus() {
+                const hidden = document.getElementById('isActiveHidden');
+                const sw = document.getElementById('toggleSwitch');
+                const knob = document.getElementById('toggleKnob');
+                const lbl = document.getElementById('toggleLabel');
+                const isNowActive = hidden.value !== '1';
+                hidden.value = isNowActive ? '1' : '0';
+                sw.style.background = isNowActive ? '#1ba99d' : '#cbd5e1';
+                knob.style.left = isNowActive ? '31px' : '3px';
+                lbl.textContent = isNowActive ? 'Aktif' : 'Nonaktif';
+                lbl.style.color = isNowActive ? '#1ba99d' : '#94a3b8';
+            }
+            </script>
             <button type="submit" class="btn btn-primary w-100"><i class="bi bi-save me-2"></i>{{ $karir ? 'Simpan' : 'Tambah Lowongan' }}</button>
         </div>
     </div>

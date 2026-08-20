@@ -2,100 +2,435 @@
 @section('title', 'Karir - Rekrutmen RS Hamori')
 
 @push('styles')
+<style>
+/* --- Search Bar Styles (Copied from Jadwal Dokter) --- */
+.jadwal-search-wrap {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 24px;
+}
+.jadwal-search-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.jadwal-search-field {
+    flex: 1 1 220px;
+    position: relative;
+    min-width: 180px;
+}
+.jadwal-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ba5b4;
+    font-size: 16px;
+    pointer-events: none;
+}
+.jadwal-search-input {
+    width: 100%;
+    border: 1.5px solid #e4e9f0;
+    border-radius: 10px;
+    padding: 11px 14px 11px 40px;
+    font-size: 14px;
+    color: #2d3748;
+    background: #f7f9fc;
+    transition: border-color .2s, background .2s;
+    appearance: none;
+    outline: none;
+}
+.jadwal-search-input:focus {
+    border-color: #1ba99d;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(27,169,157,.1);
+}
+.jadwal-search-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23666' d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+}
+.jadwal-search-btn {
+    background: #1ba99d;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .2s, transform .15s;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+.jadwal-search-btn:hover {
+    background: #138a80;
+    transform: translateY(-1px);
+}
+.jadwal-reset-btn {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 11px 20px;
+    border-radius: 10px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+.jadwal-reset-btn:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+@media (max-width: 767.98px) {
+    .jadwal-search-row { flex-direction: column; }
+    .jadwal-search-field { flex: 1 1 100%; min-width: 100%; }
+    .jadwal-search-btn, .jadwal-reset-btn { width: 100%; justify-content: center; }
+}
 
+/* Custom Dropdown */
+.custom-dropdown-option {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a202c;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+    list-style: none;
+}
+.custom-dropdown-option:hover {
+    background: #f1f5f9;
+}
+.custom-dropdown-option.active {
+    background: #e8f8f7;
+    color: #1ba99d;
+    font-weight: 600;
+}
+.jadwal-search-field.open .custom-dropdown-options {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+.jadwal-search-field.open #tipeDropdownArrow {
+    transform: rotate(180deg);
+}
+
+/* Custom Pagination to match Karir Card */
+.karir-pagination .pagination {
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.karir-pagination .page-item .page-link {
+    border-radius: 12px !important;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    color: #1ba99d;
+    font-weight: 600;
+    padding: 10px 16px;
+    transition: all 0.2s;
+    background: #fff;
+    margin: 0;
+}
+.karir-pagination .page-item.active .page-link {
+    background: #1ba99d;
+    color: #fff;
+    border-color: #1ba99d;
+    box-shadow: 0 4px 12px rgba(27, 169, 157, 0.25);
+}
+.karir-pagination .page-item:not(.active) .page-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: #a7e8e4;
+    background: #e8f8f7;
+}
+.karir-pagination .page-item.disabled .page-link {
+    color: #9ca3af;
+    background: #f9fafb;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+/* ===== Karir Tabs Redesign: Smooth Pill Slider ===== */
+.karir-tabs-wrap {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 70px;
+    z-index: 99;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.karir-tabs {
+    position: relative;
+    overflow: hidden;
+}
+.karir-tabs-inner {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    padding-bottom: 0;
+}
+.karir-tabs-inner::-webkit-scrollbar { display: none; }
+
+.karir-tab {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 16px 22px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.25s ease, background 0.25s ease;
+    flex-shrink: 0;
+}
+.karir-tab:hover {
+    color: #1e293b;
+    background: rgba(0,0,0,0.025);
+}
+.karir-tab.active {
+    color: var(--tab-color, #1ba99d);
+}
+.karir-tab-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    flex-shrink: 0;
+    background: #f3f4f6;
+    color: #6b7280;
+}
+.karir-tab:hover .karir-tab-icon {
+    transform: scale(1.08);
+}
+.karir-tab-label {
+    transition: color 0.25s;
+}
+.karir-tab-badge {
+    background: #e5e7eb;
+    color: #6b7280;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* Sliding indicator bar */
+.karir-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: #1ba99d;
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.3s ease;
+    pointer-events: none;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+(function() {
+    function initKarirTabs() {
+        const inner = document.getElementById('karirTabsInner');
+        const indicator = document.getElementById('tabIndicator');
+        if (!inner || !indicator) return;
+
+        const activeTab = inner.querySelector('.karir-tab.active');
+
+        function moveIndicator(tab) {
+            const color = tab.dataset.color || '#1ba99d';
+            const innerRect = inner.getBoundingClientRect();
+            const tabRect = tab.getBoundingClientRect();
+            indicator.style.left  = (tabRect.left - innerRect.left + inner.scrollLeft) + 'px';
+            indicator.style.width = tabRect.width + 'px';
+            indicator.style.background = color;
+        }
+
+        // Position indicator on active tab immediately (no transition on load)
+        if (activeTab) {
+            indicator.style.transition = 'none';
+            moveIndicator(activeTab);
+            // Scroll active tab into view smoothly
+            activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            // Re-enable transition after initial position
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    indicator.style.transition = '';
+                });
+            });
+        }
+
+        // Hover preview
+        inner.querySelectorAll('.karir-tab').forEach(tab => {
+            tab.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('active')) {
+                    moveIndicator(this);
+                    indicator.style.opacity = '0.4';
+                }
+            });
+            tab.addEventListener('mouseleave', function() {
+                indicator.style.opacity = '1';
+                if (activeTab) moveIndicator(activeTab);
+                else { indicator.style.width = '0'; }
+            });
+            tab.addEventListener('click', function(e) {
+                // Animate before navigation
+                moveIndicator(this);
+                indicator.style.opacity = '1';
+            });
+        });
+
+        // Reposition on scroll (inner scrolls horizontally)
+        inner.addEventListener('scroll', function() {
+            const current = inner.querySelector('.karir-tab.active') || activeTab;
+            if (current) {
+                indicator.style.transition = 'none';
+                moveIndicator(current);
+                requestAnimationFrame(() => { indicator.style.transition = ''; });
+            }
+        });
+
+        // Reposition on window resize
+        window.addEventListener('resize', function() {
+            const current = inner.querySelector('.karir-tab.active') || activeTab;
+            if (current) moveIndicator(current);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initKarirTabs);
+    } else {
+        initKarirTabs();
+    }
+})();
+</script>
 @endpush
 
 @section('content')
 
 @php
-    $tabMeta = [
-        'Semua'           => ['icon'=>'bi-grid-3x3-gap', 'color'=>'#0055a5', 'bg'=>'#eff6ff'],
-        'Perawat'         => ['icon'=>'bi-heart-pulse',  'color'=>'#0055a5', 'bg'=>'#eff6ff'],
-        'Penunjang Medis' => ['icon'=>'bi-capsule',      'color'=>'#00a859', 'bg'=>'#f0fdf4'],
-        'Pelayanan Medis' => ['icon'=>'bi-hospital',     'color'=>'#6c3fc5', 'bg'=>'#faf5ff'],
-        'Non Perawat'     => ['icon'=>'bi-person-gear',  'color'=>'#e8333c', 'bg'=>'#fff1f2'],
-    ];
-    $katDescs = [
-        'Perawat'         => 'Tenaga keperawatan profesional untuk asuhan langsung kepada pasien.',
-        'Penunjang Medis' => 'Radiologi, laboratorium, farmasi, rehabilitasi medik, dan lainnya.',
-        'Pelayanan Medis' => 'Dokter umum, dokter spesialis, dan tenaga medis klinis.',
-        'Non Perawat'     => 'Administrasi, keuangan, SDM, IT, dan operasional rumah sakit.',
-    ];
+    $tabMeta = ['Semua' => ['icon'=>'bi-grid', 'color'=>'#0f172a', 'bg'=>'#f1f5f9']];
+    foreach($kategoris as $k) {
+        $tabMeta[$k->nama] = ['icon'=>$k->icon, 'color'=>$k->warna, 'bg'=>$k->warna_bg];
+    }
 @endphp
 
-<div class="karir-hero">
-    <div class="container" style="position:relative;z-index:2">
-        <nav aria-label="breadcrumb" class="mb-3">
-            <ol class="breadcrumb" style="--bs-breadcrumb-divider-color:rgba(255,255,255,0.4)">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}" style="color:rgba(255,255,255,0.7)">Beranda</a></li>
-                <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.5)">Karir</li>
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">Bergabung Bersama Tim RS Hamori</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+                <li class="breadcrumb-item active">Karir</li>
             </ol>
         </nav>
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1>Bergabung Bersama Tim RS Hamori</h1>
-                <p>Kami mencari tenaga kesehatan yang berdedikasi dan profesional untuk bersama memberikan pelayanan terbaik kepada masyarakat.</p>
-                <div class="karir-hero-stats">
-                    @foreach(array_keys($tabMeta) as $k)
-                        @if($k !== 'Semua')
-                        <div>
-                            <div class="karir-stat-num">{{ $counts[$k] ?? 0 }}</div>
-                            <div class="karir-stat-label">{{ $k }}</div>
-                        </div>
-                        @endif
-                    @endforeach
-                    <div>
-                        <div class="karir-stat-num">{{ $counts['Semua'] }}</div>
-                        <div class="karir-stat-label">Total Lowongan</div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
 <div class="karir-tabs-wrap">
     <div class="container px-0">
-        <div class="karir-tabs">
-            @foreach($tabMeta as $kat => $meta)
-            <a href="{{ $kat === 'Semua' ? route('karir.index') : route('karir.index', ['kategori'=>$kat]) }}"
-               class="karir-tab {{ $aktifKategori === $kat ? 'active' : '' }}"
-               data-kat="{{ $kat }}">
-                <div class="karir-tab-icon">
-                    <i class="bi {{ $meta['icon'] }}"></i>
-                </div>
-                {{ $kat === 'Semua' ? 'Semua Lowongan' : $kat }}
-                <span class="karir-tab-badge">{{ $counts[$kat] ?? 0 }}</span>
-            </a>
-            @endforeach
+        <div class="karir-tabs" id="karirTabsScroll">
+            <div class="karir-tabs-inner" id="karirTabsInner">
+                @foreach($tabMeta as $kat => $meta)
+                @php
+                    $isActive = $aktifKategori === $kat;
+                    $color = $meta['color'];
+                    $bg    = $meta['bg'];
+                @endphp
+                <a href="{{ $kat === 'Semua' ? route('karir.index') : route('karir.index', ['kategori'=>$kat]) }}"
+                   class="karir-tab {{ $isActive ? 'active' : '' }}"
+                   data-kat="{{ $kat }}"
+                   data-color="{{ $color }}"
+                   data-bg="{{ $bg }}"
+                   style="
+                       {{ $isActive ? '--tab-color:'.$color.';--tab-bg:'.$bg.';' : '' }}
+                   ">
+                    <div class="karir-tab-icon" style="{{ $isActive ? 'background:'.$color.';color:#fff;' : 'background:'.$bg.';color:'.$color.';' }}">
+                        <i class="bi {{ $meta['icon'] }}"></i>
+                    </div>
+                    <span class="karir-tab-label">{{ $kat === 'Semua' ? 'Semua' : $kat }}</span>
+                    <span class="karir-tab-badge" style="{{ $isActive ? 'background:'.$color.';color:#fff;' : '' }}">{{ $counts[$kat] ?? 0 }}</span>
+                </a>
+                @endforeach
+            </div>
+            {{-- Smooth sliding underline indicator --}}
+            <div class="karir-tab-indicator" id="tabIndicator"></div>
         </div>
     </div>
 </div>
 
-<div class="karir-filter-bar">
-    <div class="container">
-        <form method="GET" action="{{ route('karir.index') }}" class="karir-filter-form">
+<div class="container mt-4">
+    <div class="jadwal-search-wrap">
+        <form method="GET" action="{{ route('karir.index') }}" class="karir-search-form">
             @if($aktifKategori !== 'Semua')
             <input type="hidden" name="kategori" value="{{ $aktifKategori }}">
             @endif
-            <input type="text" name="search" class="form-control"
-                   placeholder="🔍  Cari posisi pekerjaan..."
-                   value="{{ request('search') }}">
-            <select name="tipe" class="form-select" style="max-width:170px">
-                <option value="">Semua Tipe</option>
-                @foreach(['full-time'=>'Full Time','part-time'=>'Part Time','kontrak'=>'Kontrak','magang'=>'Magang'] as $val=>$label)
-                <option value="{{ $val }}" {{ request('tipe')===$val?'selected':'' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="btn btn-primary" style="border-radius:10px;font-size:13px;padding:8px 20px">
-                <i class="bi bi-search me-1"></i> Cari
-            </button>
-            @if(request()->hasAny(['search','tipe']))
-            <a href="{{ route('karir.index', $aktifKategori!=='Semua' ? ['kategori'=>$aktifKategori] : []) }}"
-               class="btn btn-outline-secondary" style="border-radius:10px;font-size:13px;padding:8px 16px">
-                <i class="bi bi-x"></i> Reset
-            </a>
-            @endif
+            <div class="jadwal-search-row">
+                <div class="jadwal-search-field">
+                    <i class="bi bi-search jadwal-search-icon"></i>
+                    <input type="text" name="search" class="jadwal-search-input"
+                           placeholder="Cari posisi pekerjaan..."
+                           value="{{ request('search') }}">
+                </div>
+                <div class="jadwal-search-field" style="position: relative; max-width: 200px;">
+                    <i class="bi bi-briefcase jadwal-search-icon"></i>
+                    <input type="hidden" name="tipe" id="input-tipe" value="{{ request('tipe') }}">
+                    <div class="jadwal-search-input jadwal-search-select custom-dropdown-trigger" id="tipeDropdownTrigger"
+                         style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; padding-left:40px;">
+                        <span id="tipeDropdownLabel">
+                            @php
+                                $tipeLabels = [];
+                                foreach($tipes as $t) {
+                                    $tipeLabels[$t->slug] = $t->nama;
+                                }
+                            @endphp
+                            {{ $tipeLabels[request('tipe')] ?? 'Semua Tipe' }}
+                        </span>
+                        <i class="bi bi-chevron-down ms-2" id="tipeDropdownArrow" style="transition:transform 0.2s; color:#94a3b8; font-size:14px;"></i>
+                    </div>
+                    <ul class="custom-dropdown-options" id="tipeDropdownOptions"
+                        style="position:absolute; top:calc(100% + 5px); left:0; width:100%; background:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); border:1px solid #e2e8f0; padding:6px; margin:0; z-index:100; opacity:0; visibility:hidden; transform:translateY(-10px); transition:all 0.2s ease;">
+                        <li class="custom-dropdown-option {{ request('tipe') == '' ? 'active' : '' }}" data-value="">Semua Tipe</li>
+                        @foreach($tipes as $t)
+                        <li class="custom-dropdown-option {{ request('tipe') == $t->slug ? 'active' : '' }}" data-value="{{ $t->slug }}">{{ $t->nama }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <button type="submit" class="jadwal-search-btn">
+                    <i class="bi bi-search me-1"></i> Cari
+                </button>
+                @if(request()->hasAny(['search','tipe']))
+                <a href="{{ route('karir.index', $aktifKategori!=='Semua' ? ['kategori'=>$aktifKategori] : []) }}"
+                   class="jadwal-reset-btn">
+                    <i class="bi bi-x-circle"></i> Reset
+                </a>
+                @endif
+            </div>
         </form>
     </div>
 </div>
@@ -112,8 +447,7 @@
             <div>
                 <h5 class="fw-bold mb-1" style="color:{{ $km['color'] }}">{{ $aktifKategori }}</h5>
                 <p class="mb-0 text-muted" style="font-size:13px">
-                    {{ $katDescs[$aktifKategori] ?? '' }}
-                    &nbsp;—&nbsp;<strong>{{ $karirs->total() }} lowongan tersedia</strong>
+                    <strong>{{ $karirs->total() }} lowongan tersedia</strong>
                 </p>
             </div>
         </div>
@@ -141,7 +475,12 @@
                     <div class="karir-card-colorbar" style="background:{{ $km2['color'] }}"></div>
                     <div class="karir-card-top">
                         <div class="karir-badges">
-                            <span class="badge-tipe {{ $karir->tipe }}">{{ ucfirst(str_replace('-',' ',$karir->tipe)) }}</span>
+                            @php
+                                $tipeObj = $tipes->where('slug', $karir->tipe)->first();
+                                $tc = $tipeObj->warna ?? '#1ba99d';
+                                $tn = $tipeObj->nama ?? ucfirst(str_replace('-',' ',$karir->tipe));
+                            @endphp
+                            <span class="badge-tipe" style="color: {{ $tc }}; background: {{ $tc }}15; border-color: {{ $tc }}33;">{{ $tn }}</span>
                             @if($isDeadlineSoon)<span class="badge-soon">⚡ Segera Tutup</span>@endif
                         </div>
                         <span style="font-size:11px;color:{{ $km2['color'] }};font-weight:600;white-space:nowrap">
@@ -180,61 +519,42 @@
             </div>
             @endforeach
         </div>
-        <div class="mt-5 d-flex justify-content-center">{{ $karirs->links() }}</div>
+        <div class="mt-5 d-flex justify-content-center karir-pagination">{{ $karirs->links() }}</div>
         @endif
 
     </div>
 </section>
 
-<section class="why-join py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <span class="section-badge">Keuntungan</span>
-            <h2 class="section-title">Mengapa Bergabung dengan RS Hamori?</h2>
-        </div>
-        <div class="row g-4">
-            @foreach([
-                ['bg'=>'#eff6ff','color'=>'#0055a5','icon'=>'bi-graph-up-arrow','title'=>'Karir Berkembang','desc'=>'Pengembangan karir terstruktur dan promosi yang transparan.'],
-                ['bg'=>'#f0fdf4','color'=>'#00a859','icon'=>'bi-shield-check','title'=>'BPJS & Asuransi','desc'=>'Perlindungan kesehatan dan jiwa untuk karyawan dan keluarga.'],
-                ['bg'=>'#faf5ff','color'=>'#6c3fc5','icon'=>'bi-mortarboard','title'=>'Pelatihan Kontinu','desc'=>'Akses pelatihan, seminar, dan sertifikasi profesi didukung RS.'],
-                ['bg'=>'#fff1f2','color'=>'#e8333c','icon'=>'bi-emoji-smile','title'=>'Lingkungan Positif','desc'=>'Budaya kerja inklusif, kolaboratif, dan berorientasi kesejahteraan.'],
-            ] as $w)
-            <div class="col-sm-6 col-lg-3">
-                <div class="why-card">
-                    <div class="why-icon" style="background:{{ $w['bg'] }};color:{{ $w['color'] }}">
-                        <i class="bi {{ $w['icon'] }}"></i>
-                    </div>
-                    <h6 class="fw-bold mb-2">{{ $w['title'] }}</h6>
-                    <p class="text-muted" style="font-size:13px;margin:0">{{ $w['desc'] }}</p>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const trigger = document.getElementById('tipeDropdownTrigger');
+    const wrapper = trigger ? trigger.closest('.jadwal-search-field') : null;
+    const options = document.querySelectorAll('#tipeDropdownOptions .custom-dropdown-option');
+    const hiddenInput = document.getElementById('input-tipe');
+    const form = trigger ? trigger.closest('form') : null;
 
-<section class="py-5">
-    <div class="container">
-        <div class="open-app-card">
-            <div class="row align-items-center" style="position:relative;z-index:2">
-                <div class="col-lg-8">
-                    <h3 class="fw-bold mb-2">Tidak menemukan posisi yang sesuai?</h3>
-                    <p class="opacity-75 mb-0">Kirim lamaran terbuka. Kami akan menghubungi saat ada posisi yang cocok dengan profil Anda.</p>
-                </div>
-                <div class="col-lg-4 mt-4 mt-lg-0 d-flex gap-3 flex-wrap justify-content-lg-end">
-                    <a href="https://wa.me/{{ \App\Models\SiteSetting::get('phone_whatsapp', '6281111121705') }}?text=Halo%2C+saya+ingin+mengirim+lamaran+terbuka+ke+RS+Hamori"
-                       target="_blank" class="btn btn-light btn-lg fw-bold d-inline-flex align-items-center gap-2">
-                        <i class="bi bi-whatsapp text-success"></i> Chat via WhatsApp
-                    </a>
-                    <a href="mailto:hrd@rshamori.co.id"
-                       class="btn btn-outline-light btn-lg fw-semibold d-inline-flex align-items-center gap-2">
-                        <i class="bi bi-envelope"></i> Via Email
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    if (trigger && wrapper) {
+        trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            wrapper.classList.toggle('open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                hiddenInput.value = this.getAttribute('data-value');
+                if (form) form.submit();
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('open');
+            }
+        });
+    }
+});
+</script>
+@endpush
 
 @endsection
-

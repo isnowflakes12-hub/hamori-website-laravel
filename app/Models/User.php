@@ -29,7 +29,7 @@ class User extends Authenticatable
         return match($section) {
             'users','settings'   => $this->isSuperAdmin(),
             'banner','artikel','layanan','dokter','poli','partner','faq','fasilitas','promo','kategori-artikel' => $this->isSuperAdmin() || $this->isAdminMarketing(),
-            'karir','lamaran'    => $this->isSuperAdmin() || $this->isAdminSdm(),
+            'karir','lamaran','karir-kategori','karir-tipe' => $this->isSuperAdmin() || $this->isAdminSdm(),
             default              => $this->isSuperAdmin(),
         };
     }

@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\KategoriArtikelController;
 use App\Http\Controllers\Admin\DokterAdminController;
 use App\Http\Controllers\Admin\PartnerAdminController;
 use App\Http\Controllers\Admin\KarirController as AdminKarirController;
+use App\Http\Controllers\Admin\KarirKategoriController;
+use App\Http\Controllers\Admin\KarirTipeController;
 use App\Http\Controllers\Admin\LamaranController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\FasilitasController as AdminFasilitasController;
@@ -150,8 +152,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('partner', PartnerAdminController::class)->except(['show']);
 
         // SDM — Karir (lowongan)
+        Route::post('karir/bulk-toggle', [AdminKarirController::class, 'bulkToggle'])->name('karir.bulk-toggle');
         Route::resource('karir', AdminKarirController::class)->except(['show']);
         Route::patch('karir/{karir}/toggle', [AdminKarirController::class, 'toggleActive'])->name('karir.toggle');
+        
+        // SDM - Karir Kategori
+        Route::post('karir-kategori/reorder', [KarirKategoriController::class, 'reorder'])->name('karir-kategori.reorder');
+        Route::resource('karir-kategori', KarirKategoriController::class)->except(['show']);
+        Route::patch('karir-kategori/{karir_kategori}/toggle', [KarirKategoriController::class, 'toggleActive'])->name('karir-kategori.toggle');
+        
+        // SDM - Karir Tipe
+        Route::resource('karir-tipe', KarirTipeController::class)->except(['show']);
+        Route::patch('karir-tipe/{karir_tipe}/toggle', [KarirTipeController::class, 'toggleActive'])->name('karir-tipe.toggle');
 
         // SDM — Lamaran
         Route::get('/lamaran',              [LamaranController::class, 'index'])->name('lamaran.index');
