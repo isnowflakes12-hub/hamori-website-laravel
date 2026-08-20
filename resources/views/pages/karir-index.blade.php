@@ -160,94 +160,200 @@
     pointer-events: none;
 }
 
-/* ===== Karir Tabs Redesign: Smooth Pill Slider ===== */
+/* ===== Karir Tabs: Responsive Pill Cards ===== */
 .karir-tabs-wrap {
     background: #fff;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 2px solid #f0f0f0;
     position: sticky;
     top: 70px;
     z-index: 99;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    padding: 0;
 }
-.karir-tabs {
+
+/* Scroll shadow hints on sides */
+.karir-tabs-scroll-wrap {
     position: relative;
     overflow: hidden;
 }
+.karir-tabs-scroll-wrap::before,
+.karir-tabs-scroll-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.karir-tabs-scroll-wrap::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255,255,255,0.95), transparent);
+    opacity: 0;
+}
+.karir-tabs-scroll-wrap::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255,255,255,0.95), transparent);
+}
+.karir-tabs-scroll-wrap.show-left::before  { opacity: 1; }
+.karir-tabs-scroll-wrap.show-right::after  { opacity: 1; }
+
 .karir-tabs-inner {
     display: flex;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
-    padding-bottom: 0;
+    padding: 14px 12px;
+    gap: 10px;
+    /* On desktop: distribute evenly */
+    justify-content: flex-start;
 }
 .karir-tabs-inner::-webkit-scrollbar { display: none; }
 
+/* Each tab pill */
 .karir-tab {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 9px;
-    padding: 16px 22px;
-    border: none;
-    background: transparent;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 50px;
+    border: 1.5px solid #e8ecf0;
+    background: #f8fafc;
     color: #6b7280;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     white-space: nowrap;
     cursor: pointer;
     text-decoration: none;
     position: relative;
-    transition: color 0.25s ease, background 0.25s ease;
     flex-shrink: 0;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.18s ease;
+    user-select: none;
 }
 .karir-tab:hover {
     color: #1e293b;
-    background: rgba(0,0,0,0.025);
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    text-decoration: none;
 }
 .karir-tab.active {
+    border-color: var(--tab-color, #1ba99d);
+    background: var(--tab-bg, #e8f8f7);
     color: var(--tab-color, #1ba99d);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--tab-color, #1ba99d) 20%, transparent);
+    transform: translateY(-1px);
 }
+
+/* Icon circle in tab */
 .karir-tab-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    font-size: 13px;
     flex-shrink: 0;
-    background: #f3f4f6;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    background: #edf2f7;
     color: #6b7280;
 }
 .karir-tab:hover .karir-tab-icon {
-    transform: scale(1.08);
+    transform: rotate(-5deg) scale(1.1);
 }
 .karir-tab-label {
-    transition: color 0.25s;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 .karir-tab-badge {
     background: #e5e7eb;
-    color: #6b7280;
-    font-size: 10.5px;
+    color: #9ca3af;
+    font-size: 10px;
     font-weight: 700;
     padding: 2px 7px;
     border-radius: 100px;
     transition: background 0.25s ease, color 0.25s ease;
+    min-width: 20px;
+    text-align: center;
+}
+.karir-tab.active .karir-tab-badge {
+    color: #fff;
 }
 
-/* Sliding indicator bar */
-.karir-tab-indicator {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    border-radius: 3px 3px 0 0;
-    background: #1ba99d;
-    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                background 0.3s ease;
-    pointer-events: none;
+/* Remove old sliding indicator line (replaced by pill style) */
+.karir-tab-indicator { display: none; }
+
+/* RESPONSIVE: tablet (md) - tabs can be 2 rows if overflowing */
+@media (min-width: 768px) {
+    .karir-tabs-inner {
+        padding: 14px 20px;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-x: visible;
+    }
+    .karir-tabs-scroll-wrap::before,
+    .karir-tabs-scroll-wrap::after { display: none; }
+    .karir-tab {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    .karir-tab-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+}
+
+/* RESPONSIVE: desktop - compact single row centered */
+@media (min-width: 1200px) {
+    .karir-tabs-inner {
+        padding: 16px 24px;
+        gap: 10px;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+    .karir-tab {
+        flex: 0 0 auto;
+        padding: 11px 24px;
+    }
+}
+
+/* Mobile: scrollable single row */
+@media (max-width: 767.98px) {
+    .karir-tabs-wrap {
+        top: 56px;
+    }
+    .karir-tabs-inner {
+        padding: 10px 12px;
+        gap: 8px;
+        justify-content: flex-start;
+    }
+    .karir-tab {
+        padding: 8px 14px;
+        font-size: 12.5px;
+        border-radius: 40px;
+    }
+    .karir-tab-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+    .karir-tab-badge {
+        font-size: 9.5px;
+        padding: 1px 5px;
+    }
 }
 </style>
 @endpush
@@ -257,68 +363,41 @@
 (function() {
     function initKarirTabs() {
         const inner = document.getElementById('karirTabsInner');
-        const indicator = document.getElementById('tabIndicator');
-        if (!inner || !indicator) return;
+        const wrap  = document.getElementById('karirScrollWrap');
+        if (!inner) return;
 
         const activeTab = inner.querySelector('.karir-tab.active');
 
-        function moveIndicator(tab) {
-            const color = tab.dataset.color || '#1ba99d';
-            const innerRect = inner.getBoundingClientRect();
-            const tabRect = tab.getBoundingClientRect();
-            indicator.style.left  = (tabRect.left - innerRect.left + inner.scrollLeft) + 'px';
-            indicator.style.width = tabRect.width + 'px';
-            indicator.style.background = color;
-        }
-
-        // Position indicator on active tab immediately (no transition on load)
+        // Scroll active tab into center view on load
         if (activeTab) {
-            indicator.style.transition = 'none';
-            moveIndicator(activeTab);
-            // Scroll active tab into view smoothly
-            activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            // Re-enable transition after initial position
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    indicator.style.transition = '';
-                });
-            });
+            activeTab.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
         }
 
-        // Hover preview
+        // Manage fade-shadow hints on scroll (mobile only)
+        function updateShadows() {
+            if (!wrap) return;
+            const atLeft  = inner.scrollLeft <= 4;
+            const atRight = inner.scrollLeft >= inner.scrollWidth - inner.clientWidth - 4;
+            wrap.classList.toggle('show-left',  !atLeft);
+            wrap.classList.toggle('show-right', !atRight && inner.scrollWidth > inner.clientWidth);
+        }
+
+        inner.addEventListener('scroll', updateShadows, { passive: true });
+        window.addEventListener('resize', updateShadows);
+        updateShadows();
+
+        // Smooth hover lift on active: pulse icon slightly
         inner.querySelectorAll('.karir-tab').forEach(tab => {
             tab.addEventListener('mouseenter', function() {
                 if (!this.classList.contains('active')) {
-                    moveIndicator(this);
-                    indicator.style.opacity = '0.4';
+                    this.style.transform = 'translateY(-1px)';
                 }
             });
             tab.addEventListener('mouseleave', function() {
-                indicator.style.opacity = '1';
-                if (activeTab) moveIndicator(activeTab);
-                else { indicator.style.width = '0'; }
+                if (!this.classList.contains('active')) {
+                    this.style.transform = '';
+                }
             });
-            tab.addEventListener('click', function(e) {
-                // Animate before navigation
-                moveIndicator(this);
-                indicator.style.opacity = '1';
-            });
-        });
-
-        // Reposition on scroll (inner scrolls horizontally)
-        inner.addEventListener('scroll', function() {
-            const current = inner.querySelector('.karir-tab.active') || activeTab;
-            if (current) {
-                indicator.style.transition = 'none';
-                moveIndicator(current);
-                requestAnimationFrame(() => { indicator.style.transition = ''; });
-            }
-        });
-
-        // Reposition on window resize
-        window.addEventListener('resize', function() {
-            const current = inner.querySelector('.karir-tab.active') || activeTab;
-            if (current) moveIndicator(current);
         });
     }
 
@@ -354,31 +433,32 @@
 
 <div class="karir-tabs-wrap">
     <div class="container px-0">
-        <div class="karir-tabs" id="karirTabsScroll">
+        <div class="karir-tabs-scroll-wrap" id="karirScrollWrap">
             <div class="karir-tabs-inner" id="karirTabsInner">
                 @foreach($tabMeta as $kat => $meta)
                 @php
                     $isActive = $aktifKategori === $kat;
-                    $color = $meta['color'];
-                    $bg    = $meta['bg'];
+                    $color    = $meta['color'];
+                    $bg       = $meta['bg'];
                 @endphp
                 <a href="{{ $kat === 'Semua' ? route('karir.index') : route('karir.index', ['kategori'=>$kat]) }}"
                    class="karir-tab {{ $isActive ? 'active' : '' }}"
                    data-kat="{{ $kat }}"
                    data-color="{{ $color }}"
                    data-bg="{{ $bg }}"
-                   style="
-                       {{ $isActive ? '--tab-color:'.$color.';--tab-bg:'.$bg.';' : '' }}
-                   ">
-                    <div class="karir-tab-icon" style="{{ $isActive ? 'background:'.$color.';color:#fff;' : 'background:'.$bg.';color:'.$color.';' }}">
+                   style="{{ $isActive ? '--tab-color:'.$color.';--tab-bg:'.$bg.';' : '' }}">
+                    <div class="karir-tab-icon"
+                         style="background:{{ $isActive ? $color : $bg }};color:{{ $isActive ? '#fff' : $color }};">
                         <i class="bi {{ $meta['icon'] }}"></i>
                     </div>
                     <span class="karir-tab-label">{{ $kat === 'Semua' ? 'Semua' : $kat }}</span>
-                    <span class="karir-tab-badge" style="{{ $isActive ? 'background:'.$color.';color:#fff;' : '' }}">{{ $counts[$kat] ?? 0 }}</span>
+                    <span class="karir-tab-badge"
+                          style="{{ $isActive ? 'background:'.$color.';color:#fff;' : '' }}">
+                        {{ $counts[$kat] ?? 0 }}
+                    </span>
                 </a>
                 @endforeach
             </div>
-            {{-- Smooth sliding underline indicator --}}
             <div class="karir-tab-indicator" id="tabIndicator"></div>
         </div>
     </div>
