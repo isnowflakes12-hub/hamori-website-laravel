@@ -46,6 +46,8 @@ class DatabaseSeeder extends Seeder
             PromosTableSeeder::class,
 
             // Karir
+            KarirKategoriSeeder::class,
+            KarirTipeSeeder::class,
             KarirsTableSeeder::class,
 
             // Informasi RS
