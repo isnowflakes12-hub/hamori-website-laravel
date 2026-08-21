@@ -9,19 +9,19 @@ class UserSeeder extends Seeder {
         $users = [
             [
                 'name' => 'Super Admin IT',
-                'email' => 'superadmin@rshamori.co.id',
+                'email' => 'superadmin@rs-hamori.co.id',
                 'role' => 'super_admin',
-                'password' => 'admin123'
+                'password' => 'Hamori@22#33'
             ],
             [
                 'name' => 'Admin Marketing',
-                'email' => 'marketing@rshamori.co.id',
+                'email' => 'marketing@rs-hamori.co.id',
                 'role' => 'admin_marketing',
                 'password' => 'marketing123'
             ],
             [
                 'name' => 'Admin SDM',
-                'email' => 'sdm@rshamori.co.id',
+                'email' => 'sdm@rs-hamori.co.id',
                 'role' => 'admin_sdm',
                 'password' => 'sdm123456'
             ]
