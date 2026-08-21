@@ -51,7 +51,6 @@ body {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     position: relative;
     border-right: 1px solid rgba(0,0,0,0.05);
 }
@@ -81,7 +80,7 @@ body {
 .bp-title { font-weight: 800; font-size: 20px; color: #1a1a2e; line-height: 1.2; font-family: 'Metropolis', sans-serif; }
 .bp-subtitle { font-size: 12px; color: #64748b; font-weight: 500; }
 
-.bp-content { position: relative; z-index: 2; margin-top: 60px; }
+.bp-content { position: relative; z-index: 2; margin: auto 0; }
 .bp-headline {
     font-size: clamp(2rem, 3vw, 2.5rem);
     font-weight: 800;
