@@ -97,7 +97,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Catatan Internal</label>
-                    <textarea name="catatan" class="form-control" rows="3" placeholder="Catatan untuk tim HR...">{{ $lamaran->catatan }}</textarea>
+                    <textarea name="catatan" class="form-control" rows="3" placeholder="Catatan untuk team SDM...">{{ $lamaran->catatan }}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check2 me-2"></i>Simpan Status</button>
             </form>
