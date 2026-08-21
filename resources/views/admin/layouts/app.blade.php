@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+@php
+    $favicon = \App\Models\SiteSetting::get('favicon');
+    $faviconUrl = $favicon ? asset('storage/' . $favicon) : asset('assets/images/logosq.png');
+@endphp
 <title>@yield('title','Dashboard') — Admin RS Hamori</title>
+<link rel="icon" type="image/png" href="{{ $faviconUrl }}">
 <link href="https://fonts.cdnfonts.com/css/metropolis-2" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -146,7 +151,9 @@ textarea.form-control{min-height:140px;resize:vertical}
 <body>
 <aside class="sidebar" id="sidebar">
     <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-        <div class="sidebar-brand-icon"><i class="bi bi-hospital"></i></div>
+        <div class="sidebar-brand-icon" style="background: transparent;">
+            <img src="{{ $faviconUrl }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+        </div>
         <div><div class="sidebar-brand-text">RS Hamori</div><div class="sidebar-brand-sub">Admin Panel</div></div>
     </a>
     <nav class="sidebar-nav">        <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">

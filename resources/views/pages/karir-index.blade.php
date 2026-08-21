@@ -15,12 +15,13 @@
     display: flex;
     gap: 12px;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 .jadwal-search-field {
-    flex: 1 1 220px;
+    flex: 1 1 0;
     position: relative;
-    min-width: 180px;
+    min-width: 0;
 }
 .jadwal-search-icon {
     position: absolute;
@@ -66,6 +67,7 @@
     white-space: nowrap;
     transition: background .2s, transform .15s;
     flex-shrink: 0;
+    flex-grow: 0;
     display: inline-flex;
     align-items: center;
 }
@@ -91,9 +93,9 @@
     color: #475569;
 }
 @media (max-width: 767.98px) {
-    .jadwal-search-row { flex-direction: column; }
+    .jadwal-search-row { flex-wrap: wrap; overflow: visible; }
     .jadwal-search-field { flex: 1 1 100%; min-width: 100%; }
-    .jadwal-search-btn, .jadwal-reset-btn { width: 100%; justify-content: center; }
+    .jadwal-search-btn, .jadwal-reset-btn { width: 100%; justify-content: center; flex-shrink: 0; }
 }
 
 /* Custom Dropdown */
@@ -598,7 +600,7 @@
                            placeholder="Cari posisi pekerjaan..."
                            value="{{ request('search') }}">
                 </div>
-                <div class="jadwal-search-field" style="position: relative; max-width: 200px;">
+                <div class="jadwal-search-field">
                     <i class="bi bi-briefcase jadwal-search-icon"></i>
                     <input type="hidden" name="tipe" id="input-tipe" value="{{ request('tipe') }}">
                     <div class="jadwal-search-input jadwal-search-select custom-dropdown-trigger" id="tipeDropdownTrigger"
@@ -723,18 +725,12 @@
                     </div>
                     <div class="karir-card-footer">
                         @if($isExpired)
-                            <button class="btn-detail" disabled style="background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; cursor:not-allowed;">
+                            <button class="btn-detail" disabled style="width:100%; background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; cursor:not-allowed;">
                                 <i class="bi bi-eye"></i> Lihat Detail
-                            </button>
-                            <button class="btn-lamar" disabled style="background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; cursor:not-allowed;">
-                                <i class="bi bi-send"></i> Lamar
                             </button>
                         @else
-                            <a href="{{ route('karir.show', $karir->id) }}" class="btn-detail">
+                            <a href="{{ route('karir.show', $karir->id) }}" class="btn-detail" style="width:100%; justify-content:center;">
                                 <i class="bi bi-eye"></i> Lihat Detail
-                            </a>
-                            <a href="{{ route('karir.show', $karir->id) }}#form-lamar" class="btn-lamar">
-                                <i class="bi bi-send"></i> Lamar
                             </a>
                         @endif
                     </div>

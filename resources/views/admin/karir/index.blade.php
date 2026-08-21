@@ -7,53 +7,49 @@
     <a href="{{ route('admin.karir.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Tambah Lowongan</a>
 </div>
 <div class="filter-bar mb-4">
-    <form method="GET" class="d-flex gap-2 flex-wrap w-100 align-items-center">
-        <input type="text" name="search" class="form-control flex-grow-1" style="min-width: 250px; max-width: 600px;" placeholder="Cari posisi..." value="{{ request('search') }}">
+<form method="GET" class="d-flex gap-2 align-items-center w-100" style="flex-wrap:nowrap;">
+        <input type="text" name="search" class="form-control" style="flex:1 1 0; min-width:0;" placeholder="Cari posisi..." value="{{ request('search') }}">
         
-        <div class="ms-auto d-flex gap-2 flex-wrap align-items-center">
-            @php
-                $reqKategori = request('kategori');
-                $katLabel = 'Semua Kategori';
-                if ($reqKategori) $katLabel = $reqKategori;
-            @endphp
-            <div class="custom-dropdown-wrapper" style="width:180px">
-                <input type="hidden" name="kategori" value="{{ $reqKategori }}">
-                <div class="custom-dropdown-trigger">
-                    <span class="custom-dropdown-label">{{ $katLabel }}</span>
-                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
-                </div>
-                <ul class="custom-dropdown-options-container">
-                    <li class="custom-dropdown-option {{ $reqKategori == '' ? 'active' : '' }}" data-value="">Semua Kategori</li>
-                    @foreach($kategoriList as $k)
-                    <li class="custom-dropdown-option {{ $reqKategori == $k ? 'active' : '' }}" data-value="{{ $k }}">{{ $k }}</li>
-                    @endforeach
-                </ul>
+        @php
+            $reqKategori = request('kategori');
+            $katLabel = 'Semua Kategori';
+            if ($reqKategori) $katLabel = $reqKategori;
+        @endphp
+        <div class="custom-dropdown-wrapper flex-shrink-0" style="width:180px">
+            <input type="hidden" name="kategori" value="{{ $reqKategori }}">
+            <div class="custom-dropdown-trigger">
+                <span class="custom-dropdown-label">{{ $katLabel }}</span>
+                <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
             </div>
-
-            @php
-                $reqStatus = request('status');
-                $statLabel = 'Semua Status';
-                if ($reqStatus == 'aktif') $statLabel = 'Aktif';
-                elseif ($reqStatus == 'nonaktif') $statLabel = 'Nonaktif';
-            @endphp
-            <div class="custom-dropdown-wrapper" style="width:140px">
-                <input type="hidden" name="status" value="{{ $reqStatus }}">
-                <div class="custom-dropdown-trigger">
-                    <span class="custom-dropdown-label">{{ $statLabel }}</span>
-                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
-                </div>
-                <ul class="custom-dropdown-options-container">
-                    <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
-                    <li class="custom-dropdown-option {{ $reqStatus == 'aktif' ? 'active' : '' }}" data-value="aktif">Aktif</li>
-                    <li class="custom-dropdown-option {{ $reqStatus == 'nonaktif' ? 'active' : '' }}" data-value="nonaktif">Nonaktif</li>
-                </ul>
-            </div>
-            
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary" type="submit">Filter</button>
-                @if(request()->hasAny(['search','kategori','status']))<a href="{{ route('admin.karir.index') }}" class="btn btn-outline-secondary">Reset</a>@endif
-            </div>
+            <ul class="custom-dropdown-options-container">
+                <li class="custom-dropdown-option {{ $reqKategori == '' ? 'active' : '' }}" data-value="">Semua Kategori</li>
+                @foreach($kategoriList as $k)
+                <li class="custom-dropdown-option {{ $reqKategori == $k ? 'active' : '' }}" data-value="{{ $k }}">{{ $k }}</li>
+                @endforeach
+            </ul>
         </div>
+
+        @php
+            $reqStatus = request('status');
+            $statLabel = 'Semua Status';
+            if ($reqStatus == 'aktif') $statLabel = 'Aktif';
+            elseif ($reqStatus == 'nonaktif') $statLabel = 'Nonaktif';
+        @endphp
+        <div class="custom-dropdown-wrapper flex-shrink-0" style="width:140px">
+            <input type="hidden" name="status" value="{{ $reqStatus }}">
+            <div class="custom-dropdown-trigger">
+                <span class="custom-dropdown-label">{{ $statLabel }}</span>
+                <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+            </div>
+            <ul class="custom-dropdown-options-container">
+                <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
+                <li class="custom-dropdown-option {{ $reqStatus == 'aktif' ? 'active' : '' }}" data-value="aktif">Aktif</li>
+                <li class="custom-dropdown-option {{ $reqStatus == 'nonaktif' ? 'active' : '' }}" data-value="nonaktif">Nonaktif</li>
+            </ul>
+        </div>
+        
+        <button class="btn btn-primary flex-shrink-0" type="submit">Filter</button>
+        @if(request()->hasAny(['search','kategori','status']))<a href="{{ route('admin.karir.index') }}" class="btn btn-outline-secondary flex-shrink-0">Reset</a>@endif
     </form>
 </div>
 <div id="bulkActionContainer" data-url="{{ route('admin.karir.bulk-toggle') }}" data-csrf="{{ csrf_token() }}">

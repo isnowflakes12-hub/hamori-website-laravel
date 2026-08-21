@@ -43,31 +43,6 @@
         </div>
     </div>
 
-    {{-- Quick Actions per role --}}
-    <div class="mt-3 d-flex flex-wrap gap-2">
-        @if($user->isSuperAdmin() || $user->isAdminMarketing())
-            <a href="{{ route('admin.artikel.create') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-plus-circle me-1"></i>Tulis Artikel</a>
-            <a href="{{ route('admin.promo.create') }}"   class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-gift me-1"></i>Tambah Promo</a>
-            <a href="{{ route('admin.kritik-saran.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);">
-                <i class="bi bi-envelope-paper me-1"></i>Kritik & Saran
-                @if(isset($stats['kritiks']) && $stats['kritiks'] > 0)<span class="badge bg-warning text-dark ms-1">{{ $stats['kritiks'] }}</span>@endif
-            </a>
-        @endif
-        @if($user->isSuperAdmin())
-            <a href="{{ route('admin.kontak.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);">
-                <i class="bi bi-chat-text me-1"></i>Pesan Masuk
-                @if(isset($stats['kontaks']) && $stats['kontaks'] > 0)<span class="badge bg-warning text-dark ms-1">{{ $stats['kontaks'] }}</span>@endif
-            </a>
-            <a href="{{ route('admin.users.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-people me-1"></i>Kelola Admin</a>
-        @endif
-        @if($user->isAdminSdm() || $user->isSuperAdmin())
-            <a href="{{ route('admin.karir.create') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);"><i class="bi bi-briefcase me-1"></i>Buka Lowongan</a>
-            <a href="{{ route('admin.lamaran.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);">
-                <i class="bi bi-person-lines-fill me-1"></i>Lamaran Masuk
-                @if(isset($stats['lamarans']) && $stats['lamarans'] > 0)<span class="badge bg-warning text-dark ms-1">{{ $stats['lamarans'] }}</span>@endif
-            </a>
-        @endif
-    </div>
 </div>
 
 {{-- ════════════════════
