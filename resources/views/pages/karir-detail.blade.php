@@ -28,52 +28,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
             </ol>
         </nav>
 
-        <div class="d-flex flex-wrap gap-3 align-items-center mt-4">
-            <div class="badge border border-light text-white rounded-pill px-3 py-2" style="background:rgba(255,255,255,0.15); font-weight:normal;">
-                <i class="bi {{ $km['icon'] }} me-1"></i>
-                {{ $karir->kategori }}
-            </div>
-            
-            <div class="text-white" style="font-size:15px; opacity:0.9;">
-                <i class="bi bi-building me-1"></i> {{ $karir->departemen }}
-            </div>
-        </div>
-
-        <div class="d-flex flex-wrap gap-4 text-white mt-3" style="font-size:14px; opacity:0.85;">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-briefcase me-2 fs-5"></i>
-                {{ $tipes->where('slug', $karir->tipe)->first()->nama ?? ucfirst(str_replace('-',' ', $karir->tipe)) }}
-            </div>
-            @if($karir->lokasi)
-            <div class="d-flex align-items-center">
-                <i class="bi bi-geo-alt me-2 fs-5"></i> {{ $karir->lokasi }}
-            </div>
-            @endif
-            @if($karir->kuota)
-            <div class="d-flex align-items-center">
-                <i class="bi bi-people me-2 fs-5"></i> {{ $karir->kuota }} orang dibutuhkan
-            </div>
-            @endif
-            @if($karir->batas_lamaran)
-            <div class="d-flex align-items-center">
-                @if($isExpired)
-                <span class="badge bg-danger rounded-pill px-3 py-2" style="font-weight:normal">
-                    <i class="bi bi-x-circle me-1"></i> Lamaran Ditutup
-                </span>
-                @elseif($isDeadlineSoon)
-                <span class="badge bg-warning text-dark rounded-pill px-3 py-2" style="font-weight:normal">
-                    <i class="bi bi-exclamation-circle me-1"></i>
-                    Segera Tutup — {{ $karir->batas_lamaran->translatedFormat('d F Y') }}
-                </span>
-                @else
-                <span class="badge bg-light text-dark rounded-pill px-3 py-2" style="font-weight:normal">
-                    <i class="bi bi-calendar-check me-1"></i>
-                    Deadline: {{ $karir->batas_lamaran->translatedFormat('d F Y') }}
-                </span>
-                @endif
-            </div>
-            @endif
-        </div>
+        
     </div>
 </div>
 
@@ -88,9 +43,6 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     <i class="bi bi-check-circle-fill"></i>
                     <div>
                         <strong>Lamaran Berhasil Dikirim!</strong>
-                        <p class="mb-0" style="font-size:13px;color:#166534;margin-top:4px">
-                            {{ session('success') }}
-                        </p>
                     </div>
                 </div>
                 @endif
@@ -155,7 +107,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     <input type="text" name="nama"
                                            class="form-control-custom @error('nama') is-invalid @enderror"
                                            placeholder="Nama sesuai KTP"
-                                           value="{{ old('nama') }}" required>
+                                           value="{{ old('nama') }}" required maxlength="200">
                                     @error('nama')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
 
@@ -178,8 +130,10 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     </label>
                                     <input type="text" name="telepon"
                                            class="form-control-custom @error('telepon') is-invalid @enderror"
-                                           placeholder="08xxxxxxxxxx"
-                                           value="{{ old('telepon') }}" required>
+                                           placeholder="08xxxxxxxxxx atau +628xxxxxxxxxx"
+                                           value="{{ old('telepon') }}" required
+                                           pattern="^(\+62|62|0)8[0-9]{7,13}$"
+                                           inputmode="tel">
                                     @error('telepon')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
 
@@ -197,20 +151,21 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     <label class="form-label-custom">
                                         <i class="bi bi-file-earmark-pdf" style="color:#0055a5"></i>
                                         Upload CV / Resume <span class="required">*</span>
-                                        <span style="font-size:11px;color:#9ca3af;font-weight:400">(PDF, DOC, DOCX — maks. 5 MB)</span>
+                                        <span style="font-size:11px;color:#9ca3af;font-weight:400">(PDF saja — maks. 5 MB)</span>
                                     </label>
                                     <div class="file-upload-area @error('cv') is-invalid @enderror" id="cvDropArea">
                                         <input type="file" name="cv" id="cvInput"
-                                               accept=".pdf,.doc,.docx" required>
+                                               accept=".pdf,application/pdf" required>
                                         <div class="file-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
                                         <div class="file-upload-text">
                                             <strong>Klik atau drag & drop</strong> CV Anda di sini<br>
-                                            <span style="font-size:11px">Format: PDF, DOC, DOCX • Maksimal 5 MB</span>
+                                            <span style="font-size:11px">Format: PDF • Maksimal 5 MB</span>
                                         </div>
                                         <div class="file-name-display" id="fileNameDisplay">
                                             <i class="bi bi-check-circle-fill text-success me-1"></i>
                                             <span id="fileNameText"></span>
                                         </div>
+                                        <div id="cvError" style="display:none;font-size:12px;color:#dc2626;margin-top:6px"></div>
                                     </div>
                                     @error('cv')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
                                 </div>
@@ -228,18 +183,28 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 
                                 <div class="col-12">
                                     <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#374151">
-                                        <input type="checkbox" required
+                                        <input type="checkbox" name="persetujuan" id="persetujuanCheck" required
                                                style="margin-top:2px;width:16px;height:16px;accent-color:#0055a5;flex-shrink:0">
                                         <span>
-                                            Saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.
+                                            Saya menyatakan bahwa data yang saya isi adalah <strong>benar</strong> dan dapat dipertanggungjawabkan.
                                             Saya menyetujui <a href="{{ route('privacy-policy') }}" target="_blank" style="color:#0055a5">Kebijakan Privasi</a>
                                             RS Hamori terkait pengolahan data lamaran.
                                         </span>
                                     </label>
                                 </div>
 
+                                {{-- Google reCAPTCHA --}}
                                 <div class="col-12">
-                                    <button type="submit" class="btn-submit-lamar">
+                                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                                    @error('g-recaptcha-response')
+                                    <div style="font-size:12px;color:#dc2626;margin-top:4px">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>{{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-12">
+                                    <button type="submit" class="btn-submit-lamar" id="btnKirimLamaran">
                                         <i class="bi bi-send-fill"></i>
                                         Kirim Lamaran Sekarang
                                     </button>
@@ -313,13 +278,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                         </div>
                         @endif
                     </div>
-                    @if(!$isExpired)
-                    <div class="apply-sidebar-footer">
-                        <a href="#form-lamar" class="btn btn-primary w-100 fw-bold" style="border-radius:12px;padding:11px">
-                            <i class="bi bi-send me-2"></i>Lamar Sekarang
-                        </a>
-                    </div>
-                    @endif
+                    
                 </div>
 
 
@@ -364,42 +323,130 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 @endsection
 
 @push('scripts')
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
-// File upload preview
-const cvInput    = document.getElementById('cvInput');
-const dropArea   = document.getElementById('cvDropArea');
-const nameDisplay = document.getElementById('fileNameDisplay');
-const nameText   = document.getElementById('fileNameText');
+document.addEventListener('DOMContentLoaded', function () {
+    const cvInput     = document.getElementById('cvInput');
+    const dropArea    = document.getElementById('cvDropArea');
+    const nameDisplay = document.getElementById('fileNameDisplay');
+    const nameText    = document.getElementById('fileNameText');
+    const cvError     = document.getElementById('cvError');
+    const checkbox    = document.getElementById('persetujuanCheck');
+    const submitBtn   = document.getElementById('btnKirimLamaran');
 
-if (cvInput) {
-    cvInput.addEventListener('change', function () {
-        if (this.files.length) {
-            nameText.textContent = this.files[0].name;
-            nameDisplay.style.display = 'block';
+    // --- Validate & preview file ---
+    function validateFile(file) {
+        cvError.style.display = 'none';
+        cvError.textContent = '';
+
+        if (!file) return false;
+
+        const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if (!isPDF) {
+            cvError.textContent = 'Format tidak didukung. Hanya file PDF yang diizinkan.';
+            cvError.style.display = 'block';
+            cvInput.value = '';
+            nameDisplay.style.display = 'none';
+            return false;
         }
-    });
-}
 
-// Drag & drop styling
-if (dropArea) {
-    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
-    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
-    dropArea.addEventListener('drop', e => {
-        e.preventDefault();
-        dropArea.classList.remove('dragover');
-        if (e.dataTransfer.files.length) {
-            cvInput.files = e.dataTransfer.files;
-            nameText.textContent = e.dataTransfer.files[0].name;
-            nameDisplay.style.display = 'block';
+        const maxSize = 5 * 1024 * 1024; // 5 MB
+        if (file.size > maxSize) {
+            cvError.textContent = 'Ukuran file melebihi batas 5 MB.';
+            cvError.style.display = 'block';
+            cvInput.value = '';
+            nameDisplay.style.display = 'none';
+            return false;
         }
-    });
-}
 
-// Smooth scroll to form
-document.querySelectorAll('a[href="#form-lamar"]').forEach(a => {
-    a.addEventListener('click', e => {
-        e.preventDefault();
-        document.getElementById('form-lamar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        nameText.textContent = file.name;
+        nameDisplay.style.display = 'block';
+        return true;
+    }
+
+    if (cvInput) {
+        cvInput.addEventListener('change', function () {
+            validateFile(this.files[0]);
+        });
+    }
+
+    // --- Drag & drop ---
+    if (dropArea) {
+        dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
+        dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+        dropArea.addEventListener('drop', e => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                const dt = e.dataTransfer;
+                // Transfer files to input
+                try {
+                    cvInput.files = dt.files;
+                } catch(err) {}
+                validateFile(dt.files[0]);
+            }
+        });
+    }
+
+    // --- Client-side validation on submit ---
+    const form = document.querySelector('form[action*="apply"]');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            let valid = true;
+
+            // Nama max 200
+            const nama = form.querySelector('input[name="nama"]');
+            if (nama && nama.value.trim().length > 200) {
+                alert('Nama lengkap tidak boleh melebihi 200 karakter.');
+                nama.focus();
+                valid = false;
+            }
+
+            // Email format
+            const email = form.querySelector('input[name="email"]');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email.value.trim())) {
+                alert('Format email tidak valid.');
+                email.focus();
+                valid = false;
+            }
+
+            // Telepon format
+            const telepon = form.querySelector('input[name="telepon"]');
+            const phoneRegex = /^(\+62|62|0)8[0-9]{7,13}$/;
+            if (telepon && !phoneRegex.test(telepon.value.trim())) {
+                alert('Format nomor WhatsApp tidak valid. Gunakan format 08xxx atau +628xxx.');
+                telepon.focus();
+                valid = false;
+            }
+
+            // CV harus ada dan PDF
+            if (cvInput && cvInput.files.length === 0) {
+                alert('Harap upload file CV terlebih dahulu.');
+                valid = false;
+            } else if (cvInput && cvInput.files.length > 0) {
+                if (!validateFile(cvInput.files[0])) {
+                    valid = false;
+                }
+            }
+
+            // Checkbox persetujuan
+            if (checkbox && !checkbox.checked) {
+                alert('Anda harus menyetujui pernyataan dan Kebijakan Privasi untuk melanjutkan.');
+                checkbox.focus();
+                valid = false;
+            }
+
+            if (!valid) e.preventDefault();
+        });
+    }
+
+    // --- Smooth scroll to form ---
+    document.querySelectorAll('a[href="#form-lamar"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            document.getElementById('form-lamar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     });
 });
 </script>

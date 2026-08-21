@@ -73,6 +73,73 @@ textarea.form-control{min-height:140px;resize:vertical}
   .sidebar-toggle{display:flex}.sidebar-overlay.show{display:block}
   .main-wrap{margin-left:0}.topbar{left:0}
 }
+/* Custom Dropdown for Admin Forms */
+.custom-dropdown-wrapper { position: relative; width: 100%; }
+.custom-dropdown-trigger {
+    border: 1.5px solid #e5eaf0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    color: #374151;
+}
+.custom-dropdown-wrapper.open .custom-dropdown-trigger {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.1);
+}
+.custom-dropdown-label { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.custom-dropdown-options-container {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+    padding: 6px;
+    margin: 0;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    list-style: none;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.custom-dropdown-wrapper.open .custom-dropdown-options-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+.custom-dropdown-wrapper.open .custom-dropdown-arrow {
+    transform: rotate(180deg);
+}
+.custom-dropdown-option {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a202c;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+}
+.custom-dropdown-option:hover {
+    background: #f1f5f9;
+}
+.custom-dropdown-option.active {
+    background: #e8f8f7; /* Matching frontend's active color or we can use var(--blue) light tint */
+    color: var(--blue);
+    font-weight: 600;
+}
 </style>
 @stack('styles')
 </head>
@@ -227,5 +294,103 @@ overlay?.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.
 document.querySelectorAll('.alert-dismissible').forEach(el=>{setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},5000);});
 </script>
 @stack('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownWrappers = document.querySelectorAll('.custom-dropdown-wrapper');
+    
+    dropdownWrappers.forEach(wrapper => {
+        const trigger = wrapper.querySelector('.custom-dropdown-trigger');
+        const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+        const label = wrapper.querySelector('.custom-dropdown-label');
+        const options = wrapper.querySelectorAll('.custom-dropdown-option');
+        
+        if (trigger) {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Close other open dropdowns
+                document.querySelectorAll('.custom-dropdown-wrapper.open').forEach(w => {
+                    if (w !== wrapper) w.classList.remove('open');
+                });
+                wrapper.classList.toggle('open');
+            });
+            
+            options.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent.trim();
+                    const isMultiple = wrapper.classList.contains('multiple');
+
+                    if (isMultiple) {
+                        // Toggle active state
+                        this.classList.toggle('active');
+                        
+                        // Collect all active values
+                        const activeOptions = wrapper.querySelectorAll('.custom-dropdown-option.active');
+                        const values = Array.from(activeOptions).map(opt => opt.getAttribute('data-value')).filter(v => v !== '');
+                        const texts = Array.from(activeOptions).map(opt => opt.textContent.trim());
+
+                        // Remove existing hidden inputs for this field
+                        const inputName = wrapper.getAttribute('data-name') || 'kategori_ids[]';
+                        wrapper.querySelectorAll('input[type="hidden"]').forEach(inp => inp.remove());
+
+                        if (values.length === 0) {
+                            if (label) label.textContent = wrapper.getAttribute('data-placeholder') || 'Pilih...';
+                            // Add an empty hidden input so the form still submits the field if needed, or leave it empty.
+                            const emptyInput = document.createElement('input');
+                            emptyInput.type = 'hidden';
+                            emptyInput.name = inputName;
+                            emptyInput.value = '';
+                            wrapper.appendChild(emptyInput);
+                        } else {
+                            if (label) label.textContent = texts.join(', ');
+                            values.forEach(v => {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = inputName;
+                                input.value = v;
+                                wrapper.appendChild(input);
+                            });
+                        }
+                    } else {
+                        // Single selection logic
+                        if (hiddenInput) {
+                            hiddenInput.value = value;
+                            // Trigger change event so listeners can catch it
+                            const evt = new Event('change', { bubbles: true });
+                            hiddenInput.dispatchEvent(evt);
+                        }
+                        
+                        // Update label
+                        if (label) {
+                            label.textContent = text;
+                        }
+                        
+                        // Update active class
+                        options.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Close dropdown
+                        wrapper.classList.remove('open');
+
+                        // Auto-submit if wrapper has 'auto-submit' class
+                        if (wrapper.classList.contains('auto-submit') && hiddenInput && hiddenInput.form) {
+                            hiddenInput.form.submit();
+                        }
+                    }
+                });
+            });
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        document.querySelectorAll('.custom-dropdown-wrapper.open').forEach(wrapper => {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('open');
+            }
+        });
+    });
+});
+</script>
 </body>
 </html> 

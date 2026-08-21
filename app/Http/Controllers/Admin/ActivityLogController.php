@@ -16,7 +16,9 @@ class ActivityLogController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        $query = Activity::with('causer')->latest();
+        $query = Activity::with('causer')
+            ->whereIn('event', ['created', 'updated', 'deleted'])
+            ->latest();
 
         // Optional filtering by module (using class basename)
         if ($request->filled('module')) {

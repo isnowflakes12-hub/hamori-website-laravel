@@ -34,19 +34,46 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Kategori <span class="text-danger">*</span></label>
-                    <select name="kategori" class="form-select" required>
-                        @foreach($kategoris as $kat)
-                            <option value="{{ $kat->nama }}" {{ old('kategori', $karir->kategori ?? '') == $kat->nama ? 'selected' : '' }}>{{ $kat->nama }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $oldKategori = old('kategori', $karir->kategori ?? '');
+                    @endphp
+                    <div class="custom-dropdown-wrapper">
+                        <input type="hidden" name="kategori" value="{{ $oldKategori }}" required>
+                        <div class="custom-dropdown-trigger">
+                            <span class="custom-dropdown-label">{{ $oldKategori ?: 'Pilih Kategori' }}</span>
+                            <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                        </div>
+                        <ul class="custom-dropdown-options-container">
+                            <li class="custom-dropdown-option {{ $oldKategori == '' ? 'active' : '' }}" data-value="">Pilih Kategori</li>
+                            @foreach($kategoris as $kat)
+                                <li class="custom-dropdown-option {{ $oldKategori == $kat->nama ? 'active' : '' }}" data-value="{{ $kat->nama }}">{{ $kat->nama }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Tipe Pekerjaan <span class="text-danger">*</span></label>
-                    <select name="tipe" class="form-select" required>
-                        @foreach($tipes as $t)
-                            <option value="{{ $t->slug }}" {{ old('tipe', $karir->tipe ?? '') == $t->slug ? 'selected' : '' }}>{{ $t->nama }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $oldTipe = old('tipe', $karir->tipe ?? '');
+                        $tipeLabel = 'Pilih Tipe Pekerjaan';
+                        if ($oldTipe) {
+                            $selT = $tipes->firstWhere('slug', $oldTipe);
+                            $tipeLabel = $selT ? $selT->nama : $oldTipe;
+                        }
+                    @endphp
+                    <div class="custom-dropdown-wrapper">
+                        <input type="hidden" name="tipe" value="{{ $oldTipe }}" required>
+                        <div class="custom-dropdown-trigger">
+                            <span class="custom-dropdown-label">{{ $tipeLabel }}</span>
+                            <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                        </div>
+                        <ul class="custom-dropdown-options-container">
+                            <li class="custom-dropdown-option {{ $oldTipe == '' ? 'active' : '' }}" data-value="">Pilih Tipe Pekerjaan</li>
+                            @foreach($tipes as $t)
+                                <li class="custom-dropdown-option {{ $oldTipe == $t->slug ? 'active' : '' }}" data-value="{{ $t->slug }}">{{ $t->nama }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="mb-3">

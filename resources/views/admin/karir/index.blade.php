@@ -6,32 +6,79 @@
     <div><h1 class="page-hd-title">Lowongan Kerja</h1><p class="page-hd-sub">Kelola rekrutmen dan lowongan kerja</p></div>
     <a href="{{ route('admin.karir.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Tambah Lowongan</a>
 </div>
-<div class="filter-bar">
-    <form method="GET" class="d-flex gap-2 flex-wrap w-100">
-        <input type="text" name="search" class="form-control" style="max-width:200px" placeholder="Cari posisi..." value="{{ request('search') }}">
-        <select name="kategori" class="form-select" style="max-width:180px">
-            <option value="">Semua Kategori</option>
-            @foreach($kategoriList as $k)<option value="{{ $k }}" {{ request('kategori')==$k?'selected':'' }}>{{ $k }}</option>@endforeach
-        </select>
-        <select name="status" class="form-select" style="max-width:140px">
-            <option value="">Semua Status</option>
-            <option value="aktif" {{ request('status')=='aktif'?'selected':'' }}>Aktif</option>
-            <option value="nonaktif" {{ request('status')=='nonaktif'?'selected':'' }}>Nonaktif</option>
-        </select>
-        <button class="btn btn-primary" type="submit">Filter</button>
-        @if(request()->hasAny(['search','kategori','status']))<a href="{{ route('admin.karir.index') }}" class="btn btn-outline-secondary">Reset</a>@endif
+<div class="filter-bar mb-4">
+    <form method="GET" class="d-flex gap-2 flex-wrap w-100 align-items-center">
+        <input type="text" name="search" class="form-control flex-grow-1" style="min-width: 250px; max-width: 600px;" placeholder="Cari posisi..." value="{{ request('search') }}">
+        
+        <div class="ms-auto d-flex gap-2 flex-wrap align-items-center">
+            @php
+                $reqKategori = request('kategori');
+                $katLabel = 'Semua Kategori';
+                if ($reqKategori) $katLabel = $reqKategori;
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width:180px">
+                <input type="hidden" name="kategori" value="{{ $reqKategori }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $katLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqKategori == '' ? 'active' : '' }}" data-value="">Semua Kategori</li>
+                    @foreach($kategoriList as $k)
+                    <li class="custom-dropdown-option {{ $reqKategori == $k ? 'active' : '' }}" data-value="{{ $k }}">{{ $k }}</li>
+                    @endforeach
+                </ul>
+            </div>
+
+            @php
+                $reqStatus = request('status');
+                $statLabel = 'Semua Status';
+                if ($reqStatus == 'aktif') $statLabel = 'Aktif';
+                elseif ($reqStatus == 'nonaktif') $statLabel = 'Nonaktif';
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width:140px">
+                <input type="hidden" name="status" value="{{ $reqStatus }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $statLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
+                    <li class="custom-dropdown-option {{ $reqStatus == 'aktif' ? 'active' : '' }}" data-value="aktif">Aktif</li>
+                    <li class="custom-dropdown-option {{ $reqStatus == 'nonaktif' ? 'active' : '' }}" data-value="nonaktif">Nonaktif</li>
+                </ul>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit">Filter</button>
+                @if(request()->hasAny(['search','kategori','status']))<a href="{{ route('admin.karir.index') }}" class="btn btn-outline-secondary">Reset</a>@endif
+            </div>
+        </div>
     </form>
 </div>
-<form id="bulkActionForm" method="POST" action="{{ route('admin.karir.bulk-toggle') }}">
-@csrf
+<div id="bulkActionContainer" data-url="{{ route('admin.karir.bulk-toggle') }}" data-csrf="{{ csrf_token() }}">
 <div class="d-flex justify-content-between align-items-center mb-2">
-    <div>
-        <select name="action" class="form-select form-select-sm d-inline-block w-auto" required>
-            <option value="">-- Pilih Aksi Bulk --</option>
-            <option value="aktif">Set Aktif</option>
-            <option value="nonaktif">Set Nonaktif</option>
-        </select>
-        <button type="submit" class="btn btn-sm btn-outline-primary" id="btnApplyBulk" disabled>Terapkan</button>
+    <div class="d-flex align-items-center gap-3">
+        <div class="form-check mb-0">
+            <input type="checkbox" id="checkAllTop" class="form-check-input">
+            <label class="form-check-label" for="checkAllTop" style="font-size: 14px;">Pilih Semua</label>
+        </div>
+        
+        <div class="d-flex align-items-center gap-2">
+            <div class="custom-dropdown-wrapper" style="width:180px;">
+                <input type="hidden" name="action" id="bulkActionInput" required>
+                <div class="custom-dropdown-trigger py-1 px-2" style="font-size:13px; min-height:32px;">
+                    <span class="custom-dropdown-label">-- Pilih Aksi Bulk --</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option active" data-value="">-- Pilih Aksi Bulk --</li>
+                    <li class="custom-dropdown-option" data-value="aktif">Set Aktif</li>
+                    <li class="custom-dropdown-option" data-value="nonaktif">Set Nonaktif</li>
+                </ul>
+            </div>
+            <button type="button" class="btn btn-primary" style="height: 32px; padding: 0 16px; font-size: 13px;" id="btnApplyBulk" disabled>Terapkan</button>
+        </div>
     </div>
 </div>
 <div class="admin-table">
@@ -88,41 +135,86 @@
     </table>
     <div class="p-3">{{ $karirs->links() }}</div>
 </div>
-</form>
+</div>
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const checkAll = document.getElementById('checkAll');
+    const checkAllTop = document.getElementById('checkAllTop');
     const checkItems = document.querySelectorAll('.check-item');
     const btnApplyBulk = document.getElementById('btnApplyBulk');
     
-    function updateBulkButton() {
+    function updateBulkState() {
         const anyChecked = Array.from(checkItems).some(cb => cb.checked);
+        const allChecked = Array.from(checkItems).every(cb => cb.checked);
+        
         btnApplyBulk.disabled = !anyChecked;
+        if (checkAll) checkAll.checked = allChecked && checkItems.length > 0;
+        if (checkAllTop) checkAllTop.checked = allChecked && checkItems.length > 0;
     }
 
     if (checkAll) {
         checkAll.addEventListener('change', function() {
-            checkItems.forEach(cb => cb.checked = this.checked);
-            updateBulkButton();
+            const isChecked = this.checked;
+            checkItems.forEach(cb => cb.checked = isChecked);
+            if (checkAllTop) checkAllTop.checked = isChecked;
+            updateBulkState();
+        });
+    }
+    
+    if (checkAllTop) {
+        checkAllTop.addEventListener('change', function() {
+            const isChecked = this.checked;
+            checkItems.forEach(cb => cb.checked = isChecked);
+            if (checkAll) checkAll.checked = isChecked;
+            updateBulkState();
         });
     }
 
     checkItems.forEach(cb => {
-        cb.addEventListener('change', updateBulkButton);
+        cb.addEventListener('change', updateBulkState);
     });
 
-    document.getElementById('bulkActionForm').addEventListener('submit', function(e) {
-        const action = this.querySelector('select[name="action"]').value;
+    document.getElementById('btnApplyBulk').addEventListener('click', function(e) {
+        const action = document.getElementById('bulkActionInput').value;
         if (!action) {
-            e.preventDefault();
             alert('Silakan pilih aksi terlebih dahulu.');
             return;
         }
         if (!confirm('Yakin ingin menerapkan aksi ini pada lowongan yang dipilih?')) {
-            e.preventDefault();
+            return;
         }
+        
+        const checkedItems = Array.from(checkItems).filter(cb => cb.checked).map(cb => cb.value);
+        
+        const form = document.createElement('form');
+        form.method = 'POST';
+        const container = document.getElementById('bulkActionContainer');
+        form.action = container.getAttribute('data-url');
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = container.getAttribute('data-csrf');
+        form.appendChild(csrfToken);
+        
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = action;
+        form.appendChild(actionInput);
+        
+        checkedItems.forEach(id => {
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'ids[]';
+            idInput.value = id;
+            form.appendChild(idInput);
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
     });
 });
 </script>

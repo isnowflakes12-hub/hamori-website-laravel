@@ -232,4 +232,3 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Public Promo page
 Route::get('/promo', [\App\Http\Controllers\PromoPublicController::class, 'index'])->name('promo.index');
 Route::get('/promo/{id}', [\App\Http\Controllers\PromoPublicController::class, 'show'])->name('promo.show');
-

@@ -55,12 +55,27 @@
                     {{-- POLI --}}
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Poli / Spesialis</label>
-                        <select name="poli_id" class="form-select">
-                            <option value="">-- Pilih Poli --</option>
-                            @foreach($polis as $poli)
-                            <option value="{{ $poli->id }}" {{ old('poli_id', $dokter?->poli_id) == $poli->id ? 'selected' : '' }}>{{ $poli->nama }}</option>
-                            @endforeach
-                        </select>
+                        @php
+                            $oldPoli = old('poli_id', $dokter?->poli_id);
+                            $poliLabel = '-- Pilih Poli --';
+                            if ($oldPoli) {
+                                $selPoli = $polis->firstWhere('id', $oldPoli);
+                                if ($selPoli) $poliLabel = $selPoli->nama;
+                            }
+                        @endphp
+                        <div class="custom-dropdown-wrapper">
+                            <input type="hidden" name="poli_id" value="{{ $oldPoli }}">
+                            <div class="custom-dropdown-trigger">
+                                <span class="custom-dropdown-label">{{ $poliLabel }}</span>
+                                <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                            </div>
+                            <ul class="custom-dropdown-options-container">
+                                <li class="custom-dropdown-option {{ $oldPoli == '' ? 'active' : '' }}" data-value="">-- Pilih Poli --</li>
+                                @foreach($polis as $poli)
+                                <li class="custom-dropdown-option {{ $oldPoli == $poli->id ? 'active' : '' }}" data-value="{{ $poli->id }}">{{ $poli->nama }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
 
                     {{-- FOTO --}}

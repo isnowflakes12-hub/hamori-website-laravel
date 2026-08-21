@@ -40,10 +40,24 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Kategori <span class="text-danger">*</span></label>
-                        <select name="kategori" class="form-select @error('kategori') is-invalid @enderror" required>
-                            <option value="Promo" {{ old('kategori', $promo->kategori ?? '') == 'Promo' ? 'selected' : '' }}>Promo</option>
-                            <option value="Paket" {{ old('kategori', $promo->kategori ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
-                        </select>
+                        @php
+                            $oldKategori = old('kategori', $promo->kategori ?? '');
+                            $kategoriLabel = 'Pilih Kategori';
+                            if ($oldKategori == 'Promo') $kategoriLabel = 'Promo';
+                            elseif ($oldKategori == 'Paket') $kategoriLabel = 'Paket';
+                        @endphp
+                        <div class="custom-dropdown-wrapper @error('kategori') is-invalid @enderror">
+                            <input type="hidden" name="kategori" value="{{ $oldKategori }}" required>
+                            <div class="custom-dropdown-trigger">
+                                <span class="custom-dropdown-label">{{ $kategoriLabel }}</span>
+                                <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                            </div>
+                            <ul class="custom-dropdown-options-container">
+                                <li class="custom-dropdown-option {{ $oldKategori == '' ? 'active' : '' }}" data-value="">Pilih Kategori</li>
+                                <li class="custom-dropdown-option {{ $oldKategori == 'Promo' ? 'active' : '' }}" data-value="Promo">Promo</li>
+                                <li class="custom-dropdown-option {{ $oldKategori == 'Paket' ? 'active' : '' }}" data-value="Paket">Paket</li>
+                            </ul>
+                        </div>
                         @error('kategori')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-8">

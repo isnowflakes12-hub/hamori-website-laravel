@@ -9,36 +9,83 @@
     </div>
 </div>
 
-<div class="filter-bar">
-    <form action="{{ route('admin.activity-log.index') }}" method="GET" class="row g-3 w-100 align-items-center m-0">
-        <div class="col-12 col-md-3">
-            <select name="module" class="form-select">
-                <option value="">Semua Modul</option>
-                @foreach($modules as $mod)
-                    @php $basename = class_basename($mod); @endphp
-                    <option value="{{ $basename }}" {{ request('module') == $basename ? 'selected' : '' }}>{{ $basename }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-12 col-md-3">
-            <select name="event" class="form-select">
-                <option value="">Semua Aksi</option>
-                <option value="created" {{ request('event') == 'created' ? 'selected' : '' }}>Created</option>
-                <option value="updated" {{ request('event') == 'updated' ? 'selected' : '' }}>Updated</option>
-                <option value="deleted" {{ request('event') == 'deleted' ? 'selected' : '' }}>Deleted</option>
-            </select>
-        </div>
-        <div class="col-12 col-md-4">
-            <select name="user_id" class="form-select">
-                <option value="">Semua User / Aktor</option>
-                @foreach($users as $u)
-                    <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>{{ $u->name }} ({{ $u->getRoleLabel() }})</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-12 col-md-2 d-flex gap-2">
-            <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-funnel-fill"></i> Filter</button>
-            <a href="{{ route('admin.activity-log.index') }}" class="btn btn-outline-secondary">Reset</a>
+<div class="filter-bar mb-4">
+    <form action="{{ route('admin.activity-log.index') }}" method="GET" class="d-flex gap-2 flex-wrap w-100 align-items-center">
+        @php
+            $reqSearch = request('search', '');
+        @endphp
+        <input type="text" name="search" class="form-control flex-grow-1" style="min-width: 250px; max-width: 600px;"
+               placeholder="Cari nama user, modul..." value="{{ $reqSearch }}">
+
+        <div class="ms-auto d-flex gap-2 flex-wrap align-items-center">
+            @php
+                $reqModule = request('module');
+                $modLabel = 'Semua Modul';
+                if ($reqModule) $modLabel = $reqModule;
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width: 180px;">
+                <input type="hidden" name="module" value="{{ $reqModule }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $modLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqModule == '' ? 'active' : '' }}" data-value="">Semua Modul</li>
+                    @foreach($modules as $mod)
+                        @php $basename = class_basename($mod); @endphp
+                        <li class="custom-dropdown-option {{ $reqModule == $basename ? 'active' : '' }}" data-value="{{ $basename }}">{{ $basename }}</li>
+                    @endforeach
+                </ul>
+            </div>
+
+            @php
+                $reqEvent = request('event');
+                $eventOptions = ['created' => 'Created', 'updated' => 'Updated', 'deleted' => 'Deleted'];
+                $eventLabel = 'Semua Aksi';
+                if ($reqEvent && isset($eventOptions[$reqEvent])) $eventLabel = $eventOptions[$reqEvent];
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width: 150px;">
+                <input type="hidden" name="event" value="{{ $reqEvent }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $eventLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqEvent == '' ? 'active' : '' }}" data-value="">Semua Aksi</li>
+                    @foreach($eventOptions as $v => $l)
+                    <li class="custom-dropdown-option {{ $reqEvent == $v ? 'active' : '' }}" data-value="{{ $v }}">{{ $l }}</li>
+                    @endforeach
+                </ul>
+            </div>
+
+            @php
+                $reqUserId = request('user_id');
+                $userLabel = 'Semua User';
+                if ($reqUserId) {
+                    $selUser = collect($users)->firstWhere('id', $reqUserId);
+                    if ($selUser) $userLabel = $selUser->name;
+                }
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width: 200px;">
+                <input type="hidden" name="user_id" value="{{ $reqUserId }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $userLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqUserId == '' ? 'active' : '' }}" data-value="">Semua User</li>
+                    @foreach($users as $u)
+                    <li class="custom-dropdown-option {{ $reqUserId == $u->id ? 'active' : '' }}" data-value="{{ $u->id }}">{{ $u->name }} ({{ $u->getRoleLabel() }})</li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-funnel-fill me-1"></i>Filter</button>
+                @if(request()->hasAny(['module', 'event', 'user_id', 'search']))
+                <a href="{{ route('admin.activity-log.index') }}" class="btn btn-outline-secondary">Reset</a>
+                @endif
+            </div>
         </div>
     </form>
 </div>

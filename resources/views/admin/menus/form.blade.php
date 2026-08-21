@@ -24,14 +24,29 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Parent Menu</label>
-                    <select name="parent_id" class="form-select">
-                        <option value="">-- Menu Utama --</option>
-                        @foreach($parents as $parent)
-                            <option value="{{ $parent->id }}" {{ old('parent_id', $menu->parent_id ?? '') == $parent->id ? 'selected' : '' }}>
-                                {{ $parent->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @php
+                        $oldParentId = old('parent_id', $menu->parent_id ?? '');
+                        $parentLabel = '-- Menu Utama --';
+                        if ($oldParentId) {
+                            $selParent = $parents->firstWhere('id', $oldParentId);
+                            if ($selParent) $parentLabel = $selParent->name;
+                        }
+                    @endphp
+                    <div class="custom-dropdown-wrapper">
+                        <input type="hidden" name="parent_id" value="{{ $oldParentId }}">
+                        <div class="custom-dropdown-trigger">
+                            <span class="custom-dropdown-label">{{ $parentLabel }}</span>
+                            <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                        </div>
+                        <ul class="custom-dropdown-options-container">
+                            <li class="custom-dropdown-option {{ $oldParentId == '' ? 'active' : '' }}" data-value="">-- Menu Utama --</li>
+                            @foreach($parents as $parent)
+                                <li class="custom-dropdown-option {{ $oldParentId == $parent->id ? 'active' : '' }}" data-value="{{ $parent->id }}">
+                                    {{ $parent->name }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="col-md-6">

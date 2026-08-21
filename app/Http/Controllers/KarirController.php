@@ -55,12 +55,31 @@ class KarirController extends Controller
         $karir = Karir::findOrFail($id);
 
         $request->validate([
-            'nama'         => 'required|string|max:255',
-            'email'        => 'required|email',
-            'telepon'      => 'required|string|max:20',
-            'cv'           => 'required|file|mimes:pdf,doc,docx|max:5120',
-            'cover_letter' => 'nullable|string',
+            'nama'                => 'required|string|max:200',
+            'email'               => 'required|email:rfc,dns',
+            'telepon'             => ['required', 'string', 'regex:/^(\+62|62|0)8[0-9]{7,13}$/'],
+            'cv'                  => 'required|file|mimes:pdf|max:5120',
+            'cover_letter'        => 'nullable|string|max:5000',
+            'g-recaptcha-response'=> 'required',
+        ], [
+            'nama.required'                => 'Nama lengkap wajib diisi.',
+            'nama.max'                     => 'Nama lengkap maksimal 200 karakter.',
+            'email.required'               => 'Email wajib diisi.',
+            'email.email'                  => 'Format email tidak valid.',
+            'telepon.required'             => 'Nomor WhatsApp wajib diisi.',
+            'telepon.regex'                => 'Format nomor tidak valid. Gunakan format 08xxx atau +628xxx.',
+            'cv.required'                  => 'File CV wajib diupload.',
+            'cv.mimes'                     => 'CV hanya boleh dalam format PDF.',
+            'cv.max'                       => 'Ukuran CV maksimal 5 MB.',
+            'g-recaptcha-response.required'=> 'Verifikasi reCAPTCHA wajib dilakukan.',
         ]);
+
+        // Verifikasi reCAPTCHA
+        $recaptcha = new \ReCaptcha\ReCaptcha(config('services.recaptcha.secret_key'));
+        $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
+        if (!$resp->isSuccess()) {
+            return back()->withErrors(['g-recaptcha-response' => 'Validasi reCAPTCHA gagal. Silakan coba lagi.'])->withInput();
+        }
 
         $cvPath = $request->file('cv')->store('karir/cv', 'public');
 
@@ -73,6 +92,6 @@ class KarirController extends Controller
             'cover_letter' => $request->cover_letter,
         ]);
 
-        return redirect()->back()->with('success', 'Lamaran berhasil dikirim! Tim HR kami akan menghubungi Anda dalam 3–5 hari kerja.');
+        return redirect()->back()->with('success', true);
     }
 }

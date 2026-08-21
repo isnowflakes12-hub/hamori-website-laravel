@@ -5,21 +5,60 @@
 <div class="page-hd">
     <div><h1 class="page-hd-title">Lamaran Masuk</h1><p class="page-hd-sub">Kelola dan tracking status pelamar</p></div>
 </div>
-<div class="filter-bar">
-    <form method="GET" class="d-flex gap-2 flex-wrap w-100">
-        <input type="text" name="search" class="form-control" style="max-width:200px" placeholder="Nama pelamar..." value="{{ request('search') }}">
-        <select name="karir_id" class="form-select" style="max-width:200px">
-            <option value="">Semua Posisi</option>
-            @foreach($karirs as $k)<option value="{{ $k->id }}" {{ request('karir_id')==$k->id?'selected':'' }}>{{ $k->posisi }}</option>@endforeach
-        </select>
-        <select name="status" class="form-select" style="max-width:160px">
-            <option value="">Semua Status</option>
-            @foreach(['pending'=>'Menunggu','review'=>'Review','shortlist'=>'Shortlist','interview'=>'Interview','diterima'=>'Diterima','ditolak'=>'Ditolak'] as $v=>$l)
-            <option value="{{ $v }}" {{ request('status')==$v?'selected':'' }}>{{ $l }}</option>
-            @endforeach
-        </select>
-        <button class="btn btn-primary" type="submit">Filter</button>
-        @if(request()->hasAny(['search','karir_id','status']))<a href="{{ route('admin.lamaran.index') }}" class="btn btn-outline-secondary">Reset</a>@endif
+<div class="filter-bar mb-4">
+    <form method="GET" class="d-flex gap-2 flex-wrap w-100 align-items-center">
+        <input type="text" name="search" class="form-control flex-grow-1" style="min-width: 250px; max-width: 600px;" placeholder="Nama pelamar..." value="{{ request('search') }}">
+        
+        <div class="ms-auto d-flex gap-2 flex-wrap align-items-center">
+            @php
+                $reqKarirId = request('karir_id');
+                $posisiLabel = 'Semua Posisi';
+                if ($reqKarirId) {
+                    $selKarir = collect($karirs)->firstWhere('id', $reqKarirId);
+                    if ($selKarir) $posisiLabel = $selKarir->posisi;
+                }
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width:200px">
+                <input type="hidden" name="karir_id" value="{{ $reqKarirId }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $posisiLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqKarirId == '' ? 'active' : '' }}" data-value="">Semua Posisi</li>
+                    @foreach($karirs as $k)
+                    <li class="custom-dropdown-option {{ $reqKarirId == $k->id ? 'active' : '' }}" data-value="{{ $k->id }}">{{ $k->posisi }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            
+            @php
+                $reqStatus = request('status');
+                $statusOptions = ['pending'=>'Menunggu','review'=>'Review','shortlist'=>'Shortlist','interview'=>'Interview','diterima'=>'Diterima','ditolak'=>'Ditolak'];
+                $statLabel = 'Semua Status';
+                if ($reqStatus && isset($statusOptions[$reqStatus])) {
+                    $statLabel = $statusOptions[$reqStatus];
+                }
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width:160px">
+                <input type="hidden" name="status" value="{{ $reqStatus }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $statLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
+                    @foreach($statusOptions as $v => $l)
+                    <li class="custom-dropdown-option {{ $reqStatus == $v ? 'active' : '' }}" data-value="{{ $v }}">{{ $l }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit">Filter</button>
+                @if(request()->hasAny(['search','karir_id','status']))<a href="{{ route('admin.lamaran.index') }}" class="btn btn-outline-secondary">Reset</a>@endif
+            </div>
+        </div>
     </form>
 </div>
 <div class="admin-table">

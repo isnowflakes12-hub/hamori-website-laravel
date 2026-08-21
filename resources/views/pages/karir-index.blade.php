@@ -698,7 +698,7 @@
                             </span>
                             {{-- Badge Tipe --}}
                             <span class="badge-tipe" style="color:{{ $tc }};background:{{ $tc }}18;border-color:{{ $tc }}30;">{{ $tn }}</span>
-                            @if($isDeadlineSoon)<span class="badge-soon">⚡ Segera Tutup</span>@endif
+
                         </div>
                     </div>
                     <div class="karir-card-body">
@@ -715,7 +715,7 @@
                             <span class="karir-meta-item"><i class="bi bi-briefcase"></i> {{ $tn }}</span>
                         </div>
                         @if($karir->batas_lamaran)
-                        <div class="karir-dl {{ $isDeadlineSoon ? 'soon' : 'normal' }}">
+                        <div class="karir-dl">
                             <i class="bi bi-calendar-event"></i>
                             Deadline: {{ $karir->batas_lamaran->translatedFormat('d F Y') }}
                         </div>

@@ -30,19 +30,47 @@
                     <input type="text" name="q" class="form-control form-control-sm" placeholder="Cari nama dokter..." value="{{ request('q') }}">
                 </div>
                 <div class="col-md-3">
-                    <select name="poli_id" class="form-select form-select-sm">
-                        <option value="">Semua Poli</option>
-                        @foreach($polis as $poli)
-                        <option value="{{ $poli->id }}" {{ request('poli_id') == $poli->id ? 'selected' : '' }}>{{ $poli->nama }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $reqPoli = request('poli_id');
+                        $poliLabel = 'Semua Poli';
+                        if ($reqPoli) {
+                            $selPoli = $polis->firstWhere('id', $reqPoli);
+                            if ($selPoli) $poliLabel = $selPoli->nama;
+                        }
+                    @endphp
+                    <div class="custom-dropdown-wrapper">
+                        <input type="hidden" name="poli_id" value="{{ $reqPoli }}">
+                        <div class="custom-dropdown-trigger">
+                            <span class="custom-dropdown-label">{{ $poliLabel }}</span>
+                            <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                        </div>
+                        <ul class="custom-dropdown-options-container">
+                            <li class="custom-dropdown-option {{ $reqPoli == '' ? 'active' : '' }}" data-value="">Semua Poli</li>
+                            @foreach($polis as $poli)
+                            <li class="custom-dropdown-option {{ $reqPoli == $poli->id ? 'active' : '' }}" data-value="{{ $poli->id }}">{{ $poli->nama }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <select name="status" class="form-select form-select-sm">
-                        <option value="">Semua Status</option>
-                        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Ditampilkan</option>
-                        <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Disembunyikan</option>
-                    </select>
+                    @php
+                        $reqStatus = request('status');
+                        $statLabel = 'Semua Status';
+                        if ($reqStatus === '1') $statLabel = 'Ditampilkan';
+                        elseif ($reqStatus === '0') $statLabel = 'Disembunyikan';
+                    @endphp
+                    <div class="custom-dropdown-wrapper">
+                        <input type="hidden" name="status" value="{{ $reqStatus }}">
+                        <div class="custom-dropdown-trigger">
+                            <span class="custom-dropdown-label">{{ $statLabel }}</span>
+                            <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                        </div>
+                        <ul class="custom-dropdown-options-container">
+                            <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
+                            <li class="custom-dropdown-option {{ $reqStatus === '1' ? 'active' : '' }}" data-value="1">Ditampilkan</li>
+                            <li class="custom-dropdown-option {{ $reqStatus === '0' ? 'active' : '' }}" data-value="0">Disembunyikan</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-md-2 d-flex gap-2">
                     <button type="submit" class="btn btn-primary btn-sm flex-fill">Cari</button>

@@ -74,18 +74,40 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Kategori <span class="text-danger">*</span></label>
-                    <div class="form-text mb-2">Tahan tombol Ctrl (Windows) atau Command (Mac) untuk memilih lebih dari satu kategori.</div>
                     @php
                         $selectedKategoris = old('kategori_ids', $artikel ? $artikel->kategoris->pluck('id')->toArray() : []);
+                        $selectedKategoris = (array) $selectedKategoris;
+                        $selectedNames = collect($kategoris)
+                                            ->filter(fn($k) => in_array($k->id, $selectedKategoris))
+                                            ->pluck('nama')
+                                            ->toArray();
+                        $label = count($selectedNames) > 0 ? implode(', ', $selectedNames) : 'Pilih Kategori';
                     @endphp
-                    <select name="kategori_ids[]" id="kategoriSelect" class="form-select" multiple required>
-                        @foreach($kategoris as $k)
-                        <option value="{{ $k->id }}"
-                            {{ in_array($k->id, (array)$selectedKategoris) ? 'selected' : '' }}>
-                            {{ $k->nama }}
-                        </option>
-                        @endforeach
-                    </select>
+                    
+                    <div class="custom-dropdown-wrapper multiple" data-name="kategori_ids[]" data-placeholder="Pilih Kategori">
+                        <!-- Hidden inputs akan di-generate oleh JS -->
+                        @if(empty($selectedKategoris))
+                            <input type="hidden" name="kategori_ids[]" value="">
+                        @else
+                            @foreach($selectedKategoris as $id)
+                                <input type="hidden" name="kategori_ids[]" value="{{ $id }}">
+                            @endforeach
+                        @endif
+                        
+                        <div class="custom-dropdown-trigger @error('kategori_ids') is-invalid @enderror">
+                            <span class="custom-dropdown-label">{{ $label }}</span>
+                            <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                        </div>
+                        <ul class="custom-dropdown-options-container">
+                            @foreach($kategoris as $k)
+                            <li class="custom-dropdown-option {{ in_array($k->id, $selectedKategoris) ? 'active' : '' }}" data-value="{{ $k->id }}">
+                                {{ $k->nama }}
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @error('kategori_ids')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
                     <div class="form-text mt-2">
                         <a href="{{ route('admin.kategori-artikel.create') }}" target="_blank">
                             <i class="bi bi-plus-circle me-1"></i>Tambah kategori baru
@@ -151,14 +173,7 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    new Choices('#kategoriSelect', {
-        removeItemButton: true,
-        placeholderValue: 'Pilih Kategori...',
-        searchPlaceholderValue: 'Cari kategori...',
-        noResultsText: 'Kategori tidak ditemukan',
-        noChoicesText: 'Tidak ada kategori lagi untuk dipilih',
-        itemSelectText: 'Tekan untuk memilih',
-    });
+    // Kategori is now using custom dropdown with multiple support
 });
 
 function previewThumb(input) {

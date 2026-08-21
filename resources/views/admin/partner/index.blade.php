@@ -51,11 +51,24 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <select name="status" class="form-select" onchange="this.form.submit()">
-                    <option value="">Semua Status</option>
-                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Tampil Publik</option>
-                    <option value="hidden" {{ request('status') === 'hidden' ? 'selected' : '' }}>Sembunyi</option>
-                </select>
+                @php
+                    $reqStatus = request('status');
+                    $statLabel = 'Semua Status';
+                    if ($reqStatus === 'active') $statLabel = 'Tampil Publik';
+                    elseif ($reqStatus === 'hidden') $statLabel = 'Sembunyi';
+                @endphp
+                <div class="custom-dropdown-wrapper auto-submit">
+                    <input type="hidden" name="status" value="{{ $reqStatus }}">
+                    <div class="custom-dropdown-trigger">
+                        <span class="custom-dropdown-label">{{ $statLabel }}</span>
+                        <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                    </div>
+                    <ul class="custom-dropdown-options-container">
+                        <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
+                        <li class="custom-dropdown-option {{ $reqStatus == 'active' ? 'active' : '' }}" data-value="active">Tampil Publik</li>
+                        <li class="custom-dropdown-option {{ $reqStatus == 'hidden' ? 'active' : '' }}" data-value="hidden">Sembunyi</li>
+                    </ul>
+                </div>
             </div>
             <div class="col-md-4 text-md-end">
                 @if(request()->hasAny(['search', 'status']))

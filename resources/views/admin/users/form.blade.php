@@ -21,11 +21,28 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Role <span class="text-danger">*</span></label>
-            <select name="role" class="form-select" required>
-                <option value="admin_marketing" {{ old('role', $user->role ?? '') == 'admin_marketing' ? 'selected' : '' }}>Admin Marketing</option>
-                <option value="admin_sdm" {{ old('role', $user->role ?? '') == 'admin_sdm' ? 'selected' : '' }}>Admin SDM</option>
-                <option value="super_admin" {{ old('role', $user->role ?? '') == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
-            </select>
+            @php
+                $oldRole = old('role', $user->role ?? '');
+                $roleLabel = 'Pilih Role';
+                if ($oldRole == 'admin_marketing') $roleLabel = 'Admin Marketing';
+                elseif ($oldRole == 'admin_sdm') $roleLabel = 'Admin SDM';
+                elseif ($oldRole == 'super_admin') $roleLabel = 'Super Admin';
+            @endphp
+            <div class="custom-dropdown-wrapper @error('role') is-invalid @enderror">
+                <input type="hidden" name="role" value="{{ $oldRole }}" required>
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $roleLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $oldRole == '' ? 'active' : '' }}" data-value="">Pilih Role</li>
+                    <li class="custom-dropdown-option {{ $oldRole == 'admin_marketing' ? 'active' : '' }}" data-value="admin_marketing">Admin Marketing</li>
+                    <li class="custom-dropdown-option {{ $oldRole == 'admin_sdm' ? 'active' : '' }}" data-value="admin_sdm">Admin SDM</li>
+                    <li class="custom-dropdown-option {{ $oldRole == 'super_admin' ? 'active' : '' }}" data-value="super_admin">Super Admin</li>
+                </ul>
+            </div>
+            @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
             <div class="form-text">
                 <strong>Admin Marketing:</strong> Kelola banner, artikel, layanan, dokter<br>
                 <strong>Admin SDM:</strong> Kelola lowongan dan lamaran kerja<br>

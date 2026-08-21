@@ -23,13 +23,27 @@
                     </div>
                     <div class="col-md-5">
                         <label class="form-label">Kategori <span class="text-danger">*</span></label>
-                        <select name="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror" required>
-                            <option value="">-- Pilih Kategori --</option>
-                            @php $kat_id = old('kategori_id', $fasilitas->kategori_id ?? ''); @endphp
-                            @foreach($kategori as $kat)
-                                <option value="{{ $kat->id }}" {{ $kat_id == $kat->id ? 'selected' : '' }}>{{ $kat->nama }}</option>
-                            @endforeach
-                        </select>
+                        @php 
+                            $kat_id = old('kategori_id', $fasilitas->kategori_id ?? '');
+                            $katLabel = '-- Pilih Kategori --';
+                            if ($kat_id) {
+                                $selKat = collect($kategori)->firstWhere('id', $kat_id);
+                                if ($selKat) $katLabel = $selKat->nama;
+                            }
+                        @endphp
+                        <div class="custom-dropdown-wrapper @error('kategori_id') is-invalid @enderror">
+                            <input type="hidden" name="kategori_id" value="{{ $kat_id }}" required>
+                            <div class="custom-dropdown-trigger">
+                                <span class="custom-dropdown-label">{{ $katLabel }}</span>
+                                <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                            </div>
+                            <ul class="custom-dropdown-options-container">
+                                <li class="custom-dropdown-option {{ $kat_id == '' ? 'active' : '' }}" data-value="">-- Pilih Kategori --</li>
+                                @foreach($kategori as $kat)
+                                    <li class="custom-dropdown-option {{ $kat_id == $kat->id ? 'active' : '' }}" data-value="{{ $kat->id }}">{{ $kat->nama }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                         @error('kategori_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>

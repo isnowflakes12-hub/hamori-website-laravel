@@ -18,25 +18,60 @@
     </div>
 </div>
 
-<div class="filter-bar">
-    <form method="GET" class="d-flex gap-2 flex-wrap w-100">
-        <input type="text" name="search" class="form-control" style="max-width:240px"
-               placeholder="Cari judul..." value="{{ request('search') }}">
-        <select name="kategori" class="form-select" style="max-width:180px">
-            <option value="">Semua Kategori</option>
-            @foreach($kategoris as $k)
-            <option value="{{ $k->id }}" {{ request('kategori')==$k->id?'selected':'' }}>{{ $k->nama }}</option>
-            @endforeach
-        </select>
-        <select name="status" class="form-select" style="max-width:150px">
-            <option value="">Semua Status</option>
-            <option value="published" {{ request('status')=='published'?'selected':'' }}>Published</option>
-            <option value="draft"     {{ request('status')=='draft'?'selected':'' }}>Draft</option>
-        </select>
-        <button class="btn btn-primary" type="submit">Filter</button>
-        @if(request()->hasAny(['search','kategori','status']))
-        <a href="{{ route('admin.artikel.index') }}" class="btn btn-outline-secondary">Reset</a>
-        @endif
+<div class="filter-bar mb-4">
+    <form method="GET" class="d-flex gap-2 flex-wrap w-100 align-items-center">
+        <input type="text" name="search" class="form-control flex-grow-1" style="min-width: 250px; max-width: 600px;"
+               placeholder="Cari judul artikel..." value="{{ request('search') }}">
+        
+        <div class="ms-auto d-flex gap-2 flex-wrap align-items-center">
+            @php
+                $reqKategori = request('kategori');
+                $katLabel = 'Semua Kategori';
+                if ($reqKategori) {
+                    $selKat = collect($kategoris)->firstWhere('id', $reqKategori);
+                    if ($selKat) $katLabel = $selKat->nama;
+                }
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width: 200px;">
+                <input type="hidden" name="kategori" value="{{ $reqKategori }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $katLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqKategori == '' ? 'active' : '' }}" data-value="">Semua Kategori</li>
+                    @foreach($kategoris as $k)
+                    <li class="custom-dropdown-option {{ $reqKategori == $k->id ? 'active' : '' }}" data-value="{{ $k->id }}">{{ $k->nama }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            
+            @php
+                $reqStatus = request('status');
+                $statLabel = 'Semua Status';
+                if ($reqStatus == 'published') $statLabel = 'Published';
+                elseif ($reqStatus == 'draft') $statLabel = 'Draft';
+            @endphp
+            <div class="custom-dropdown-wrapper" style="width: 160px;">
+                <input type="hidden" name="status" value="{{ $reqStatus }}">
+                <div class="custom-dropdown-trigger">
+                    <span class="custom-dropdown-label">{{ $statLabel }}</span>
+                    <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+                </div>
+                <ul class="custom-dropdown-options-container">
+                    <li class="custom-dropdown-option {{ $reqStatus == '' ? 'active' : '' }}" data-value="">Semua Status</li>
+                    <li class="custom-dropdown-option {{ $reqStatus == 'published' ? 'active' : '' }}" data-value="published">Published</li>
+                    <li class="custom-dropdown-option {{ $reqStatus == 'draft' ? 'active' : '' }}" data-value="draft">Draft</li>
+                </ul>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit">Filter</button>
+                @if(request()->hasAny(['search','kategori','status']))
+                <a href="{{ route('admin.artikel.index') }}" class="btn btn-outline-secondary">Reset</a>
+                @endif
+            </div>
+        </div>
     </form>
 </div>
 

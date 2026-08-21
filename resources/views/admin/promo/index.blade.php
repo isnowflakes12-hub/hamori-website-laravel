@@ -56,11 +56,24 @@
 
 <div class="d-flex justify-content-end mb-3">
     <form method="GET" action="{{ route('admin.promo.index') }}" class="d-flex align-items-center gap-2">
-        <select name="kategori" class="form-select form-select-sm" style="width:130px" onchange="this.form.submit()">
-            <option value="">Semua Kategori</option>
-            <option value="Promo" {{ request('kategori') == 'Promo' ? 'selected' : '' }}>Promo</option>
-            <option value="Paket" {{ request('kategori') == 'Paket' ? 'selected' : '' }}>Paket</option>
-        </select>
+        @php
+            $reqKategori = request('kategori');
+            $katLabel = 'Semua Kategori';
+            if ($reqKategori == 'Promo') $katLabel = 'Promo';
+            elseif ($reqKategori == 'Paket') $katLabel = 'Paket';
+        @endphp
+        <div class="custom-dropdown-wrapper auto-submit" style="min-width: 150px;">
+            <input type="hidden" name="kategori" value="{{ $reqKategori }}">
+            <div class="custom-dropdown-trigger">
+                <span class="custom-dropdown-label">{{ $katLabel }}</span>
+                <i class="bi bi-chevron-down custom-dropdown-arrow"></i>
+            </div>
+            <ul class="custom-dropdown-options-container">
+                <li class="custom-dropdown-option {{ $reqKategori == '' ? 'active' : '' }}" data-value="">Semua Kategori</li>
+                <li class="custom-dropdown-option {{ $reqKategori == 'Promo' ? 'active' : '' }}" data-value="Promo">Promo</li>
+                <li class="custom-dropdown-option {{ $reqKategori == 'Paket' ? 'active' : '' }}" data-value="Paket">Paket</li>
+            </ul>
+        </div>
         <div class="input-group input-group-sm w-auto">
             <input type="text" name="search" class="form-control" placeholder="Cari promo..." value="{{ request('search') }}" style="width:200px">
             <button type="submit" class="btn btn-primary">
