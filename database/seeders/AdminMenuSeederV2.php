@@ -174,7 +174,7 @@ class AdminMenuSeederV2 extends Seeder
         // ─────────────────────────────────────────────
         AdminMenu::create([
             'name'       => 'Pengaturan Web',
-            'route_name' => 'admin.settings.index',
+            'route_name' => 'admin.settings.edit',
             'icon'       => 'bi-gear-fill',
             'roles'      => ['super_admin'],
             'order'      => 13,
