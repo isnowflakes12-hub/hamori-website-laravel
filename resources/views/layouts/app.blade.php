@@ -6,7 +6,22 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'RS Hamori') - Rumah Sakit Hamori</title>
     <meta name="description" content="@yield('meta_description', 'RS Hamori - Rumah Sakit terdepan di Subang, Jawa Barat. Layanan kesehatan terpercaya dengan dokter spesialis berpengalaman.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'Rumah Sakit Hamori, RS Hamori Subang, Dokter Spesialis Subang, Layanan Kesehatan, Jadwal Dokter Hamori')">
+    <link rel="canonical" href="@yield('canonical_url', url()->current())">
     
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="@yield('og_url', url()->current())">
+    <meta property="og:title" content="@yield('title', 'RS Hamori') - Rumah Sakit Hamori">
+    <meta property="og:description" content="@yield('meta_description', 'RS Hamori - Rumah Sakit terdepan di Subang, Jawa Barat. Layanan kesehatan terpercaya dengan dokter spesialis berpengalaman.')">
+    <meta property="og:image" content="@yield('og_image', asset('assets/images/logosq.png'))">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="@yield('og_url', url()->current())">
+    <meta name="twitter:title" content="@yield('title', 'RS Hamori') - Rumah Sakit Hamori">
+    <meta name="twitter:description" content="@yield('meta_description', 'RS Hamori - Rumah Sakit terdepan di Subang, Jawa Barat. Layanan kesehatan terpercaya dengan dokter spesialis berpengalaman.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('assets/images/logosq.png'))">
     <!-- Favicon -->
     @php
         $favicon = \App\Models\SiteSetting::get('favicon');
@@ -40,6 +55,7 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pagination.css') }}?v={{ time() }}">
 
     
     @stack('styles')
@@ -184,7 +200,7 @@
                         <ul class="footer-links">
                             <li><a href="{{ route('profil') }}">Profil RS</a></li>
                             <li><a href="{{ route('kontak') }}">Kontak</a></li>
-                            <li><a href="{{ route('karir.index') }}">Informasi Karir</a></li>
+                            <li><a href="{{ route('karir.index') }}">Karir</a></li>
                             <li><a href="{{ route('faq') }}">FAQ</a></li>
                             <li><a href="{{ route('kritik-saran') }}">Kritik dan Saran</a></li>
                             <li><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li>

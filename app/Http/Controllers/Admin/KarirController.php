@@ -41,15 +41,17 @@ class KarirController extends Controller
             'kategori'     => 'required|in:' . implode(',', $validKategoris),
             'tipe'         => 'required|in:' . implode(',', $validTipes),
             'deskripsi'    => 'required|string',
-            'persyaratan'  => 'required|string',
+            'persyaratan'  => 'required|array|min:1',
+            'persyaratan.*'=> 'required|string',
             'kuota'        => 'required|integer|min:1',
             'batas_lamaran'=> 'nullable|date|after:today',
         ]);
 
-        Karir::create(array_merge(
-            $request->only('posisi','departemen','kategori','tipe','deskripsi','persyaratan','lokasi','kuota','batas_lamaran'),
-            ['is_active' => $request->boolean('is_active', true)]
-        ));
+        $data = $request->only('posisi','departemen','kategori','tipe','deskripsi','lokasi','kuota','batas_lamaran');
+        $data['persyaratan'] = implode("\n", array_map('trim', $request->persyaratan));
+        $data['is_active'] = $request->boolean('is_active', true);
+
+        Karir::create($data);
 
         return redirect()->route('admin.karir.index')->with('success', 'Lowongan berhasil ditambahkan.');
     }
@@ -72,15 +74,17 @@ class KarirController extends Controller
             'kategori'     => 'required|in:' . implode(',', $validKategoris),
             'tipe'         => 'required|in:' . implode(',', $validTipes),
             'deskripsi'    => 'required|string',
-            'persyaratan'  => 'required|string',
+            'persyaratan'  => 'required|array|min:1',
+            'persyaratan.*'=> 'required|string',
             'kuota'        => 'required|integer|min:1',
             'batas_lamaran'=> 'nullable|date',
         ]);
 
-        $karir->update(array_merge(
-            $request->only('posisi','departemen','kategori','tipe','deskripsi','persyaratan','lokasi','kuota','batas_lamaran'),
-            ['is_active' => $request->boolean('is_active')]
-        ));
+        $data = $request->only('posisi','departemen','kategori','tipe','deskripsi','lokasi','kuota','batas_lamaran');
+        $data['persyaratan'] = implode("\n", array_map('trim', $request->persyaratan));
+        $data['is_active'] = $request->boolean('is_active');
+
+        $karir->update($data);
 
         return redirect()->route('admin.karir.index')->with('success', 'Lowongan berhasil diperbarui.');
     }
@@ -110,5 +114,17 @@ class KarirController extends Controller
         Karir::whereIn('id', $request->ids)->update(['is_active' => $isActive]);
 
         return back()->with('success', count($request->ids) . ' lowongan berhasil di' . $request->action . 'kan.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:karirs,id',
+        ]);
+
+        Karir::whereIn('id', $request->ids)->delete();
+
+        return back()->with('success', count($request->ids) . ' data lowongan berhasil dihapus.');
     }
 }

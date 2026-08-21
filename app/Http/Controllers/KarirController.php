@@ -38,9 +38,9 @@ class KarirController extends Controller
         return view('pages.karir-index', compact('karirs', 'aktifKategori', 'counts', 'kategoris', 'tipes'));
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        $karir   = Karir::where('is_active', true)->findOrFail($id);
+        $karir   = Karir::where('is_active', true)->where('slug', $slug)->firstOrFail();
         $related = Karir::where('is_active', true)
                         ->where('kategori', $karir->kategori)
                         ->where('id', '!=', $karir->id)
@@ -50,9 +50,9 @@ class KarirController extends Controller
         return view('pages.karir-detail', compact('karir', 'related', 'kategoris', 'tipes'));
     }
 
-    public function apply(Request $request, $id)
+    public function apply(Request $request, $slug)
     {
-        $karir = Karir::findOrFail($id);
+        $karir = Karir::where('slug', $slug)->firstOrFail();
 
         $request->validate([
             'nama'                => 'required|string|max:200',

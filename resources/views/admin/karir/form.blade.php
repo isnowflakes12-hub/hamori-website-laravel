@@ -2,11 +2,12 @@
 @section('title', $karir ? 'Edit Lowongan' : 'Tambah Lowongan')
 @section('page-title', $karir ? 'Edit Lowongan' : 'Tambah Lowongan Baru')
 @section('content')
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <div class="page-hd">
     <div><h1 class="page-hd-title">{{ $karir ? "Edit Lowongan" : "Tambah Lowongan Baru" }}</h1></div>
     <a href="{{ route('admin.karir.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
 </div>
-<form method="POST" action="{{ $karir ? route('admin.karir.update', $karir) : route('admin.karir.store') }}">
+<form id="karirForm" method="POST" action="{{ $karir ? route('admin.karir.update', $karir) : route('admin.karir.store') }}">
 @csrf @if($karir) @method('PUT') @endif
 <div class="row g-4">
     <div class="col-lg-8">
@@ -78,11 +79,28 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Deskripsi Pekerjaan <span class="text-danger">*</span></label>
-                <textarea name="deskripsi" class="form-control" rows="5" required>{{ old('deskripsi', $karir->deskripsi ?? '') }}</textarea>
+                <div id="quill-deskripsi" style="height: 250px;">{!! old('deskripsi', $karir->deskripsi ?? '') !!}</div>
+                <input type="hidden" name="deskripsi" id="deskripsi-input" required value="{{ old('deskripsi', $karir->deskripsi ?? '') }}">
             </div>
             <div class="mb-3">
                 <label class="form-label">Persyaratan <span class="text-danger">*</span></label>
-                <textarea name="persyaratan" class="form-control" rows="5" required placeholder="- S1 Keperawatan&#10;- STR aktif&#10;- Pengalaman min. 1 tahun">{{ old('persyaratan', $karir->persyaratan ?? '') }}</textarea>
+                <div id="persyaratan-container">
+                    @php
+                        $oldPersyaratan = old('persyaratan');
+                        if (!$oldPersyaratan) {
+                            $oldStr = $karir->persyaratan ?? '';
+                            $oldPersyaratan = array_filter(array_map('trim', explode("\n", $oldStr)));
+                        }
+                        if (empty($oldPersyaratan)) $oldPersyaratan = [''];
+                    @endphp
+                    @foreach($oldPersyaratan as $index => $req)
+                    <div class="d-flex mb-2 align-items-center persyaratan-row">
+                        <input type="text" name="persyaratan[]" class="form-control me-2" value="{{ $req }}" required placeholder="Contoh: Laki-laki / Perempuan">
+                        <button type="button" class="btn btn-outline-danger btn-remove-req {{ count($oldPersyaratan) === 1 ? 'd-none' : '' }}" title="Hapus"><i class="bi bi-dash"></i></button>
+                    </div>
+                    @endforeach
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary mt-1" id="btn-add-req"><i class="bi bi-plus me-1"></i>Tambah Persyaratan</button>
             </div>
         </div>
     </div>
@@ -92,6 +110,7 @@
             <div class="mb-3">
                 <label class="form-label">Batas Lamaran</label>
                 <input type="date" name="batas_lamaran" class="form-control" value="{{ old('batas_lamaran', optional($karir->batas_lamaran ?? null)->format('Y-m-d')) }}">
+                <p class="text-muted mt-1 mb-0" style="font-size:12px;">Jika tidak ada batas waktu lamaran dikosongkan.</p>
             </div>
             {{-- Toggle Slider Status --}}
             @php $isActiveVal = old('is_active', $karir->is_active ?? true); @endphp
@@ -127,4 +146,77 @@
     </div>
 </div>
 </form>
+
+@push('scripts')
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var quill = new Quill('#quill-deskripsi', {
+        theme: 'snow',
+        placeholder: 'Tuliskan deskripsi pekerjaan di sini...',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['clean']
+            ]
+        }
+    });
+
+    var deskripsiInput = document.getElementById('deskripsi-input');
+    
+    // Sync Quill content to hidden input on text change
+    quill.on('text-change', function() {
+        var html = quill.root.innerHTML;
+        // Quill sets <p><br></p> when empty
+        if (html === '<p><br></p>' || html === '') {
+            deskripsiInput.value = '';
+        } else {
+            deskripsiInput.value = html;
+        }
+    });
+    
+    // Also sync on submit just to be safe
+    document.getElementById('karirForm').addEventListener('submit', function() {
+        var html = quill.root.innerHTML;
+        if (html !== '<p><br></p>' && html !== '') {
+            deskripsiInput.value = html;
+        }
+    });
+
+    const container = document.getElementById('persyaratan-container');
+    const btnAdd = document.getElementById('btn-add-req');
+    
+    function updateRemoveButtons() {
+        const rows = container.querySelectorAll('.persyaratan-row');
+        rows.forEach(row => {
+            const btnRemove = row.querySelector('.btn-remove-req');
+            if (rows.length === 1) {
+                btnRemove.classList.add('d-none');
+            } else {
+                btnRemove.classList.remove('d-none');
+            }
+        });
+    }
+
+    btnAdd.addEventListener('click', function() {
+        const row = document.createElement('div');
+        row.className = 'd-flex mb-2 align-items-center persyaratan-row';
+        row.innerHTML = `
+            <input type="text" name="persyaratan[]" class="form-control me-2" required placeholder="Contoh: Laki-laki / Perempuan">
+            <button type="button" class="btn btn-outline-danger btn-remove-req" title="Hapus"><i class="bi bi-dash"></i></button>
+        `;
+        container.appendChild(row);
+        updateRemoveButtons();
+    });
+
+    container.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-remove-req')) {
+            e.target.closest('.persyaratan-row').remove();
+            updateRemoveButtons();
+        }
+    });
+});
+</script>
+@endpush
 @endsection

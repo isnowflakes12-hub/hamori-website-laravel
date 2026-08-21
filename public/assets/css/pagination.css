@@ -1,0 +1,49 @@
+/* 
+ * Global Pagination Style - Opsi 1 (Modern Pill Style)
+ * Applied to all Laravel/Bootstrap paginations globally.
+ */
+
+.pagination {
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.page-item .page-link {
+    border-radius: 50px !important; /* Kapsul/Pill */
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    color: var(--primary, #1ba99d) !important;
+    font-weight: 600;
+    padding: 10px 18px;
+    transition: all 0.25s ease;
+    background: #fff;
+    margin: 0;
+}
+
+/* Active State */
+.page-item.active .page-link {
+    background: var(--primary, #1ba99d) !important;
+    color: #fff !important;
+    border-color: var(--primary, #1ba99d) !important;
+    box-shadow: 0 4px 12px rgba(27, 169, 157, 0.3) !important;
+}
+
+/* Hover State */
+.page-item:not(.active):not(.disabled) .page-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--primary, #1ba99d);
+    background: #f7fcff !important;
+    color: var(--primary, #1ba99d) !important;
+}
+
+/* Disabled State */
+.page-item.disabled .page-link {
+    color: #9ca3af !important;
+    background: #f9fafb !important;
+    box-shadow: none !important;
+    border-color: #eee !important;
+    pointer-events: none;
+}

@@ -13,6 +13,10 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PromoPublicController;
 use App\Http\Controllers\BedAvailabilityPublicController;
+use App\Http\Controllers\SitemapController;
+
+// ─── Sitemap ───
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // ─── Admin namespace shortcut ───
 use App\Http\Controllers\Admin\AuthController;
@@ -66,8 +70,8 @@ Route::get('/hamori-update/kategori/{kategori}', [PublicArtikelController::class
 Route::get('/info-tempat-tidur', [HomeController::class, 'tempatTidur'])->name('tempat-tidur');
 
 Route::get('/karir', [PublicKarirController::class, 'index'])->name('karir.index');
-Route::get('/karir/{id}', [PublicKarirController::class, 'show'])->name('karir.show');
-Route::post('/karir/{id}/apply', [PublicKarirController::class, 'apply'])->name('karir.apply');
+Route::get('/karir/{slug}', [PublicKarirController::class, 'show'])->name('karir.show');
+Route::post('/karir/{slug}/apply', [PublicKarirController::class, 'apply'])->name('karir.apply');
 
 Route::get('/partner', [PartnerController::class, 'index'])->name('partner');
 
@@ -153,6 +157,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // SDM — Karir (lowongan)
         Route::post('karir/bulk-toggle', [AdminKarirController::class, 'bulkToggle'])->name('karir.bulk-toggle');
+        Route::post('karir/bulk-delete', [AdminKarirController::class, 'bulkDelete'])->name('karir.bulk-delete');
         Route::resource('karir', AdminKarirController::class)->except(['show']);
         Route::patch('karir/{karir}/toggle', [AdminKarirController::class, 'toggleActive'])->name('karir.toggle');
         

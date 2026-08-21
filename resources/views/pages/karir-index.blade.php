@@ -16,7 +16,6 @@
     gap: 12px;
     align-items: center;
     flex-wrap: nowrap;
-    overflow: hidden;
 }
 .jadwal-search-field {
     flex: 1 1 0;
@@ -127,45 +126,23 @@
     transform: rotate(180deg);
 }
 
-/* Custom Pagination to match Karir Card */
-.karir-pagination .pagination {
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.karir-pagination .page-item .page-link {
-    border-radius: 12px !important;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    color: #1ba99d;
-    font-weight: 600;
-    padding: 10px 16px;
-    transition: all 0.2s;
-    background: #fff;
-    margin: 0;
-}
-.karir-pagination .page-item.active .page-link {
-    background: #1ba99d;
-    color: #fff;
-    border-color: #1ba99d;
-    box-shadow: 0 4px 12px rgba(27, 169, 157, 0.25);
-}
-.karir-pagination .page-item:not(.active) .page-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    border-color: #a7e8e4;
-    background: #e8f8f7;
-}
-.karir-pagination .page-item.disabled .page-link {
-    color: #9ca3af;
-    background: #f9fafb;
-    box-shadow: none;
-    pointer-events: none;
-}
-
 /* ===== Expired Job Card Overlay ===== */
 .karir-card.is-expired {
     position: relative;
+    overflow: hidden;
 }
+
+/* Custom Pagination Layout Override */
+.karir-pagination > nav > div.d-sm-flex {
+    flex-direction: column-reverse;
+    align-items: center !important;
+    gap: 15px;
+}
+.karir-pagination > nav > div.d-sm-flex > div:first-child p {
+    margin-bottom: 0;
+    text-align: center;
+}
+
 .karir-card.is-expired .karir-card-body,
 .karir-card.is-expired .karir-card-top {
     opacity: 0.65;
@@ -603,21 +580,19 @@
                 <div class="jadwal-search-field">
                     <i class="bi bi-briefcase jadwal-search-icon"></i>
                     <input type="hidden" name="tipe" id="input-tipe" value="{{ request('tipe') }}">
-                    <div class="jadwal-search-input jadwal-search-select custom-dropdown-trigger" id="tipeDropdownTrigger"
-                         style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; padding-left:40px;">
+                    <div class="jadwal-search-input custom-dropdown-trigger" id="tipeDropdownTrigger"
+                         style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none;">
                         <span id="tipeDropdownLabel">
                             @php
                                 $tipeLabels = [];
-                                foreach($tipes as $t) {
-                                    $tipeLabels[$t->slug] = $t->nama;
-                                }
+                                foreach($tipes as $t) { $tipeLabels[$t->slug] = $t->nama; }
                             @endphp
                             {{ $tipeLabels[request('tipe')] ?? 'Semua Tipe' }}
                         </span>
                         <i class="bi bi-chevron-down ms-2" id="tipeDropdownArrow" style="transition:transform 0.2s; color:#94a3b8; font-size:14px;"></i>
                     </div>
                     <ul class="custom-dropdown-options" id="tipeDropdownOptions"
-                        style="position:absolute; top:calc(100% + 5px); left:0; width:100%; background:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); border:1px solid #e2e8f0; padding:6px; margin:0; z-index:100; opacity:0; visibility:hidden; transform:translateY(-10px); transition:all 0.2s ease;">
+                        style="position:absolute; top:calc(100% + 5px); left:0; width:100%; background:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); border:1px solid #e2e8f0; list-style:none; padding:6px; margin:0; z-index:100; opacity:0; visibility:hidden; transform:translateY(-10px); transition:all 0.2s ease;">
                         <li class="custom-dropdown-option {{ request('tipe') == '' ? 'active' : '' }}" data-value="">Semua Tipe</li>
                         @foreach($tipes as $t)
                         <li class="custom-dropdown-option {{ request('tipe') == $t->slug ? 'active' : '' }}" data-value="{{ $t->slug }}">{{ $t->nama }}</li>
@@ -659,8 +634,7 @@
         @if($karirs->isEmpty())
         <div class="karir-empty">
             <i class="bi bi-briefcase"></i>
-            <h5>Belum ada lowongan{{ $aktifKategori!=='Semua' ? ' untuk '.$aktifKategori : '' }} saat ini</h5>
-            <p class="text-muted">Pantau terus halaman ini, atau kirim lamaran terbuka di bawah.</p>
+            <h5>Mohon maaf, posisi yang Anda cari belum tersedia saat ini.</h5>
             @if($aktifKategori !== 'Semua')
             <a href="{{ route('karir.index') }}" class="btn btn-outline-primary mt-3">Lihat Semua Lowongan</a>
             @endif
@@ -679,7 +653,7 @@
                     @if($isExpired)
                     <div class="karir-expired-overlay">
                         <i class="bi bi-x-circle-fill"></i>
-                        <h5>Lamaran Ditutup</h5>
+                        <h5>Mohon Maaf Lamaran sudah di Tutup</h5>
                         <p>Telah melewati batas waktu</p>
                     </div>
                     @endif
@@ -729,7 +703,7 @@
                                 <i class="bi bi-eye"></i> Lihat Detail
                             </button>
                         @else
-                            <a href="{{ route('karir.show', $karir->id) }}" class="btn-detail" style="width:100%; justify-content:center;">
+                            <a href="{{ route('karir.show', $karir->slug) }}" class="btn-detail" style="width:100%; justify-content:center;">
                                 <i class="bi bi-eye"></i> Lihat Detail
                             </a>
                         @endif
@@ -762,6 +736,7 @@ document.addEventListener('DOMContentLoaded', function() {
         options.forEach(option => {
             option.addEventListener('click', function() {
                 hiddenInput.value = this.getAttribute('data-value');
+                wrapper.classList.remove('open');
                 if (form) form.submit();
             });
         });

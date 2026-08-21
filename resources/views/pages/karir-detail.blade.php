@@ -1,8 +1,11 @@
 @extends('layouts.app')
 @section('title', $karir->posisi . ' — Karir RS Hamori')
+@section('meta_description', 'Lowongan kerja ' . $karir->posisi . ' di Rumah Sakit Hamori Subang. ' . Str::limit(strip_tags($karir->deskripsi), 150))
+@section('meta_keywords', 'lowongan kerja ' . strtolower($karir->posisi) . ', loker rs hamori, loker subang, karir rumah sakit')
+@section('og_type', 'article')
 
 @push('styles')
-
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 @endpush
 
 @php
@@ -49,7 +52,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 
                 <div class="detail-card">
                     <h5><i class="bi bi-file-text"></i> Deskripsi Pekerjaan</h5>
-                    <p>{!! nl2br(e($karir->deskripsi)) !!}</p>
+                    <div class="ql-editor p-0">{!! $karir->deskripsi !!}</div>
                 </div>
 
                 <div class="detail-card">
@@ -219,7 +222,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                 @else
                 <div class="detail-card" style="text-align:center;padding:40px">
                     <i class="bi bi-calendar-x" style="font-size:3rem;color:#d1d5db;display:block;margin-bottom:14px"></i>
-                    <h5 class="fw-bold">Periode Lamaran Telah Ditutup</h5>
+                    <h5 class="fw-bold">Mohon Maaf Lamaran sudah di Tutup</h5>
                     <p class="text-muted mb-4">Lowongan ini sudah tidak menerima lamaran baru.</p>
                     <a href="{{ route('karir.index') }}" class="btn btn-primary">
                         <i class="bi bi-arrow-left me-1"></i> Lihat Lowongan Lain

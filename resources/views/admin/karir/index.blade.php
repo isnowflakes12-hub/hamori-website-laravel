@@ -52,7 +52,7 @@
         @if(request()->hasAny(['search','kategori','status']))<a href="{{ route('admin.karir.index') }}" class="btn btn-outline-secondary flex-shrink-0">Reset</a>@endif
     </form>
 </div>
-<div id="bulkActionContainer" data-url="{{ route('admin.karir.bulk-toggle') }}" data-csrf="{{ csrf_token() }}">
+<div id="bulkActionContainer" data-url="{{ route('admin.karir.bulk-toggle') }}" data-url-delete="{{ route('admin.karir.bulk-delete') }}" data-csrf="{{ csrf_token() }}">
 <div class="d-flex justify-content-between align-items-center mb-2">
     <div class="d-flex align-items-center gap-3">
         <div class="form-check mb-0">
@@ -71,6 +71,7 @@
                     <li class="custom-dropdown-option active" data-value="">-- Pilih Aksi Bulk --</li>
                     <li class="custom-dropdown-option" data-value="aktif">Set Aktif</li>
                     <li class="custom-dropdown-option" data-value="nonaktif">Set Nonaktif</li>
+                    <li class="custom-dropdown-option text-danger fw-bold" data-value="hapus">Hapus Terpilih</li>
                 </ul>
             </div>
             <button type="button" class="btn btn-primary" style="height: 32px; padding: 0 16px; font-size: 13px;" id="btnApplyBulk" disabled>Terapkan</button>
@@ -94,13 +95,23 @@
             </tr>
         </thead>
         <tbody>
+        @php
+            $katMeta = [];
+            foreach(\App\Models\KarirKategori::all() as $kat) {
+                $katMeta[$kat->nama] = ['color' => $kat->warna, 'bg' => $kat->warna_bg];
+            }
+        @endphp
         @forelse($karirs as $k)
-        @php $deadline = $k->batas_lamaran; $isExpired = $deadline && $deadline->isPast(); @endphp
+        @php 
+            $deadline = $k->batas_lamaran; 
+            $isExpired = $deadline && $deadline->isPast(); 
+            $km = $katMeta[$k->kategori] ?? ['color'=>'#0055a5', 'bg'=>'#e8f0fa'];
+        @endphp
         <tr>
             <td><input type="checkbox" name="ids[]" value="{{ $k->id }}" class="form-check-input check-item"></td>
             <td class="fw-semibold">{{ $k->posisi }}</td>
             <td style="font-size:12px;color:#64748b">{{ $k->departemen }}</td>
-            <td><span class="badge" style="background:#e8f0fa;color:#0055a5;font-size:11px">{{ $k->kategori }}</span></td>
+            <td><span class="badge" style="background:{{ $km['bg'] }};color:{{ $km['color'] }};font-size:11px">{{ $k->kategori }}</span></td>
             <td><span class="badge bg-secondary" style="font-size:11px">{{ ucfirst(str_replace('-',' ',$k->tipe)) }}</span></td>
             <td class="text-center">{{ $k->kuota ?? 1 }}</td>
             <td><a href="{{ route('admin.lamaran.index', ['karir_id' => $k->id]) }}" class="badge bg-primary" style="font-size:11px;text-decoration:none">{{ $k->lamarans_count }}</a></td>
@@ -187,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = document.createElement('form');
         form.method = 'POST';
         const container = document.getElementById('bulkActionContainer');
-        form.action = container.getAttribute('data-url');
+        form.action = action === 'hapus' ? container.getAttribute('data-url-delete') : container.getAttribute('data-url');
         
         const csrfToken = document.createElement('input');
         csrfToken.type = 'hidden';
