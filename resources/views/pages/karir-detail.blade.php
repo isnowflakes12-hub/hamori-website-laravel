@@ -293,7 +293,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                     <div style="padding:14px 12px;display:flex;flex-direction:column;gap:8px">
                         @foreach($related as $r)
                         @php $rm = $katMeta[$r->kategori] ?? ['color'=>'#1ba99d', 'bg'=>'#e8f8f7', 'icon'=>'bi-briefcase']; @endphp
-                        <a href="{{ route('karir.show', $r->id) }}" class="related-card">
+                        <a href="{{ route('karir.show', $r->slug) }}" class="related-card">
                             <div class="related-card-icon" style="background:{{ $rm['bg'] }};color:{{ $rm['color'] }}">
                                 <i class="bi {{ $rm['icon'] }}"></i>
                             </div>
