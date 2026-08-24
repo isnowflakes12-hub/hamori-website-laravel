@@ -97,7 +97,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                         <p>Isi data diri Anda dengan lengkap dan benar. Semua kolom wajib diisi.</p>
                     </div>
                     <div class="form-lamar-body">
-                        <form action="{{ route('karir.apply', $karir->id) }}"
+                        <form action="{{ route('karir.apply', $karir->slug) }}"
                               method="POST" enctype="multipart/form-data" novalidate>
                             @csrf
 
