@@ -196,15 +196,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                                     </label>
                                 </div>
 
-                                {{-- Google reCAPTCHA --}}
-                                <div class="col-12">
-                                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
-                                    @error('g-recaptcha-response')
-                                    <div style="font-size:12px;color:#dc2626;margin-top:4px">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>{{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
+                                {{-- reCAPTCHA sementara dinonaktifkan --}}
 
                                 <div class="col-12">
                                     <button type="submit" class="btn-submit-lamar" id="btnKirimLamaran">

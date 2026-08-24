@@ -60,7 +60,7 @@ class KarirController extends Controller
             'telepon'             => ['required', 'string', 'regex:/^(\+62|62|0)8[0-9]{7,13}$/'],
             'cv'                  => 'required|file|mimes:pdf|max:5120',
             'cover_letter'        => 'nullable|string|max:5000',
-            'g-recaptcha-response'=> 'required',
+            // 'g-recaptcha-response' => 'required', // sementara dinonaktifkan
         ], [
             'nama.required'                => 'Nama lengkap wajib diisi.',
             'nama.max'                     => 'Nama lengkap maksimal 200 karakter.',
@@ -74,12 +74,12 @@ class KarirController extends Controller
             'g-recaptcha-response.required'=> 'Verifikasi reCAPTCHA wajib dilakukan.',
         ]);
 
-        // Verifikasi reCAPTCHA
-        $recaptcha = new \ReCaptcha\ReCaptcha(config('services.recaptcha.secret_key'));
-        $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
-        if (!$resp->isSuccess()) {
-            return back()->withErrors(['g-recaptcha-response' => 'Validasi reCAPTCHA gagal. Silakan coba lagi.'])->withInput();
-        }
+        // Verifikasi reCAPTCHA sementara dinonaktifkan
+        // $recaptcha = new \ReCaptcha\ReCaptcha(config('services.recaptcha.secret_key'));
+        // $resp = $recaptcha->verify($request->input('g-recaptcha-response'), $request->ip());
+        // if (!$resp->isSuccess()) {
+        //     return back()->withErrors(['g-recaptcha-response' => 'Validasi reCAPTCHA gagal. Silakan coba lagi.'])->withInput();
+        // }
 
         $cvPath = $request->file('cv')->store('karir/cv', 'public');
 
