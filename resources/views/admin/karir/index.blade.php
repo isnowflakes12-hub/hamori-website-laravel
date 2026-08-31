@@ -87,7 +87,7 @@
                 <th>Departemen</th>
                 <th>Kategori</th>
                 <th>Tipe</th>
-                <th>Kuota</th>
+
                 <th>Lamaran</th>
                 <th>Deadline</th>
                 <th>Status</th>
@@ -113,7 +113,7 @@
             <td style="font-size:12px;color:#64748b">{{ $k->departemen }}</td>
             <td><span class="badge" style="background:{{ $km['bg'] }};color:{{ $km['color'] }};font-size:11px">{{ $k->kategori }}</span></td>
             <td><span class="badge bg-secondary" style="font-size:11px">{{ ucfirst(str_replace('-',' ',$k->tipe)) }}</span></td>
-            <td class="text-center">{{ $k->kuota ?? 1 }}</td>
+
             <td><a href="{{ route('admin.lamaran.index', ['karir_id' => $k->id]) }}" class="badge bg-primary" style="font-size:11px;text-decoration:none">{{ $k->lamarans_count }}</a></td>
             <td style="font-size:12px;color:{{ $isExpired ? '#e8333c' : '#64748b' }}">{{ $deadline ? $deadline->format('d M Y') : '—' }}</td>
             <td>

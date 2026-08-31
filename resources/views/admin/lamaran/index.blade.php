@@ -55,13 +55,142 @@
         
         <button class="btn btn-primary flex-shrink-0" type="submit">Filter</button>
         @if(request()->hasAny(['search','karir_id','status']))<a href="{{ route('admin.lamaran.index') }}" class="btn btn-outline-secondary flex-shrink-0">Reset</a>@endif
-    </form>
+</div>
+@if(isset($kategoriList))
+<div class="admin-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Kategori Pekerjaan</th>
+                <th class="text-center">Total Posisi Buka</th>
+                <th class="text-center">Total Pelamar</th>
+                <th class="text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        @forelse($kategoriList as $k)
+        @php
+            $meta = $kategoriMeta[$k->kategori] ?? null;
+            $warna = $meta ? $meta->warna : '#0055a5';
+            $warna_bg = $meta ? $meta->warna_bg : '#e0f2fe';
+            $icon = $meta ? $meta->icon : 'bi-tags';
+        @endphp
+        <tr>
+            <td class="fw-bold" style="color: #0f172a;">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width:32px;height:32px;border-radius:8px;background:{{ $warna_bg }};color:{{ $warna }};display:flex;align-items:center;justify-content:center;">
+                        <i class="bi {{ $icon }}"></i>
+                    </div>
+                    <span>{{ $k->kategori }}</span>
+                </div>
+            </td>
+            <td class="text-center">{{ $k->total_posisi }} Posisi</td>
+            <td class="text-center">
+                @if((int)$k->pelamar_baru > 0)
+                <span class="badge bg-danger" style="font-size:12px; padding:6px 12px; border-radius:12px;" title="Ada {{ (int)$k->pelamar_baru }} Pelamar Baru (Pending)">
+                    {{ (int)$k->total_pelamar }}
+                </span>
+                @else
+                <span class="badge bg-secondary" style="font-size:12px; padding:6px 12px; border-radius:12px; background-color: #94a3b8 !important;" title="Tidak ada pelamar baru">
+                    {{ (int)$k->total_pelamar }}
+                </span>
+                @endif
+            </td>
+            <td class="text-center">
+                <a href="{{ route('admin.lamaran.index', ['kategori' => $k->kategori]) }}" class="btn btn-sm btn-outline-primary" style="border-radius: 8px;">
+                    <i class="bi bi-briefcase me-1"></i> Lihat Posisi
+                </a>
+            </td>
+        </tr>
+        @empty
+        <tr><td colspan="4" class="text-center py-4 text-muted">Belum ada data kategori</td></tr>
+        @endforelse
+        </tbody>
+    </table>
+</div>
+@endif
+
+@if(isset($karirList))
+<div class="mb-3 d-flex align-items-center justify-content-between">
+    <h5 class="mb-0 text-muted" style="font-size:15px;"><i class="bi bi-briefcase me-2"></i>Daftar Posisi Pekerjaan — {{ $kategori_title }}</h5>
+    <a href="{{ route('admin.lamaran.index') }}" class="btn btn-sm btn-outline-secondary" style="border-radius: 8px;"><i class="bi bi-arrow-left me-1"></i> Kembali ke Kategori Utama</a>
+</div>
+<div class="admin-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Posisi Pekerjaan</th>
+                <th>Kategori</th>
+                <th>Departemen</th>
+                <th>Status Lowongan</th>
+                <th class="text-center">Total Pelamar</th>
+                <th class="text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        @forelse($karirList as $k)
+        @php
+            $meta = $kategoriMeta[$k->kategori] ?? null;
+            $warna = $meta ? $meta->warna : '#0055a5';
+            $warna_bg = $meta ? $meta->warna_bg : '#e0f2fe';
+            $icon = $meta ? $meta->icon : 'bi-tags';
+        @endphp
+        <tr>
+            <td class="fw-bold" style="color: #0f172a;">{{ $k->posisi }}</td>
+            <td style="font-size:13px; color:#475569;">
+                <span class="badge" style="background:{{ $warna_bg }};color:{{ $warna }};padding:6px 10px;font-weight:600;">
+                    <i class="bi {{ $icon }} me-1"></i> {{ $k->kategori }}
+                </span>
+            </td>
+            <td style="font-size:13px; color:#475569;">{{ $k->departemen }}</td>
+            <td>
+                @if($k->is_active)
+                    <span class="badge bg-success-subtle text-success">Aktif</span>
+                @else
+                    <span class="badge bg-danger-subtle text-danger">Tutup</span>
+                @endif
+            </td>
+            <td class="text-center">
+                @if((int)$k->pelamar_baru > 0)
+                <span class="badge bg-danger" style="font-size:12px; padding:6px 12px; border-radius:12px;" title="Ada {{ (int)$k->pelamar_baru }} Pelamar Baru (Pending)">
+                    {{ $k->lamarans_count }}
+                </span>
+                @else
+                <span class="badge bg-secondary" style="font-size:12px; padding:6px 12px; border-radius:12px; background-color: #94a3b8 !important;" title="Tidak ada pelamar baru">
+                    {{ $k->lamarans_count }}
+                </span>
+                @endif
+            </td>
+            <td class="text-center">
+                <a href="{{ route('admin.lamaran.index', ['karir_id' => $k->id]) }}" class="btn btn-sm btn-outline-primary" style="border-radius: 8px;">
+                    <i class="bi bi-list-check me-1"></i> Lihat Pelamar
+                </a>
+            </td>
+        </tr>
+        @empty
+        <tr><td colspan="6" class="text-center py-4 text-muted">Belum ada posisi pekerjaan</td></tr>
+        @endforelse
+        </tbody>
+    </table>
+    <div class="p-3">{{ $karirList->links() }}</div>
+</div>
+@endif
+
+@if(isset($lamarans))
+<div class="mb-3 d-flex align-items-center justify-content-between">
+    <h5 class="mb-0 text-muted" style="font-size:15px;"><i class="bi bi-people me-2"></i>Daftar Pelamar</h5>
+    <a href="{{ request()->has('karir_id') ? route('admin.lamaran.index', ['kategori' => $karirs->firstWhere('id', request('karir_id'))->kategori ?? '']) : route('admin.lamaran.index') }}" class="btn btn-sm btn-outline-secondary" style="border-radius: 8px;"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
 </div>
 <div class="admin-table">
     <table class="table">
         <thead><tr><th>Nama</th><th>Email / Telp</th><th>Posisi</th><th>CV</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
         <tbody>
         @forelse($lamarans as $l)
+        @php
+            $waNum = preg_replace('/[^0-9]/', '', $l->telepon);
+            if(str_starts_with($waNum, '0')) $waNum = '62' . substr($waNum, 1);
+            $waLink = "https://wa.me/{$waNum}?text=Assalamualaikum%20wr.%20wb,%20Halo%20*{$l->nama}*,%20kami%20dari%20SDM%20Rumah%20sakit%20HAMORI%20terkait%20lamaran%20Anda%20sebagai%20*" . rawurlencode($l->karir->posisi ?? 'Karyawan') . "*";
+        @endphp
         <tr>
             <td class="fw-semibold">{{ $l->nama }}</td>
             <td style="font-size:12px;color:#64748b">{{ $l->email }}<br>{{ $l->telepon }}</td>
@@ -72,9 +201,10 @@
             </td>
             <td style="font-size:12px;color:#64748b">{{ $l->created_at->format('d M Y') }}</td>
             <td class="d-flex gap-1">
-                <a href="{{ route('admin.lamaran.show', $l) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                <a href="{{ $waLink }}" target="_blank" class="btn btn-sm btn-success" title="Hubungi via WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                <a href="{{ route('admin.lamaran.show', $l) }}" class="btn btn-sm btn-outline-primary" title="Detail"><i class="bi bi-eye"></i></a>
                 <form method="POST" action="{{ route('admin.lamaran.destroy', $l) }}" onsubmit="return confirm('Hapus lamaran ini?')">@csrf @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>
                 </form>
             </td>
         </tr>
@@ -85,4 +215,5 @@
     </table>
     <div class="p-3">{{ $lamarans->links() }}</div>
 </div>
+@endif
 @endsection

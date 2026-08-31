@@ -41,13 +41,19 @@ class KarirController extends Controller
     public function show($slug)
     {
         $karir   = Karir::where('is_active', true)->where('slug', $slug)->firstOrFail();
+
+        // Jika sudah expired (melewati batas waktu lamaran), blokir akses langsung melalui URL
+        if ($karir->batas_lamaran && $karir->batas_lamaran->isPast()) {
+            abort(404, 'Lowongan Pekerjaan Sudah Ditutup');
+        }
         $related = Karir::where('is_active', true)
                         ->where('kategori', $karir->kategori)
                         ->where('id', '!=', $karir->id)
                         ->take(3)->get();
         $kategoris = KarirKategori::where('is_active', true)->get();
         $tipes = KarirTipe::where('is_active', true)->get();
-        return view('pages.karir-detail', compact('karir', 'related', 'kategoris', 'tipes'));
+        $allKarirs = Karir::where('is_active', true)->orderBy('posisi')->get();
+        return view('pages.karir-detail', compact('karir', 'related', 'kategoris', 'tipes', 'allKarirs'));
     }
 
     public function apply(Request $request, $slug)

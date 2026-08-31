@@ -685,9 +685,6 @@
                         </p>
                         <p class="karir-desc">{{ Str::limit(strip_tags($karir->deskripsi), 100) }}</p>
                         <div class="karir-meta">
-                            @if(!empty($karir->kuota))
-                            <span class="karir-meta-item"><i class="bi bi-people"></i> {{ $karir->kuota }} orang</span>
-                            @endif
                             <span class="karir-meta-item"><i class="bi bi-briefcase"></i> {{ $tn }}</span>
                         </div>
                         @if($karir->batas_lamaran)

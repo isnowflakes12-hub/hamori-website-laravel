@@ -13,13 +13,9 @@
     <div class="col-lg-8">
         <div class="form-card">
             <div class="row g-3 mb-3">
-                <div class="col-md-8">
+                <div class="col-12">
                     <label class="form-label">Nama Posisi <span class="text-danger">*</span></label>
                     <input type="text" name="posisi" class="form-control" value="{{ old('posisi', $karir->posisi ?? '') }}" required>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Kuota <span class="text-danger">*</span></label>
-                    <input type="number" name="kuota" class="form-control" value="{{ old('kuota', $karir->kuota ?? 1) }}" min="1" required>
                 </div>
             </div>
             <div class="row g-3 mb-3">

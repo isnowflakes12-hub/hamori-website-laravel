@@ -6,6 +6,45 @@
 
 @push('styles')
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container .select2-selection--single {
+        height: auto !important;
+        min-height: 48px !important;
+        border: 1.5px solid #e4e9f0 !important;
+        border-radius: 10px !important;
+        padding: 10px 14px 10px 40px !important;
+        font-size: 14px !important;
+        color: #2d3748 !important;
+        background-color: #f7f9fc !important;
+        display: flex !important;
+        align-items: center !important;
+        transition: border-color .2s, background .2s;
+    }
+    .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: #1ba99d !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 100% !important;
+        right: 14px !important;
+        top: 0 !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        padding-left: 0 !important;
+        color: #2d3748 !important;
+        line-height: normal !important;
+    }
+    .jadwal-search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ba5b4;
+        font-size: 16px;
+        pointer-events: none;
+        z-index: 10;
+    }
+</style>
 @endpush
 
 @php
@@ -74,8 +113,8 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                             ['bi-shield-check','#0055a5','BPJS Kesehatan & Ketenagakerjaan'],
                             ['bi-graph-up','#00a859','Jenjang karir yang jelas'],
                             ['bi-mortarboard','#6c3fc5','Pelatihan & pengembangan SDM'],
-                            ['bi-house-heart','#e8333c','Tunjangan kehadiran & makan'],
-                            ['bi-calendar-week','#f59e0b','Cuti tahunan & cuti melahirkan'],
+                            ['bi-cash-coin','#e8333c','Salary meliputi Tunjangan Tetap & Tidak Tetap'],
+                            ['bi-hospital','#f59e0b','Diskon berobat karyawan'],
                             ['bi-people','#0077cc','Lingkungan kerja profesional'],
                         ] as $b)
                         <div class="col-sm-6">
@@ -91,126 +130,143 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                 </div>
 
                 @if(!$isExpired)
-                <div class="form-lamar" id="form-lamar">
-                    <div class="form-lamar-header">
-                        <h4><i class="bi bi-send me-2"></i>Form Lamaran — {{ $karir->posisi }}</h4>
-                        <p>Isi data diri Anda dengan lengkap dan benar. Semua kolom wajib diisi.</p>
-                    </div>
-                    <div class="form-lamar-body">
-                        <form action="{{ route('karir.apply', $karir->slug) }}"
-                              method="POST" enctype="multipart/form-data" novalidate>
-                            @csrf
-
-                            <div class="row g-4">
-                                <div class="col-md-6">
-                                    <label class="form-label-custom">
-                                        <i class="bi bi-person" style="color:#0055a5"></i>
-                                        Nama Lengkap <span class="required">*</span>
-                                    </label>
-                                    <input type="text" name="nama"
-                                           class="form-control-custom @error('nama') is-invalid @enderror"
-                                           placeholder="Nama sesuai KTP"
-                                           value="{{ old('nama') }}" required maxlength="200">
-                                    @error('nama')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
+                <!-- Modal Lamaran -->
+                <div class="modal fade" id="modalLamaran" tabindex="-1" aria-labelledby="modalLamaranLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                            <div class="modal-header" style="background: #0055a5; color: #fff; border-bottom: none; padding: 24px;">
+                                <div>
+                                    <h5 class="modal-title fw-bold" id="modalLamaranLabel"><i class="bi bi-send me-2"></i>Form Lamaran Kerja</h5>
+                                    <p class="mb-0 mt-1" style="font-size:13px; color:#e0f2fe;">Isi data diri Anda dengan lengkap. Semua kolom wajib diisi.</p>
                                 </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label-custom">
-                                        <i class="bi bi-envelope" style="color:#0055a5"></i>
-                                        Email Aktif <span class="required">*</span>
-                                    </label>
-                                    <input type="email" name="email"
-                                           class="form-control-custom @error('email') is-invalid @enderror"
-                                           placeholder="email@contoh.com"
-                                           value="{{ old('email') }}" required>
-                                    @error('email')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label-custom">
-                                        <i class="bi bi-telephone" style="color:#0055a5"></i>
-                                        No. HP / WhatsApp <span class="required">*</span>
-                                    </label>
-                                    <input type="text" name="telepon"
-                                           class="form-control-custom @error('telepon') is-invalid @enderror"
-                                           placeholder="08xxxxxxxxxx atau +628xxxxxxxxxx"
-                                           value="{{ old('telepon') }}" required
-                                           pattern="^(\+62|62|0)8[0-9]{7,13}$"
-                                           inputmode="tel">
-                                    @error('telepon')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label-custom">
-                                        <i class="bi bi-briefcase" style="color:#0055a5"></i>
-                                        Posisi yang Dilamar
-                                    </label>
-                                    <input type="text" class="form-control-custom"
-                                           value="{{ $karir->posisi }}" readonly
-                                           style="background:#f3f4f6;color:#6b7280">
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label-custom">
-                                        <i class="bi bi-file-earmark-pdf" style="color:#0055a5"></i>
-                                        Upload CV / Resume <span class="required">*</span>
-                                        <span style="font-size:11px;color:#9ca3af;font-weight:400">(PDF saja — maks. 5 MB)</span>
-                                    </label>
-                                    <div class="file-upload-area @error('cv') is-invalid @enderror" id="cvDropArea">
-                                        <input type="file" name="cv" id="cvInput"
-                                               accept=".pdf,application/pdf" required>
-                                        <div class="file-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                                        <div class="file-upload-text">
-                                            <strong>Klik atau drag & drop</strong> CV Anda di sini<br>
-                                            <span style="font-size:11px">Format: PDF • Maksimal 5 MB</span>
-                                        </div>
-                                        <div class="file-name-display" id="fileNameDisplay">
-                                            <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                            <span id="fileNameText"></span>
-                                        </div>
-                                        <div id="cvError" style="display:none;font-size:12px;color:#dc2626;margin-top:6px"></div>
-                                    </div>
-                                    @error('cv')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label-custom">
-                                        <i class="bi bi-chat-text" style="color:#0055a5"></i>
-                                        Surat Motivasi / Cover Letter
-                                        <span style="font-size:11px;color:#9ca3af;font-weight:400">(opsional)</span>
-                                    </label>
-                                    <textarea name="cover_letter" rows="5"
-                                              class="form-control-custom"
-                                              placeholder="Ceritakan motivasi Anda melamar posisi ini, pengalaman relevan, dan mengapa Anda cocok untuk tim kami...">{{ old('cover_letter') }}</textarea>
-                                </div>
-
-                                <div class="col-12">
-                                    <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#374151">
-                                        <input type="checkbox" name="persetujuan" id="persetujuanCheck" required
-                                               style="margin-top:2px;width:16px;height:16px;accent-color:#0055a5;flex-shrink:0">
-                                        <span>
-                                            Saya menyatakan bahwa data yang saya isi adalah <strong>benar</strong> dan dapat dipertanggungjawabkan.
-                                            Saya menyetujui <a href="{{ route('privacy-policy') }}" target="_blank" style="color:#0055a5">Kebijakan Privasi</a>
-                                            RS Hamori terkait pengolahan data lamaran.
-                                        </span>
-                                    </label>
-                                </div>
-
-                                {{-- reCAPTCHA sementara dinonaktifkan --}}
-
-                                <div class="col-12">
-                                    <button type="submit" class="btn-submit-lamar" id="btnKirimLamaran">
-                                        <i class="bi bi-send-fill"></i>
-                                        Kirim Lamaran Sekarang
-                                    </button>
-                                    <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:12px;margin-bottom:0">
-                                        <i class="bi bi-lock me-1"></i>Data Anda aman dan tidak akan dibagikan kepada pihak ketiga
-                                    </p>
-                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="align-self: flex-start;"></button>
                             </div>
-                        </form>
+                            <div class="modal-body" style="padding: 30px 24px; background: #fff;">
+                                <form id="formLamaranActual" action="{{ route('karir.apply', $karir->slug) }}"
+                                      method="POST" enctype="multipart/form-data" novalidate>
+                                    @csrf
+
+                                    <div class="row g-4">
+                                        <div class="col-12">
+                                            <label class="form-label-custom">
+                                                <i class="bi bi-briefcase" style="color:#0055a5"></i>
+                                                Posisi yang Dilamar <span class="required">*</span>
+                                            </label>
+                                            <div style="position: relative;">
+                                                <i class="bi bi-search jadwal-search-icon"></i>
+                                                <select name="slug_posisi" id="selectPosisi" class="form-control" required style="width: 100%;">
+                                                    @foreach($allKarirs as $ak)
+                                                        @php
+                                                            $isExpired = $ak->batas_lamaran && $ak->batas_lamaran->isPast();
+                                                        @endphp
+                                                        <option value="{{ $ak->slug }}" {{ $ak->id == $karir->id ? 'selected' : '' }} {{ $isExpired ? 'disabled' : '' }}>
+                                                            {{ $ak->posisi }} ({{ $ak->departemen }}) {{ $isExpired ? ' - (DITUTUP)' : '' }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label-custom">
+                                                <i class="bi bi-person" style="color:#0055a5"></i>
+                                                Nama Lengkap <span class="required">*</span>
+                                            </label>
+                                            <input type="text" name="nama"
+                                                   class="form-control-custom @error('nama') is-invalid @enderror"
+                                                   placeholder="Nama sesuai KTP"
+                                                   value="{{ old('nama') }}" required maxlength="200">
+                                            @error('nama')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label-custom">
+                                                <i class="bi bi-envelope" style="color:#0055a5"></i>
+                                                Email Aktif <span class="required">*</span>
+                                            </label>
+                                            <input type="email" name="email"
+                                                   class="form-control-custom @error('email') is-invalid @enderror"
+                                                   placeholder="email@contoh.com"
+                                                   value="{{ old('email') }}" required>
+                                            @error('email')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label-custom">
+                                                <i class="bi bi-telephone" style="color:#0055a5"></i>
+                                                No. HP / WhatsApp <span class="required">*</span>
+                                            </label>
+                                            <input type="text" name="telepon"
+                                                   class="form-control-custom @error('telepon') is-invalid @enderror"
+                                                   placeholder="08xxxxxxxxxx atau +628xxxxxxxxxx"
+                                                   value="{{ old('telepon') }}" required
+                                                   pattern="^(\+62|62|0)8[0-9]{7,13}$"
+                                                   inputmode="tel">
+                                            @error('telepon')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label-custom">
+                                                <i class="bi bi-file-earmark-pdf" style="color:#0055a5"></i>
+                                                Upload CV / Resume <span class="required">*</span>
+                                                <span style="font-size:11px;color:#9ca3af;font-weight:400">(PDF saja — maks. 5 MB)</span>
+                                            </label>
+                                            <div class="file-upload-area @error('cv') is-invalid @enderror" id="cvDropArea">
+                                                <input type="file" name="cv" id="cvInput"
+                                                       accept=".pdf,application/pdf" required>
+                                                <div class="file-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                                <div class="file-upload-text">
+                                                    <strong>Klik atau drag & drop</strong> CV Anda di sini<br>
+                                                    <span style="font-size:11px">Format: PDF • Maksimal 5 MB</span>
+                                                </div>
+                                                <div class="file-name-display" id="fileNameDisplay">
+                                                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                    <span id="fileNameText"></span>
+                                                </div>
+                                                <div id="cvError" style="display:none;font-size:12px;color:#dc2626;margin-top:6px"></div>
+                                            </div>
+                                            @error('cv')<div style="font-size:12px;color:#dc2626;margin-top:4px">{{ $message }}</div>@enderror
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label-custom">
+                                                <i class="bi bi-chat-text" style="color:#0055a5"></i>
+                                                Surat Motivasi / Cover Letter
+                                                <span style="font-size:11px;color:#9ca3af;font-weight:400">(opsional)</span>
+                                            </label>
+                                            <textarea name="cover_letter" rows="4"
+                                                      class="form-control-custom"
+                                                      placeholder="Ceritakan motivasi Anda melamar posisi ini, pengalaman relevan, dan mengapa Anda cocok untuk tim kami...">{{ old('cover_letter') }}</textarea>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#374151">
+                                                <input type="checkbox" name="persetujuan" id="persetujuanCheck" required
+                                                       style="margin-top:2px;width:16px;height:16px;accent-color:#0055a5;flex-shrink:0">
+                                                <span>
+                                                    Saya menyatakan bahwa data yang saya isi adalah <strong>benar</strong> dan dapat dipertanggungjawabkan.
+                                                    Saya menyetujui <a href="{{ route('privacy-policy') }}" target="_blank" style="color:#0055a5">Kebijakan Privasi</a>.
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        {{-- reCAPTCHA sementara dinonaktifkan --}}
+
+                                        <div class="col-12 mt-4">
+                                            <button type="submit" class="btn-submit-lamar" id="btnKirimLamaran" style="width: 100%;">
+                                                <i class="bi bi-send-fill"></i> Kirim Lamaran Sekarang
+                                            </button>
+                                            <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:12px;margin-bottom:0">
+                                                <i class="bi bi-lock me-1"></i>Data Anda aman dan tidak akan dibagikan kepada pihak ketiga
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 @else
                 <div class="detail-card" style="text-align:center;padding:40px">
                     <i class="bi bi-calendar-x" style="font-size:3rem;color:#d1d5db;display:block;margin-bottom:14px"></i>
@@ -256,13 +312,7 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                             <span class="apply-info-value">{{ $karir->lokasi }}</span>
                         </div>
                         @endif
-                        @if($karir->kuota)
-                        <div class="apply-info-row">
-                            <i class="bi bi-people"></i>
-                            <span class="apply-info-label">Kuota</span>
-                            <span class="apply-info-value">{{ $karir->kuota }} orang</span>
-                        </div>
-                        @endif
+
                         @if($karir->batas_lamaran)
                         <div class="apply-info-row">
                             <i class="bi bi-calendar-event"></i>
@@ -274,6 +324,13 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
                         @endif
                     </div>
                     
+                    @if(!$isExpired)
+                    <div style="padding: 0 20px 20px;">
+                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalLamaran" style="padding: 12px; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,85,165,0.3);">
+                            <i class="bi bi-send-fill me-2"></i> Lamar Sekarang
+                        </button>
+                    </div>
+                    @endif
                 </div>
 
 
@@ -318,9 +375,30 @@ $isExpired = $karir->batas_lamaran && $karir->batas_lamaran->isPast();
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Inisialisasi Select2 untuk dropdown posisi
+    $('#selectPosisi').select2({
+        dropdownParent: $('#modalLamaran'),
+        placeholder: "Cari posisi pekerjaan...",
+        allowClear: false
+    });
+
+    // Update form action URL based on selected position
+    $('#selectPosisi').on('change', function() {
+        const selectedSlug = $(this).val();
+        const form = document.getElementById('formLamaranActual');
+        // Ganti URL terakhir dengan slug yang baru
+        let currentAction = form.getAttribute('action');
+        let newAction = currentAction.substring(0, currentAction.lastIndexOf('/')) + '/' + selectedSlug + '/apply';
+        // Karena route di laravel karir/{slug}/apply, kita cukup replace /{slug}/apply
+        let parts = currentAction.split('/');
+        parts[parts.length - 2] = selectedSlug; 
+        form.setAttribute('action', parts.join('/'));
+    });
     const cvInput     = document.getElementById('cvInput');
     const dropArea    = document.getElementById('cvDropArea');
     const nameDisplay = document.getElementById('fileNameDisplay');
@@ -384,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Client-side validation on submit ---
-    const form = document.querySelector('form[action*="apply"]');
+    const form = document.getElementById('formLamaranActual');
     if (form) {
         form.addEventListener('submit', function (e) {
             let valid = true;
@@ -436,13 +514,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Smooth scroll to form ---
-    document.querySelectorAll('a[href="#form-lamar"]').forEach(a => {
-        a.addEventListener('click', e => {
-            e.preventDefault();
-            document.getElementById('form-lamar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    });
+    // Buka modal jika ada session error (berguna saat validasi laravel gagal)
+    @if($errors->any())
+        var myModal = new bootstrap.Modal(document.getElementById('modalLamaran'), {});
+        myModal.show();
+    @endif
 });
 </script>
 @endpush

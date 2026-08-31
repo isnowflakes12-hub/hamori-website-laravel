@@ -101,6 +101,13 @@
                 </div>
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check2 me-2"></i>Simpan Status</button>
             </form>
+            <hr class="my-4" style="border-color:#e5eaf0">
+            @php
+                $waNum = preg_replace('/[^0-9]/', '', $lamaran->telepon);
+                if(str_starts_with($waNum, '0')) $waNum = '62' . substr($waNum, 1);
+                $waLink = "https://wa.me/{$waNum}?text=Assalamualaikum%20wr.%20wb,%20Halo%20*{$lamaran->nama}*,%20kami%20dari%20SDM%20Rumah%20sakit%20HAMORI%20terkait%20lamaran%20Anda%20sebagai%20*" . rawurlencode($lamaran->karir->posisi ?? 'Karyawan') . "*";
+            @endphp
+            <a href="{{ $waLink }}" target="_blank" class="btn btn-success w-100" style="background:#25D366;border-color:#25D366;"><i class="bi bi-whatsapp me-2"></i>Hubungi via WhatsApp</a>
         </div>
     </div>
 </div>
