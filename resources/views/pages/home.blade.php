@@ -12,6 +12,8 @@ $heroSlides = $banners->count() ? $banners : collect([
 @endphp
 
 
+<h1 class="visually-hidden">RS Hamori - Rumah Sakit Terdepan di Subang</h1>
+
 <div class="hero-promo-wrap">
 
     <div id="hero">
@@ -19,17 +21,19 @@ $heroSlides = $banners->count() ? $banners : collect([
         <div class="hs{{ $i===0?' on':'' }}">
             @if(!empty($slide->gambar))
                 @if(Str::endsWith($slide->gambar, ['.mp4', '.webm', '.mov']))
-                    <video src="{{ asset('storage/'.$slide->gambar) }}" class="hero-video" autoplay loop muted playsinline {{ $i===0?'':'preload="none"' }}></video>
+                    <video src="{{ asset('storage/'.$slide->gambar) }}" class="hero-video" autoplay loop muted playsinline preload="metadata">
+                        <track kind="captions" srclang="id" label="Indonesia">
+                    </video>
                 @else
-                    <img src="{{ asset('storage/'.$slide->gambar) }}" alt="{{ $slide->judul ?? '' }}" loading="{{ $i===0?'eager':'lazy' }}">
+                    <img src="{{ asset('storage/'.$slide->gambar) }}" alt="{{ $slide->judul ?? 'RS Hamori' }}" width="924" height="520" loading="{{ $i===0?'eager':'lazy' }}" {{ $i===0?'fetchpriority="high"':'' }}>
                 @endif
             @else
                 <div class="hs-grad" style="background:{{ $slide->color ?? 'linear-gradient(135deg,#001f4d,#0055a5)' }}"></div>
             @endif
         </div>
         @endforeach
-        <button class="hc-arr" id="hcPrev"><i class="bi bi-chevron-left"></i></button>
-        <button class="hc-arr" id="hcNext"><i class="bi bi-chevron-right"></i></button>
+        <button class="hc-arr" id="hcPrev" aria-label="Slide sebelumnya"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+        <button class="hc-arr" id="hcNext" aria-label="Slide berikutnya"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
         <div class="hc-dots">
             @foreach($heroSlides as $i => $s)
             <span class="hc-dot{{ $i===0?' on':'' }}" data-i="{{ $i }}"></span>
@@ -47,16 +51,19 @@ $heroSlides = $banners->count() ? $banners : collect([
     @endphp
 
     <div class="hpp-blur-bg" @if($p && $p->gambar) style="background-image: url('{{ asset('storage/'.$p->gambar) }}')" @endif></div>
-    <div class="hero-promo-panel">
+    <div class="hero-promo-panel" id="heroPromoPanel">
 
     @if($p)
+        <button class="hpp-close-btn" id="hppCloseBtn" aria-label="Tutup Panel Promo" title="Tutup">
+            <i class="bi bi-x-lg"></i>
+        </button>
         <div class="hpp-top">
-            <span class="hpp-label">âš¡ Penawaran Terbatas</span>
-            <h3 class="hpp-title">{{ $p->judul }}</h3>
+            <span class="hpp-label"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> Penawaran Terbatas</span>
+            <h2 class="hpp-title">{{ $p->judul }}</h2>
         </div>
         @if($p->gambar)
         <div class="hpp-img-wrap">
-            <img src="{{ asset('storage/'.$p->gambar) }}" alt="{{ $p->judul }}">
+            <img src="{{ asset('storage/'.$p->gambar) }}" alt="{{ $p->judul }}" width="340" height="250" loading="lazy">
         </div>
         @endif
         @if($p->benefit && count($p->benefit) > 0)
@@ -95,7 +102,7 @@ $heroSlides = $banners->count() ? $banners : collect([
         </div>
     @else
         <ul class="hpp-list">
-            <h3 class="hpp-title">Mohon Maaf<br> Saat ini Belum tersedia Promo</h3>
+            <h2 class="hpp-title">Mohon Maaf<br> Saat ini Belum tersedia Promo</h2>
         </ul>
     @endif
     </div>
@@ -130,7 +137,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                 <div class="lc">
                     <div class="lc-thumb">
                         @if($l->logo)
-                            <img src="{{ asset('storage/'.$l->logo) }}" alt="{{ $l->nama }}">
+                            <img src="{{ asset('storage/'.$l->logo) }}" alt="{{ $l->nama }}" width="429" height="160" loading="lazy">
                         @else
                             <div class="lc-ic">
                                 <i class="bi bi-hospital"></i>
@@ -138,7 +145,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                         @endif
                     </div>
                     <div class="lc-body">
-                        <h5 class="lc-name">{{ $l->nama }}</h5>
+                        <h3 class="lc-name">{{ $l->nama }}</h3>
                         <p class="lc-desc">{{ Str::limit(strip_tags($l->deskripsi_singkat ?? $l->deskripsi ?? ''), 70) }}</p>
                         <div class="lc-footer">
                             <a href="{{ route('layanan.show', $l->slug ?? $l->id) }}" class="lc-more">
@@ -167,7 +174,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                         </div>
                     </div>
                     <div class="lc-body">
-                        <h5 class="lc-name">{{ $l[1] }}</h5>
+                        <h3 class="lc-name">{{ $l[1] }}</h3>
                         <p class="lc-desc">{{ $l[2] }}</p>
                         <div class="lc-footer">
                             <span class="lc-more">
@@ -212,7 +219,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                 <div class="pm-card-clean">
                     <div class="pm-card-clean-img">
                         @if($p->gambar)
-                            <img src="{{ asset('storage/'.$p->gambar) }}" alt="{{ $p->judul }}" loading="lazy">
+                            <img src="{{ asset('storage/'.$p->gambar) }}" alt="{{ $p->judul }}" width="380" height="220" loading="lazy">
                         @else
                             <div class="pm-media-placeholder"><i class="fas fa-gift"></i></div>
                         @endif
@@ -221,7 +228,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                         @endif
                     </div>
                     <div class="pm-card-clean-body">
-                        <h5 class="pm-card-clean-title" data-promo-text>{{ $p->judul }}</h5>
+                        <h3 class="pm-card-clean-title" data-promo-text>{{ $p->judul }}</h3>
                         
                         <div class="pm-card-clean-meta">
                             @if($p->berlaku_sampai)
@@ -263,14 +270,14 @@ $heroSlides = $banners->count() ? $banners : collect([
                 <div class="ac{{ $idx===0?' feat':'' }}">
                     <div class="ac-thumb">
                         @if($art->thumbnail)
-                            <img src="{{ asset('storage/'.$art->thumbnail) }}" alt="{{ $art->judul }}" loading="lazy">
+                            <img src="{{ asset('storage/'.$art->thumbnail) }}" alt="{{ $art->judul }}" width="651" height="420" loading="lazy">
                         @else
                             <div style="background:linear-gradient(135deg,#0055a5,#0077cc);width:100%;height:100%"></div>
                         @endif
                     </div>
                     <div class="ac-body">
                         @if($art->kategori)<span class="ac-cat">{{ $art->kategori->nama }}</span>@endif
-                        <h4 class="ac-title">{{ $art->judul }}</h4>
+                        <h3 class="ac-title">{{ $art->judul }}</h3>
                         <p class="ac-exc">{{ Str::limit(strip_tags($art->konten ?? ''), 90) }}</p>
                         <div class="ac-foot">
                             <span><i class="bi bi-calendar3 me-1"></i>{{ optional($art->published_at)->format('d M Y') }}</span>
@@ -285,7 +292,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                     <div class="ac-thumb"><div style="background:linear-gradient(135deg,#0055a5,#0077cc);width:100%;height:100%"></div></div>
                     <div class="ac-body">
                         <span class="ac-cat">{{ $art[0] }}</span>
-                        <h4 class="ac-title">{{ $art[1] }}</h4>
+                        <h3 class="ac-title">{{ $art[1] }}</h3>
                         <div class="ac-foot">
                             <span><i class="bi bi-calendar3 me-1"></i>{{ $art[2] }}</span>
                             <span class="ac-more">Baca <i class="bi bi-arrow-right"></i></span>
@@ -305,7 +312,7 @@ $heroSlides = $banners->count() ? $banners : collect([
     <div class="sec-cont">
         <div class="sec-head">
             <div>
-                <span class="eyebrow" style="color:#1ba99e;background:rgba(27,169,158,0.1)">Suara Pasien</span>
+                <span class="eyebrow" style="color:#0d7a71;background:rgba(13,122,113,0.1)">Suara Pasien</span>
                 <h2 class="sec-h2">Kritik & Saran Membangun</h2>
                 <p class="sec-sub">Ulasan dan masukan dari Anda membantu kami untuk terus meningkatkan kualitas pelayanan RS Hamori.</p>
             </div>
@@ -324,7 +331,7 @@ $heroSlides = $banners->count() ? $banners : collect([
                                 {{ strtoupper(substr($ks->nama, 0, 1)) }}
                             </div>
                             <div>
-                                <h5 style="margin:0; font-size:16px; font-weight:700; color:var(--ink);">{{ $ks->nama }}</h5>
+                                <div style="margin:0; font-size:16px; font-weight:700; color:var(--ink);">{{ $ks->nama }}</div>
                                 <span style="font-size:13px; color:var(--muted);">{{ $ks->created_at->format('d M Y') }} &bull; {{ $ks->kategori }}</span>
                             </div>
                         </div>
@@ -364,20 +371,20 @@ $heroSlides = $banners->count() ? $banners : collect([
             <div class="app-txt">
                 
                 <span class="eyebrow" style="color:rgba(255,255,255,.65)">Aplikasi Mobile</span>
-                <h3 class="app-h">Ingin lebih dekat dengan<br>RS Hamori?</h3>
+                <h2 class="app-h">Ingin lebih dekat dengan<br>RS Hamori?</h2>
                 <p class="app-d">Download aplikasi sekarang! dan nikmati kemudahan layanan dalam satu aplikasi</p>
                 <div class="app-btns">
                     <a href="#" class="app-btn"><i class="bi bi-apple"></i><div><small>Download di</small><strong>App Store</strong></div></a>
                     <a href="https://play.google.com/store/apps/details?id=com.terakorp.hamori&hl=id" class="app-btn"><i class="bi bi-google-play"></i><div><small>Download di</small><strong>Play Store</strong></div></a>
                 </div>
             </div>
-            <div class="app-ph"><img src="{{ asset('assets/images/qr.png') }}" alt="RS Hamori" class="app-logo"></div>
+            <div class="app-ph"><img src="{{ asset('assets/images/qr.png') }}" alt="QR Code Aplikasi RS Hamori" width="120" height="120" loading="lazy" class="app-logo"></div>
         </div>
     </div>
 </div>
 
 
-    <button class="promo-float-btn" id="promoFloatBtn" title="Lihat Promo Spesial">
+    <button class="promo-float-btn" id="promoFloatBtn" title="Lihat Promo Spesial" aria-label="Lihat Promo Spesial">
         <div class="promo-float-pulse"></div>
         <div class="promo-float-inner">
             <i class="bi bi-gift-fill promo-float-icon"></i>
@@ -388,320 +395,7 @@ $heroSlides = $banners->count() ? $banners : collect([
 
 
 
-<style>
-/* ──────────────────────────────────────────────────
-   CAROUSEL FULL WIDTH + FLOATING RIGHT PROMO CARD
-────────────────────────────────────────────────── */
-.hero-promo-wrap {
-    position: relative !important;
-    display: block !important;
-    height: 740px !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-}
 
-#hero {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    z-index: 1 !important;
-}
-
-.hero-promo-panel {
-    position: absolute !important;
-    top: 95px !important;
-    left: auto !important;
-    right: 200px !important;
-    bottom: 15px !important;
-    width: 340px !important; /* Slightly smaller width */
-    max-width: calc(100% - 80px) !important;
-    z-index: 10 !important;
-    background: linear-gradient(160deg, var(--accent, #1d2b53) 0%, #3d3890 50%, var(--primary, #001f4d) 100%) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 20px !important;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25) !important;
-    color: #ffffff !important;
-    padding: 20px !important; /* Reduced padding */
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-.hero-promo-panel::before,
-.hero-promo-panel::after {
-    display: block !important;
-}
-
-.hpp-label {
-    color: rgba(255, 255, 255, 0.85) !important;
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.hpp-title {
-    color: #ffffff !important;
-}
-
-.hpp-img-wrap {
-    width: 100% !important;
-    height: auto !important;
-    max-height: 320px !important; /* Smaller image to fit in smaller card */
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin-bottom: 14px !important;
-    position: relative !important;
-    flex-shrink: 0 !important;
-    background: transparent !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
-}
-
-.hpp-img-wrap img {
-    width: 100% !important;
-    height: auto !important;
-    max-height: 320px !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    display: block !important;
-    border-radius: 16px !important;
-}
-
-#hero .hs img,
-#hero .hs .hero-video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    display: block !important;
-}
-
-.hpp-list li {
-    color: rgba(255, 255, 255, 0.88) !important;
-}
-
-.hpp-list li i {
-    color: #2ed5c7 !important;
-}
-
-.hpp-old {
-    color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.hpp-new {
-    color: #ffffff !important;
-}
-
-.hpp-disc {
-    background: #ef4444 !important;
-    color: #ffffff !important;
-}
-
-.hpp-timer {
-    color: rgba(255, 255, 255, 0.75) !important;
-}
-
-.hpp-footer {
-    color: rgba(255, 255, 255, 0.75) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-    margin-top: auto !important;
-}
-
-.hpp-actions {
-    margin-top: auto !important;
-    flex-shrink: 0 !important;
-    position: relative !important;
-    z-index: 5 !important;
-}
-
-.hpp-actions .hpp-btn-wa {
-    background: #25d366 !important;
-    color: #ffffff !important;
-}
-
-.hpp-actions .hpp-btn-wa:hover {
-    background: #1ead55 !important;
-}
-
-.hpp-actions .pca-detail {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-.hpp-actions .pca-detail:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    color: #ffffff !important;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   📱 MOBILE & TABLET (< 1200px)
-   Tampilan kartu sama persis dengan desktop, hanya dipindah ke bawah carousel
-   ═══════════════════════════════════════════════════════════ */
-@media (max-width: 1199.98px) {
-    .hero-promo-wrap {
-        height: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }
-    #hero {
-        position: relative !important;
-        height: 380px !important;
-    }
-    
-    /* Cinematic Blur Background (Mobile & Tablet) */
-    .hpp-blur-bg {
-        display: block !important;
-        position: absolute !important;
-        top: 380px !important; /* Mulai setelah carousel */
-        left: -50px !important;
-        right: -50px !important;
-        bottom: -50px !important;
-        background-size: cover !important;
-        background-position: center !important;
-        filter: blur(45px) brightness(0.4) saturate(1.8) !important;
-        z-index: 0 !important;
-        opacity: 0.9 !important;
-        pointer-events: none !important;
-    }
-
-    /* Agar blur tidak tumpah dan area di bawah hero punya dasar gelap */
-    .hero-promo-wrap {
-        position: relative !important;
-        overflow: hidden !important;
-        background: #0a0e17 !important; /* Latar dasar gelap */
-    }
-
-    /* Reset absolute position agar kartu berada di bawah carousel, patenkan ukuran */
-    .hero-promo-panel {
-        position: relative !important;
-        top: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        width: 380px !important; /* Ukuran paten persis desktop */
-        max-width: 95vw !important; /* Ubah ke vw agar presisi di layar HP sekecil apa pun */
-        height: auto !important; /* PAKSA height menyesuaikan konten (buang sisa gap) */
-        min-height: 0 !important;
-        margin: 24px auto 32px !important; /* Posisikan ke tengah layar dengan margin */
-        z-index: 10 !important; /* Pastikan di atas blur */
-        justify-content: flex-start !important;
-        align-items: stretch !important; /* Matikan align-items: center dari app.css */
-        gap: 0 !important; /* Matikan gap: 24px dari app.css yang bikin jarak antar elemen sangat jauh */
-        /* Sisanya OTOMATIS MEWARISI desktop */
-    }
-
-    /* MATIKAN flex bawaan app.css yang merusak layout vertikal! */
-    .hpp-top, .hpp-list, .hpp-price, .hpp-timer, .hpp-actions, .hpp-footer {
-        flex: 0 0 auto !important; 
-        margin-top: 14px !important;
-    }
-    .hpp-top { margin-top: 0 !important; margin-bottom: 14px !important; }
-
-    /* Pastikan tombol tidak menyusut (shrink) */
-    .hpp-actions {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 12px !important;
-        width: 100% !important;
-    }
-    .hpp-actions .hpp-btn-wa,
-    .hpp-actions .pca-detail {
-        flex: 1 1 50% !important; /* Wajib mengambil 50% ruang */
-        width: 100% !important; /* Paksa memenuhi flex */
-        min-width: 0 !important; 
-        padding: 12px 14px !important; /* Ukuran padding paten seperti desktop */
-        font-size: 13.5px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        white-space: nowrap !important; /* Teks tidak turun ke bawah */
-        border-radius: 12px !important;
-    }
-}
-
-/* HP kecil (< 576px) penyesuaian minor tinggi carousel */
-@media (max-width: 575.98px) {
-    #hero {
-        height: 260px !important;
-    }
-    .hpp-blur-bg {
-        top: 260px !important;
-    }
-}
-
-/* =========================================================
-   PERBAIKAN QBAR (QUICK ACTION BAR)
-   Desktop & Tablet -> Responsif merata, Mobile -> Slider
-   ========================================================= */
-
-/* Desktop & Tablet (>= 768px): Berbagi rata (Responsif) */
-@media (min-width: 768px) {
-    .qbar-inner {
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: hidden !important; /* Jangan scroll */
-        justify-content: space-between !important;
-        padding: 0 24px !important;
-        gap: 0 !important; /* Hilangkan gap agar bisa rapat dan dipisah border */
-    }
-    .qbar-inner .qa {
-        flex: 1 !important; /* Semua tombol berbagi rata lebarnya */
-        min-width: 0 !important; /* Bebas mengecil mengikuti ukuran layar (Responsif) */
-        border-right: 1px solid var(--border-2) !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        scroll-snap-align: none !important;
-        background: transparent !important;
-        padding: 14px 4px !important; /* Sedikit dikurangi padding kiri/kanannya untuk tablet */
-    }
-    .qbar-inner .qa:last-child {
-        border-right: none !important;
-    }
-}
-
-/* Mobile (< 768px): Slider Horizontal */
-@media (max-width: 767.98px) {
-    .qbar-inner {
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        scrollbar-width: none !important;
-        padding: 12px 16px !important;
-        gap: 12px !important;
-        scroll-snap-type: x mandatory !important;
-        -webkit-overflow-scrolling: touch !important;
-        justify-content: flex-start !important;
-    }
-    .qbar-inner::-webkit-scrollbar {
-        display: none !important;
-    }
-    .qbar-inner .qa {
-        flex: 0 0 auto !important; /* Jangan menyusut */
-        width: 105px !important; /* Lebar paten tiap item slider */
-        border-right: none !important;
-        border-radius: 14px !important;
-        scroll-snap-align: start !important;
-        box-shadow: 0 2px 12px rgba(41, 37, 98, .08) !important;
-        background: #fff !important;
-    }
-}
-
-/* =========================================================
-   CEGAH KARTU (CARD) MELEBAR (STRETCH) DI TABLET
-   Mempertahankan proporsi ukuran seperti Desktop / Mobile
-   ========================================================= */
-.lc, .ac, .pm-card-clean {
-    max-width: 380px !important; /* Patenkan batas maksimal lebar kartu */
-    margin-left: auto !important; /* Tengah kan kartu di dalam grid/kolom */
-    margin-right: auto !important;
-    width: 100% !important; 
-}
-</style>
 
 
 @include('pages.popup-promo-detail')
@@ -828,6 +522,29 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+// Hero Promo Panel Close
+document.addEventListener("DOMContentLoaded", function () {
+    const closeBtn = document.getElementById('hppCloseBtn');
+    const panel = document.getElementById('heroPromoPanel');
+    const blurBg = document.querySelector('.hpp-blur-bg');
+    const wrap = document.querySelector('.hero-promo-wrap');
+
+    if (closeBtn && panel) {
+        closeBtn.addEventListener('click', function () {
+            panel.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            panel.style.opacity = '0';
+            panel.style.transform = 'translateX(30px)';
+            setTimeout(function () {
+                panel.style.display = 'none';
+                if (blurBg) blurBg.style.display = 'none';
+                if (wrap) wrap.classList.add('hpp-panel-hidden');
+            }, 320);
+        });
+    }
+});
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -858,13 +575,4 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 @endpush
-
-<style>
-@media (min-width: 992px) {
-    .hero-promo-wrap {
-        zoom: 0.9 !important;
-        width: 111.1111% !important;
-    }
-}
-</style>
 

@@ -15,8 +15,13 @@ use App\Http\Controllers\PromoPublicController;
 use App\Http\Controllers\BedAvailabilityPublicController;
 use App\Http\Controllers\SitemapController;
 
-// ─── Sitemap ───
+// ─── Sitemap & Robots ───
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', function () {
+    $sitemapUrl = route('sitemap');
+    return response("User-agent: *\nDisallow: /admin\nDisallow: /api\nAllow: /\n\nSitemap: {$sitemapUrl}\n", 200)
+        ->header('Content-Type', 'text/plain');
+});
 
 // ─── Admin namespace shortcut ───
 use App\Http\Controllers\Admin\AuthController;

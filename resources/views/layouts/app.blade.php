@@ -39,10 +39,59 @@
         }
     </style>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.cdnfonts.com/css/metropolis-2" rel="stylesheet">
+    <!-- Preconnect CDNs -->
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'Metropolis';
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: local('Metropolis Light'), url('https://fonts.cdnfonts.com/s/16308/Metropolis-Light.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Metropolis';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: local('Metropolis Regular'), url('https://fonts.cdnfonts.com/s/16308/Metropolis-Regular.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Metropolis';
+            font-style: normal;
+            font-weight: 500;
+            font-display: swap;
+            src: local('Metropolis Medium'), url('https://fonts.cdnfonts.com/s/16308/Metropolis-Medium.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Metropolis';
+            font-style: normal;
+            font-weight: 600;
+            font-display: swap;
+            src: local('Metropolis SemiBold'), url('https://fonts.cdnfonts.com/s/16308/Metropolis-SemiBold.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Metropolis';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: local('Metropolis Bold'), url('https://fonts.cdnfonts.com/s/16308/Metropolis-Bold.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Metropolis';
+            font-style: normal;
+            font-weight: 800;
+            font-display: swap;
+            src: local('Metropolis ExtraBold'), url('https://fonts.cdnfonts.com/s/16308/Metropolis-ExtraBold.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'bootstrap-icons';
+            font-display: swap;
+            src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6") format("woff2"),
+                 url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff") format("woff");
+        }
+    </style>
     <link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet">
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -54,8 +103,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pagination.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}?v=1.0.6">
+    <link rel="stylesheet" href="{{ asset('assets/css/pagination.css') }}?v=1.0.6">
 
     
     @stack('styles')
@@ -77,10 +126,10 @@
                     </span>
                 </div>
                 <div class="topbar-social d-flex gap-2 align-items-center">
-                    <a href="https://www.instagram.com/rshamori/" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
-                    <a href="https://www.youtube.com/@rshamori" target="_blank" class="social-icon"><i class="bi bi-youtube"></i></a>
-                    <a href="https://web.facebook.com/rshamori" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
-                    <a href="https://www.tiktok.com/@rshamori" target="_blank" class="social-icon"><i class="bi bi-tiktok"></i></a>
+                    <a href="https://www.instagram.com/rshamori/" target="_blank" class="social-icon" aria-label="Instagram RS Hamori"><i class="bi bi-instagram"></i></a>
+                    <a href="https://www.youtube.com/@rshamori" target="_blank" class="social-icon" aria-label="YouTube RS Hamori"><i class="bi bi-youtube"></i></a>
+                    <a href="https://web.facebook.com/rshamori" target="_blank" class="social-icon" aria-label="Facebook RS Hamori"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.tiktok.com/@rshamori" target="_blank" class="social-icon" aria-label="TikTok RS Hamori"><i class="bi bi-tiktok"></i></a>
                 </div>
             </div>
         </div>
@@ -90,11 +139,11 @@
         <div class="container-fluid px-0">
             <div class="navbar-inner-wrap w-100 px-4">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ $logoUtamaUrl }}" alt="Rumah Sakit Hamori" height="44" class="logo-color">
-                <img src="{{ $logoPutihUrl }}" alt="Rumah Sakit Hamori" height="44" class="logo-white d-none">
+                <img src="{{ $logoUtamaUrl }}" alt="Rumah Sakit Hamori" width="170" height="44" class="logo-color" style="height: 44px; width: auto;">
+                <img src="{{ $logoPutihUrl }}" alt="Rumah Sakit Hamori" width="170" height="44" class="logo-white d-none" style="height: 44px; width: auto;">
             </a>
 
-            <button class="navbar-toggler border-0 ms-auto me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <button class="navbar-toggler border-0 ms-auto me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -129,7 +178,7 @@
                             <li class="mega-menu-cols-row">
                                 @forelse($navbarKategoriFasilitas ?? [] as $kat)
                                 <div class="mega-menu-col">
-                                    <h6 class="mega-menu-title">{{ $kat->nama }}</h6>
+                                    <div class="mega-menu-title">{{ $kat->nama }}</div>
                                     @foreach($kat->fasilitas as $f)
                                         <a class="dropdown-item" href="{{ route('fasilitas.show', $f->slug ?? $f->nama) }}">{{ $f->nama }}</a>
                                     @endforeach
@@ -183,20 +232,20 @@
             <div class="container">
                 <div class="row g-5">
                     <div class="col-lg-4">
-                        <img src="{{ $logoPutihUrl }}" alt="RS Hamori" height="55" class="mb-3">
+                        <img src="{{ $logoPutihUrl }}" alt="RS Hamori" width="205" height="55" class="mb-3" style="height: 55px; width: auto;">
                         <p class="footer-desc">Rumah Sakit Hamori berkomitmen memberikan pelayanan kesehatan terbaik dengan standar internasional untuk masyarakat Subang dan sekitarnya.</p>
-                        <address class="footer-address">
+                        <address class="footer-address" style="color: #c4c2e6;">
                             <i class="bi bi-geo-alt-fill me-2"></i>
                             Jalan Raya Pagaden-Subang, Ds. Jabong Kec. Pagaden Kab. Subang Jawa Barat 41251
                         </address>
                         <div class="footer-phones mt-3">
-                            <div><i class="bi bi-telephone-fill me-2"></i> <a href="tel:1500816">1500 816</a> (Call Center)</div>
-                            <div><i class="bi bi-telephone-fill me-2"></i> <a href="tel:02604250888">0260-4250 888</a></div>
-                            <div><i class="bi bi-telephone-fill me-2"></i> <a href="tel:02604250999">0260-4250 999</a> (IGD & Ambulans)</div>
+                            <div><i class="bi bi-telephone-fill me-2"></i> <a href="tel:1500816" style="color:#ffffff; text-decoration: underline; text-underline-offset: 3px;">1500 816</a> (Call Center)</div>
+                            <div><i class="bi bi-telephone-fill me-2"></i> <a href="tel:02604250888" style="color:#ffffff; text-decoration: underline; text-underline-offset: 3px;">0260-4250 888</a></div>
+                            <div><i class="bi bi-telephone-fill me-2"></i> <a href="tel:02604250999" style="color:#ffffff; text-decoration: underline; text-underline-offset: 3px;">0260-4250 999</a> (IGD & Ambulans)</div>
                         </div>
                     </div>
                     <div class="col-6 col-lg-2">
-                        <h6 class="footer-heading">Informasi</h6>
+                        <h3 class="footer-heading">Informasi</h3>
                         <ul class="footer-links">
                             <li><a href="{{ route('profil') }}">Profil RS</a></li>
                             <li><a href="{{ route('kontak') }}">Kontak</a></li>
@@ -207,7 +256,7 @@
                         </ul>
                     </div>
                     <div class="col-6 col-lg-2">
-                        <h6 class="footer-heading">Layanan</h6>
+                        <h3 class="footer-heading">Layanan</h3>
                         <ul class="footer-links">
                             <li><a href="{{ route('dokter.index') }}">Jadwal Dokter</a></li>
                             <li><a href="{{ route('appointment') }}" target="_blank">Buat Appointment</a></li>
@@ -217,7 +266,7 @@
                         </ul>
                     </div>
                     <div class="col-lg-4">
-                        <h6 class="footer-heading">Download Aplikasi</h6>
+                        <h3 class="footer-heading">Download Aplikasi</h3>
                         <p class="text-white-50 small">Nikmati kemudahan layanan RS Hamori dari genggaman Anda.</p>
                         <a href="https://play.google.com/store/apps/details?id=com.terakorp.hamori&hl=id" target="_blank" class="btn btn-outline-light btn-sm mb-2 d-inline-flex align-items-center gap-2">
                             <i class="bi bi-google-play"></i> Playstore
@@ -227,13 +276,13 @@
                             <i class="bi bi-apple"></i> App Store
                         </a>
                         <div class="footer-social mt-4">
-                            <h6 class="footer-heading">Ikuti Kami</h6>
+                            <h3 class="footer-heading">Ikuti Kami</h3>
                             <div class="d-flex gap-2">
-                                <a href="https://www.instagram.com/rshamori/" target="_blank" class="social-btn"><i class="bi bi-instagram"></i></a>
-                                <a href="https://www.youtube.com/@rshamori" target="_blank" class="social-btn"><i class="bi bi-youtube"></i></a>
-                                <a href="https://web.facebook.com/rshamori" target="_blank" class="social-btn"><i class="bi bi-facebook"></i></a>
-                                <a href="https://www.tiktok.com/@rshamori" target="_blank" class="social-btn"><i class="bi bi-tiktok"></i></a>
-                                <a href="https://twitter.com/RSHamori" target="_blank" class="social-btn"><i class="bi bi-twitter-x"></i></a>
+                                <a href="https://www.instagram.com/rshamori/" target="_blank" class="social-btn" aria-label="Instagram RS Hamori"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.youtube.com/@rshamori" target="_blank" class="social-btn" aria-label="YouTube RS Hamori"><i class="bi bi-youtube" aria-hidden="true"></i></a>
+                                <a href="https://web.facebook.com/rshamori" target="_blank" class="social-btn" aria-label="Facebook RS Hamori"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+                                <a href="https://www.tiktok.com/@rshamori" target="_blank" class="social-btn" aria-label="TikTok RS Hamori"><i class="bi bi-tiktok" aria-hidden="true"></i></a>
+                                <a href="https://twitter.com/RSHamori" target="_blank" class="social-btn" aria-label="Twitter RS Hamori"><i class="bi bi-twitter-x" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
@@ -249,7 +298,7 @@
         </div>
 
 
-    <a href="https://wa.me/6281111121705" target="_blank" class="whatsapp-float" title="Chat via WhatsApp">
+    <a href="https://wa.me/6281111121705" target="_blank" class="whatsapp-float" title="Chat via WhatsApp" aria-label="Chat WhatsApp RS Hamori">
         <i class="bi bi-whatsapp"></i>
     </a>
 
